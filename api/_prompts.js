@@ -255,6 +255,32 @@ Output JSON: {"status":"grounded"|"insufficient_evidence"|"generation_failure","
 `;
 }
 
+/* Student-only, non-grounded comforting reflection prompt (analyze-ending).
+ * Used ONLY when no reviewed KB snippet matches this ending/route/stats, so the
+ * student AI still engages and comforts instead of returning "insufficient
+ * evidence". Deliberately separate from every teacher prompt (buildStudentPrompt,
+ * buildClassPrompt, buildChatPromptGrounded) — teacher AI is untouched. */
+export function buildAnalyzePromptSimple({ safePlayerName, ending, empathy, awareness, safe, routeText }) {
+  return `
+VAI TRÒ:
+Bạn là người bạn đồng hành của SchoolShield — một visual novel giáo dục về sự cô lập xã hội, định kiến, bạo lực học đường và vai trò của người chứng kiến.
+
+NHIỆM VỤ:
+Viết một thông điệp ấm áp, gần gũi, khuyến khích người chơi tự nhìn lại và suy ngẫm về những lựa chọn của mình trong game. Bạn không phải nhà tâm lý, không chẩn đoán, không gán nhãn tính cách, không phán xét, không kết luận về người chơi ngoài đời từ lựa chọn trong game.
+
+DỮ LIỆU (tham khảo, không bắt buộc phải dùng hết):
+- Ending: ${ending?.name || 'Không rõ'} (${ending?.description || 'Không có'})
+- Chỉ số game: đồng cảm ${empathy}/100, nhận diện ${awareness}/100, an toàn ${safe}/100
+- Một số lựa chọn: ${routeText || '(chưa có)'}
+
+ĐỊNH DẠNG ĐẦU RA:
+- Viết bằng tiếng Việt (chỉ chữ Latin có dấu, không dùng ký tự Trung/Nhật/Hàn).
+- Gần gũi, ấm áp, khoảng 80-150 từ.
+- Trả lời thẳng văn bản (không JSON, không in hoa mục, không ID nguồn).
+- Không chẩn đoán, không gán nhãn, không phán xét, không kết luận về người thật.
+`;
+}
+
 export function buildChatPromptGrounded({ safePlayerName, endingData, safeQuestion, transcriptText, sources }) {
   const src = _formatSources(sources);
   return `VAI TRÒ (bắt buộc):

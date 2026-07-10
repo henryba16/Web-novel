@@ -163,6 +163,7 @@ Lựa chọn ${index + 1}:
 		let citations = [];
 		let limitationNote = null;
 		let model = undefined;
+		let __modelCalled = false;
 
 		if (__hasSources) {
 			const prompt = buildAnalyzePromptGrounded({ safePlayerName, ending: __safeEnding, empathy, awareness, safe, routeText, sources: __retrieved.snippets });
@@ -196,16 +197,56 @@ Lựa chọn ${index + 1}:
 				model = result.model || undefined;
 			}
 		} else {
-			status = __retrieved.status || 'insufficient_evidence';
-			analysis = '';
-			citations = [];
-			limitationNote = 'eligible=' + __retrieved.eligibleCount + '; min=' + __retrieved.minEvidence;
+			// No reviewed KB snippet matched this ending/route/stats → student AI
+			// still engages with a simple, non-grounded, comforting reflection
+			// (no KB, no clinical/medical framing). Teacher AI endpoints untouched.
+			__modelCalled = true;
+			const simplePrompt = buildAnalyzePromptSimple({
+				safePlayerName, ending: __safeEnding, empathy, awareness, safe, routeText
+			});
+			const result2 = await callOpenRouter({
+				messages: [{ role: 'user', content: simplePrompt }],
+				maxTokens: 450,
+				endpoint: 'analyze-ending'
+			});
+			if (!result2.ok) {
+				console.error('OpenRouter error (analyze simple):', result2.errorText);
+				status = 'insufficient_evidence';
+				analysis = '';
+				citations = [];
+				limitationNote = result2.errorText || 'provider error';
+				model = undefined;
+			} else {
+				const raw = String(result2.data?.choices?.[0]?.message?.content || '').trim();
+				const textOk = raw.length > 0 && !META_COMMENTARY_RE.test(raw);
+				analysis = textOk ? raw : '';
+				citations = [];
+				limitationNote = textOk ? null : (raw ? raw.slice(0, 300) : null);
+				status = textOk ? 'grounded' : 'insufficient_evidence';
+				model = result2.model || undefined;
+			}
 		}
 
 		if (status === 'insufficient_evidence' && !analysis) {
 			// Vietnamese fallback (17-10-26): covers the no-source path AND the contract-failure path above.
 			analysis = 'Chưa thể tạo nhận xét có căn cứ từ dữ liệu hiện có. Một câu hỏi trung lập để bạn tự suy ngẫm: lựa chọn nào trong câu chuyện khiến bạn nhớ nhất, và vì sao?';
 		}
+
+		// Debug: why did we land on insufficient_evidence?
+		//   reason 'no_supported_snippet'  = KB found no reviewed snippet for this ending/route/stats
+		//   reason 'insufficient_support'  = KB had snippets but OpenRouter output failed the contract gate
+		console.log(JSON.stringify({
+			event: 'analyze_debug',
+			status: status,
+			reason: __hasSources ? 'insufficient_support' : 'no_supported_snippet',
+			hasSources: __hasSources,
+			eligibleCount: __retrieved.eligibleCount,
+			modelCalled: __modelCalled,
+			model: model,
+			citations: citations.length,
+			ts: Date.now(),
+			endpoint: 'analyze-ending'
+		}));
 
 		if (status === 'insufficient_evidence') {
 			// B4: Endpoint refusal record (supplemented schema: reason no_supported_snippet | insufficient_support)
