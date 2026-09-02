@@ -46,7 +46,7 @@ monogatari.settings({
 	'ShowMainScreen': true,
 
 	// Turn image preloading on/off, Default: true
-	'Preload': true,
+	'Preload': false,
 
 	// Time interval between autosaves (In Minutes). Default: 0 (Off)
 	'AutoSave': 0,
@@ -61,7 +61,7 @@ monogatari.settings({
 	// Force aspect ratio, it will make all images to comply with aspect ratio.
 	// Values: 'None' (don't force), 'Visuals' (force only visuals)
 	// or 'Global' (force all game)
-	'ForceAspectRatio': 'None',
+	'ForceAspectRatio': 'Visuals',
 
 	// Enables or disables the typing text animation for the whole game.
 	'TypeAnimation': true,
@@ -138,7 +138,7 @@ monogatari.settings({
 	// Default: true
 	// If this is set to false, the "Back" button on the quick menu will not be
 	// shown and the left arrow keyboard shortcut will be disabled.
-	'AllowRollback': true,
+	'AllowRollback': false,
 
 	// Whether experimental features should be enabled or not. Default: false
 	// These features are unfinished and unstable, chances are they will still

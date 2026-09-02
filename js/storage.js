@@ -11,7 +11,12 @@ monogatari.storage ({
 		safe: 50,
 	},
 	trust: {
-		linh: 0,
-
+		ma: 70,
+		tl: 30,
+		qt: 50,
+		mh: 50,
+	},
+	choice: {
+		1: true,
 	},
 });
