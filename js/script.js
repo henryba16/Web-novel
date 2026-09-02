@@ -213,6 +213,10 @@ monogatari.script ({
 			},
 			'3': {
 				'Text': 'Hỏi ý kiến Mai Anh cho chắc.',
+				'onChosen':function(){
+					addempathy(3);
+					addsafe(2);
+				},
 				'Do': 'jump hỏi_ý_kiến',
 			},
 			'4': {
