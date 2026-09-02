@@ -110,7 +110,7 @@ monogatari.characters ({
 
 	},
 	'qt': {
-		name: 'Quan Tuấn',
+		name: 'Quang Tuấn',
 
 	},
 	'mh': {
@@ -167,7 +167,7 @@ monogatari.script ({
 		'show scene classroom with fadeIn',
 		'"Tiếng bước chân vang vọng ngoài lớp học, học sinh dù có đang làm gì đều bỏ dở việc đang làm mà ngoan ngoãn quay về chỗ ngồi của họ."',
 		'stop sound with fade 1',
-		'ct Chào các em, trước khi bắt đầu tiết học, cô muốn giới thiệu với cả lớp một bạn mới chuyển đến trường chúng ta!.',
+		'ct Chào các em, trước khi bắt đầu tiết học, cô muốn giới thiệu với cả lớp một bạn mới chuyển đến trường chúng ta!',
 		'"Một cô bé bước vào lớp với mái tóc đen buộc thấp, chiếc ba lô màu xám trên vai và một cuốn sổ nhỏ được cô cẩn thận cầm trên tay."',
 		'"Đứng trước cả lớp, cô gái ấy nhẹ xiết cuốn sổ tay, lấy hết dũng khí để giới thiệu"',
 		'tl Chào c-các bạn. M-mình là Trúc Linh. Mong mọi người giúp đỡ mình!',
@@ -178,24 +178,24 @@ monogatari.script ({
 		'ma Ùm... Nhưng mà nếu cậu chuyển đến một môi trường hoàn toàn mới thì cậu cũng hồi hộp như bạn ấy thôi.',
 		'pl Ừ, cũng đúng...',
 		'show scene cr2 with fadeIn',
-		'ct Lớp ơi hôm nay chúng ta sẽ làm bài hoạt đống nhóm nhé<br>Cô cần các bạn tự chọn ra nhóm của mình, mỗi nhóm gồm 3 thành viên và 1 nhóm trưởng nhé!',
+		'ct Lớp ơi hôm nay chúng ta sẽ làm bài hoạt động nhóm nhé!<br>Cô cần các bạn tự chọn ra nhóm của mình, mỗi nhóm gồm 3 thành viên và 1 nhóm trưởng.',
 		'bcl {{player.name}}, Mai Anh, mình bên này nè, vô chung cho vui!',
 		'pl Tới liền!',
-		'qt Hạnh ơi tạo nhóm tao.',
+		'qt Hạnh ơi tạo nhóm với tao.',
 		'mh Ok ông.',
-		'"Sau 5 phút náo loạn thì lớp bắt đầu trật tự lại, cô Thảo nhìn một vòng quanh lớp...<br>Cô chợt nhận thấy Linh đang đứng cô đơn lẻ loi môt mình."',
+		'"Sau 5 phút náo loạn thì lớp bắt đầu trật tự lại, cô Thảo nhìn một vòng quanh lớp...<br>Cô chợt nhận thấy Linh đang đứng cô đơn lẻ loi một mình."',
 		'ct Linh ơi con ra hỏi xem nhóm bạn nào còn thiếu người không nè!',
 		'tl D-dạ.',
 		'"Linh dè chừng bước tới nhóm nhóm của Tuấn và hỏi:"',
 		'tl M-mình có thể vô nhóm các bạn được không?',
 		'qt Nhóm tao đủ rồi, mày sang chỗ khác đi!',
-		'mh Ừm đủ rồi cậu tìm chỗ khác đi',
-		'"Linh lũi thủi trở về chỗ ngồi của cô ấy"',
+		'mh Ừ đủ rồi cậu tìm chỗ khác đi',
+		'"Linh lủi thủi trở về chỗ ngồi của cô ấy"',
 		'jump choice1',
 	],
 	'choice1': [{
 		'Choice': {
-			'Dialog': 'pl ...{{stats.empathy}}{{choice.1}}',
+			'Dialog': 'pl ...',
 			'1': {
 				'Text': 'Kệ dù sao cũng không phải việc của mình.',
 				'Do': 'jump không_liên_quan',
@@ -233,7 +233,7 @@ monogatari.script ({
 		'pl Tiếp tục làm bài nào nhóm ơi!',
 		'"Mọi chuyện vẫn tiếp tục"',
 		'"Một lúc sau, cô Thảo đành sắp xếp cho Linh tham gia vào một nhóm khác..."',
-		'"không có tiếng cải cã"',
+		'"Không có tiếng cải cã"',
 		'"Không ai làm gì rõ ràng là xấu"',
 		'"Nhưng sâu trong thâm tâm bạn, bạn có nghĩ đây là có phải là hành động <span style="color: #f51f1f">nên làm?</span>"',
 		'<h5>🔎Lựa chọn an toàn?</h5><br>Bạn đã chọn tiếp tục làm việc của mình thay vì lên tiếng<br>Có lẽ bạn chỉ đơn giản không muốn tự đưa mình vào những rắc rối không cần thiết...',
