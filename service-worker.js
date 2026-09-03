@@ -24,6 +24,7 @@ const files = [
 
 	// HTML Files
 	'index.html',
+	'game.html',
 
 	// Style Sheets
 	'style/main.css',

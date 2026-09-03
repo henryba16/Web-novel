@@ -1,123 +1,411 @@
 <!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lilith Novel - Visual Novel Lớp 8A</title>
+    <meta name="description" content="Visual novel tương tác tiếng Việt. Nhập tên, theo dõi câu chuyện tại lớp 8A và đưa ra lựa chọn ảnh hưởng đến đồng cảm, nhận thức và an toàn.">
+    <meta property="og:title" content="Lilith Novel - Visual Novel Lớp 8A">
+    <meta property="og:description" content="Visual novel tương tác tiếng Việt về câu chuyện lớp 8A">
+    <meta property="og:image" content="assets/scenes/school_yard.png">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="favicon.ico">
+    <link rel="icon" sizes="192x192" href="assets/icons/icon_192x192.png">
+    <link rel="apple-touch-icon" href="assets/icons/icon_180x180.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<html lang="en" itemscope itemtype="http://schema.org/WebPage"> <!--Change the lang property to your web"s language-->
-	
-	<head prefix="og: http://ogp.me/ns#">
+        body {
+            font-family: "Noto Serif", "Noto Serif JP", Georgia, "Times New Roman", serif;
+            background: #f5f0e8;
+            color: #2d2d2d;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
 
-		<title>Monogatari Visual Novel</title> <!--Up to 60-70 Characters. Optimal Format: Primary Keyword - Secondary Keyword | Brand Name-->
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
 
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1">
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; script-src 'self' 'unsafe-eval' blob:; script-src-elem blob: 'self' 'unsafe-eval'">
-		<meta name="description" content=""> <!--Page description. No longer than 155 characters.-->
-		<meta name="keywords" content="">
-		<meta name="author" content=""> <!--Name of the author.-->
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #c9b896;
+        }
 
-		<!--Facebook Meta Tags-->
-		<meta property="og:image" content="" /> <!--URL of Image to show-->
-		<meta property="og:description" content="" /> <!--Page Description-->
-		<meta property="og:site_name" content="" /> <!--The Name Here-->
-		<meta property="og:url" content="" /> <!--The Web main URL-->
-		<meta property="og:title" content="" /> <!--The Title Here-->
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
 
-		<!--Google Meta Tags-->
-		<meta itemprop="name" content=""> <!--The Name or Title Here-->
-		<meta itemprop="description" content=""> <!--Page Description-->
-		<meta itemprop="image" content=""> <!--URL of Image to show-->
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            background: #2d2d2d;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-		<!--Twitter Meta Tags - You"ll have to validate your website here: https://dev.twitter.com/docs/cards/validation/validator-->
-		<meta name="twitter:card" content="summary_large_image"> <!--Content Card Type-->
-		<meta name="twitter:domain" content=""> <!--Your web"s domain-->
-		<meta name="twitter:site" content="@"> <!--@publisher-->
-		<meta name="twitter:title" content=""> <!--Page Title-->
-		<meta name="twitter:description" content=""> <!--Page description less than 200 characters-->
-		<meta name="twitter:creator" content="@"> <!--@author-->
-		<meta name="twitter:image:src" content=""> <!--URL of Image to show-->
+        .logo-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: #f5f0e8;
+            stroke-width: 2;
+        }
 
-		<!--Android Meta Tags-->
-		<meta name="mobile-web-app-capable" content="yes">
-		<link rel="icon" sizes="192x192" href="assets/icons/icon_192x192.png"> <!--192 x 192 Icon-->
-		<link rel="icon" sizes="128x128" href="assets/icons/icon_128x128.png"> <!--128 x 128 Icon-->
+        h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.01em;
+        }
 
-		<!--Apple Meta Tags-->
-		<meta name="apple-mobile-web-app-title" content=""> <!--App Title or Name-->
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <!--Styling for the iOS Status Bar-->
-		<link rel="apple-touch-icon" href="assets/icons/icon_60x60.png"> <!--60 x 60 Icon-->
-		<link rel="apple-touch-icon" sizes="76x76" href="assets/icons/icon_76x76.png"> <!--76 x 76 Icon-->
-		<link rel="apple-touch-icon" sizes="120x120" href="assets/icons/icon_120x120.png"> <!--120 x 120 Icon-->
-		<link rel="apple-touch-icon" sizes="152x152" href="assets/icons/icon_152x152.png"> <!--152 x 152 Icon-->
-		<link rel="apple-touch-icon" sizes="152x152" href="assets/icons/icon_167x167.png"> <!--167 x 167 Icon-->
-		<link rel="apple-touch-icon" sizes="152x152" href="assets/icons/icon_180x180.png"> <!--180 x 180 Icon-->
+        .tagline {
+            font-size: 1.1rem;
+            color: #5a5a5a;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
 
-		<!--Microsoft Tags-->
-		<meta name="msapplication-TileColor" content=""> <!--Color of the tile on Windows. In hexadecimal format-->
-		<meta name="application-name" content="" /> <!-- App Title -->
-		<meta name="msapplication-tooltip" content="" /> <!--Small text on hover-->
-		<meta name="msapplication-starturl" content="" /> <!-- URL to start in -->
-		<meta name="msapplication-square70x70logo" content="assets/icons/icon_70x70.png" /> <!--Image for Tile 70x70-->
-		<meta name="msapplication-square150x150logo" content="assets/icons/icon_150x150.png" /> <!--Image for Tile 150x150-->
-		<meta name="msapplication-wide310x150logo" content="assets/icons/icon_310x150.png" /> <!--Image for Tile 310x150-->
-		<meta name="msapplication-square310x310logo" content="assets/icons/icon_310x310.png" /> <!--Image for Tile 310x310-->
+        main {
+            text-align: center;
+        }
 
-		<!--<link rel="publisher" href=""> Publisher"s Google+ URL-->
+        .card {
+            background: #fff;
+            border: 1px solid #e8e0d0;
+            border-radius: 8px;
+            padding: 3rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
 
-		<meta name="theme-color" content=""><!--Theme color for browsers in hexadecimal format.-->
+        .card-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 1.5rem;
+            background: #f5f0e8;
+            border: 1px solid #e8e0d0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-		<link rel="shortcut icon" href="favicon.ico" /> <!--Favicon. Good tool for creating one: http://xiconeditor.com/ Create all sizes.-->
-		<!--<link rel="canonical" href=""> Canonical URL of your webpage-->
+        .card-icon svg {
+            width: 36px;
+            height: 36px;
+            stroke: #2d2d2d;
+            stroke-width: 1.5;
+        }
 
-		<link rel="manifest" href="manifest.json">
+        .card h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
 
-		<!-- Third Party CSS Libraries -->
+        .desc {
+            color: #4a4a4a;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            max-width: 560px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-		<!-- Monogatari CSS Libraries -->
-		<link rel="stylesheet" href="./engine/core/monogatari.css">
-		<link rel="stylesheet" href="./style/main.css">
+        .stats-preview {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
 
-		<!-- Third Party JavaScript Libraries -->
+        .stat-item {
+            background: #faf8f5;
+            border: 1px solid #e8e0d0;
+            border-radius: 6px;
+            padding: 1rem 1.5rem;
+            min-width: 110px;
+        }
 
-		<!-- Debug Library. Remove this file for release builds -->
-		<script src="./engine/debug/debug.js"></script>
+        .stat-icon {
+            width: 22px;
+            height: 22px;
+            margin: 0 auto 0.5rem;
+            stroke: #2d2d2d;
+            stroke-width: 2;
+        }
 
-        <!-- Monogatari JavaScript Libraries -->
-		<script src="./engine/core/monogatari.js"></script>
-		<script src="./js/options.js"></script>
-		<script src="./js/storage.js"></script>
-		<script src="./js/script.js"></script>
-		<script src="./js/main.js"></script>
-	</head>
+        .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #8a7a5a;
+            font-weight: 600;
+        }
 
-	<body>
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d2d2d;
+        }
 
-		<!-- Fallback when JavaScript is not available -->
-		<noscript>
-			<div class="middle text--center">
-				<h2>JavaScript Disabled or not Supported.</h2>
-				<small>To play this game, please enable JavaScript executing or use a different browser.</small>
-			</div>
-		</noscript>
+        .btn-start {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #f5f0e8;
+            background: #2d2d2d;
+            border: 1px solid #2d2d2d;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
 
-		<div id="monogatari">
-			<visual-novel>
-				<language-selection-screen></language-selection-screen>
-				<loading-screen></loading-screen>
-				<main-screen>
-					<main-menu></main-menu>
-				</main-screen>
-				<game-screen>
-					<dialog-log></dialog-log>
-					<text-box></text-box>
-					<quick-menu></quick-menu>
-				</game-screen>
-				<gallery-screen></gallery-screen>
-				<credits-screen></credits-screen>
-				<load-screen></load-screen>
-				<save-screen></save-screen>
-				<settings-screen></settings-screen>
-				<help-screen></help-screen>
-			</visual-novel>
-		</div>
-	</body>
+        .btn-start:hover {
+            background: #f5f0e8;
+            color: #2d2d2d;
+            border-color: #2d2d2d;
+        }
 
+        .btn-start:active {
+            background: #1a1a1a;
+            color: #f5f0e8;
+        }
+
+        .btn-start svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e8e0d0;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 0.5rem;
+            background: #f5f0e8;
+            border: 1px solid #e8e0d0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            stroke: #2d2d2d;
+            stroke-width: 1.5;
+        }
+
+        .feature-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2d2d2d;
+        }
+
+        .feature-desc {
+            font-size: 0.75rem;
+            color: #7a7a7a;
+            margin-top: 0.25rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e8e0d0;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #7a7a7a;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #2d2d2d;
+            text-decoration: underline;
+        }
+
+        .copyright {
+            font-size: 0.75rem;
+            color: #9a9a9a;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 2rem 1.25rem;
+            }
+
+            .stats-preview {
+                gap: 1rem;
+            }
+
+            .stat-item {
+                padding: 0.75rem 1rem;
+                min-width: 90px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20"/>
+                        <path d="M6.5 17H15"/>
+                        <path d="M6.5 12H15"/>
+                        <path d="M6.5 7H15"/>
+                    </svg>
+                </div>
+                <h1>Lilith Novel</h1>
+            </div>
+            <p class="tagline">Visual novel tương tác tiếng Việt — Câu chuyện lớp 8A, những lựa chọn định hình số phận</p>
+        </header>
+
+        <main>
+            <div class="card">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                </div>
+
+                <h2>Bước vào câu chuyện</h2>
+                <p class="desc">
+                    Bạn là học sinh mới chuyển đến lớp 8A. Mỗi quyết định — từ cách đối xử với Trúc Linh (bạn mới hồi hộp) đến phản ứng trước áp lực bài kiểm tra — sẽ định hình ba chỉ số cốt lõi: <strong>Đồng cảm</strong>, <strong>Nhận thức</strong> và <strong>An toàn</strong>.
+                </p>
+
+                <div class="stats-preview">
+                    <div class="stat-item">
+                        <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                        <div class="stat-label">Đồng cảm</div>
+                        <div class="stat-value">empathy</div>
+                    </div>
+                    <div class="stat-item">
+                        <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                            <path d="M12 16v-4"/>
+                            <path d="M12 8h.01"/>
+                        </svg>
+                        <div class="stat-label">Nhận thức</div>
+                        <div class="stat-value">awareness</div>
+                    </div>
+                    <div class="stat-item">
+                        <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                        <div class="stat-label">An toàn</div>
+                        <div class="stat-value">safe</div>
+                    </div>
+                </div>
+
+                <a href="game.html" class="btn-start">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                    Bắt đầu chơi
+                </a>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                        </div>
+                        <div class="feature-title">Tự động lưu</div>
+                        <div class="feature-desc">Tiến trình được lưu liên tục</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                <path d="M8 21h8"/>
+                                <path d="M12 17v4"/>
+                            </svg>
+                        </div>
+                        <div class="feature-title">Nhiều slot</div>
+                        <div class="feature-desc">Lưu nhiều lượt chơi khác nhau</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                        </div>
+                        <div class="feature-title">Âm thanh</div>
+                        <div class="feature-desc">Nhạc nền & hiệu ứng chân thực</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-links">
+                <a href="game.html">Chơi ngay</a>
+                <a href="https://monogatari.io" target="_blank" rel="noopener">Monogatari Engine</a>
+                <a href="https://github.com" target="_blank" rel="noopener">Mã nguồn</a>
+            </div>
+            <p class="copyright">© 2026 Lilith Novel. Được xây dựng với Monogatari Visual Novel Engine.</p>
+        </footer>
+    </div>
+</body>
 </html>
