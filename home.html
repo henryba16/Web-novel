@@ -1,11 +1,543 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Monogatari Visual Novel</title>
+    <meta name="description" content="Visual novel tương tác tiếng Việt. Nhập tên, theo dõi câu chuyện tại lớp 8A và đưa ra lựa chọn ảnh hưởng đến đồng cảm, nhận thức và an toàn.">
+    <meta property="og:title" content="Monogatari Visual Novel">
+    <meta property="og:description" content="Visual novel tương tác tiếng Việt về câu chuyện lớp 8A">
+    <meta property="og:image" content="assets/scenes/school_yard.png">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="favicon.ico">
+    <link rel="icon" sizes="192x192" href="assets/icons/icon_192x192.png">
+    <link rel="apple-touch-icon" href="assets/icons/icon_180x180.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @font-face {
+            font-family: 'VNFont';
+            src: local('Arial'), local('Helvetica'), sans-serif;
+        }
+
+        body {
+            font-family: 'VNFont', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f1a;
+            color: #eaeaea;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .bg-layer {
+            position: fixed;
+            inset: 0;
+            background: url('assets/scenes/school_yard.png') center/cover no-repeat;
+            filter: brightness(0.35) saturate(0.8);
+            z-index: -2;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(26, 26, 46, 0.9) 0%, rgba(15, 15, 26, 0.95) 50%, rgba(10, 10, 20, 1) 100%);
+            z-index: -1;
+        }
+
+        .particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(91, 202, 255, 0.6);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            50% { transform: translateY(-100vh) translateX(30px); opacity: 0.8; }
+        }
+
+        header {
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #5bcaff 0%, #7c4dff 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(91, 202, 255, 0.4);
+        }
+
+        .logo-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: #0f0f1a;
+            stroke-width: 2.5;
+        }
+
+        .logo-text {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #5bcaff 0%, #fff 50%, #7c4dff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .tagline {
+            font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+            color: #9aa0b8;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: rgba(22, 22, 38, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(91, 202, 255, 0.15);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(91, 202, 255, 0.08) inset,
+                0 1px 0 rgba(255, 255, 255, 0.05) inset;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(91, 202, 255, 0.2) inset,
+                0 1px 0 rgba(255, 255, 255, 0.08) inset;
+            border-color: rgba(91, 202, 255, 0.3);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, rgba(91, 202, 255, 0.15) 0%, rgba(124, 77, 255, 0.15) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(91, 202, 255, 0.2);
+        }
+
+        .card-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: #5bcaff;
+            stroke-width: 1.5;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .desc {
+            color: #a8aec9;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .stats-preview {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(91, 202, 255, 0.08);
+            border: 1px solid rgba(91, 202, 255, 0.15);
+            border-radius: 16px;
+            padding: 1rem 1.5rem;
+            min-width: 110px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: rgba(91, 202, 255, 0.15);
+            border-color: rgba(91, 202, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .stat-icon {
+            width: 24px;
+            height: 24px;
+            margin: 0 auto 0.5rem;
+            stroke: #5bcaff;
+            stroke-width: 2;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #5bcaff;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .btn-start {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            max-width: 320px;
+            padding: 1.1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f0f1a;
+            background: linear-gradient(135deg, #5bcaff 0%, #7c4dff 100%);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 20px rgba(91, 202, 255, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 30px rgba(91, 202, 255, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+        }
+
+        .btn-start:active {
+            transform: translateY(0);
+        }
+
+        .btn-start svg {
+            width: 22px;
+            height: 22px;
+            stroke: #0f0f1a;
+            stroke-width: 2.5;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(91, 202, 255, 0.1);
+        }
+
+        .feature {
+            text-align: center;
+            padding: 0.75rem;
+        }
+
+        .feature-icon {
+            width: 36px;
+            height: 36px;
+            margin: 0 auto 0.5rem;
+            background: rgba(91, 202, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            stroke: #5bcaff;
+            stroke-width: 2;
+        }
+
+        .feature-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #eaeaea;
+        }
+
+        .feature-desc {
+            font-size: 0.7rem;
+            color: #6a7088;
+            margin-top: 0.25rem;
+        }
+
+        footer {
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #6a7088;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #5bcaff;
+        }
+
+        .copyright {
+            font-size: 0.75rem;
+            color: #4a4f63;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 2rem 1.5rem;
+                border-radius: 20px;
+            }
+
+            .stats-preview {
+                gap: 1rem;
+            }
+
+            .stat-item {
+                padding: 0.75rem 1rem;
+                min-width: 90px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .particle {
+                animation: none;
+            }
+            .card:hover {
+                transform: none;
+            }
+            .btn-start:hover {
+                transform: none;
+            }
+            .stat-item:hover {
+                transform: none;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="bg-layer"></div>
+    <div class="bg-overlay"></div>
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                    <path d="M6.5 2H20v20"/>
+                    <path d="M6.5 17H15"/>
+                    <path d="M6.5 12H15"/>
+                    <path d="M6.5 7H15"/>
+                </svg>
+            </div>
+            <span class="logo-text">Lilith Novel</span>
+        </div>
+        <p class="tagline">Visual novel tương tác tiếng Việt — Câu chuyện lớp 8A, những lựa chọn định hình số phận</p>
+    </header>
+
+    <main>
+        <div class="card">
+            <div class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+            </div>
+
+            <h1>Bước vào câu chuyện</h1>
+            <p class="desc">
+                Bạn là học sinh mới chuyển đến lớp 8A. Mỗi quyết định — từ cách đối xử với Trúc Linh (bạn mới hồi hộp) đến phản ứng trước áp lực bài kiểm tra — sẽ định hình ba chỉ số cốt lõi: <strong>Đồng cảm</strong>, <strong>Nhận thức</strong> và <strong>An toàn</strong>.
+            </p>
+
+            <div class="stats-preview">
+                <div class="stat-item">
+                    <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                    <div class="stat-label">Đồng cảm</div>
+                    <div class="stat-value">empathy</div>
+                </div>
+                <div class="stat-item">
+                    <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                        <path d="M12 16v-4"/>
+                        <path d="M12 8h.01"/>
+                    </svg>
+                    <div class="stat-label">Nhận thức</div>
+                    <div class="stat-value">awareness</div>
+                </div>
+                <div class="stat-item">
+                    <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <div class="stat-label">An toàn</div>
+                    <div class="stat-value">safe</div>
+                </div>
+            </div>
+
+            <a href="index.html" class="btn-start">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                Bắt đầu chơi
+            </a>
+
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <div class="feature-title">Tự động lưu</div>
+                    <div class="feature-desc">Tiến trình được lưu liên tục</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="3" width="20" height="14" rx="2"/>
+                            <path d="M8 21h8"/>
+                            <path d="M12 17v4"/>
+                        </svg>
+                    </div>
+                    <div class="feature-title">Nhiều slot</div>
+                    <div class="feature-desc">Lưu nhiều lượt chơi khác nhau</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <div class="feature-title">Âm thanh</div>
+                    <div class="feature-desc">Nhạc nền & hiệu ứng chân thực</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Chơi ngay</a>
+            <a href="https://monogatari.io" target="_blank" rel="noopener">Monogatari Engine</a>
+            <a href="https://github.com" target="_blank" rel="noopener">Mã nguồn</a>
+        </div>
+        <p class="copyright">© 2026 Lilith Novel. Được xây dựng với Monogatari Visual Novel Engine.</p>
+    </footer>
+
+    <script>
+        (function() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 18;
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (!prefersReducedMotion) {
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = (80 + Math.random() * 20) + '%';
+                    particle.style.animationDelay = Math.random() * 8 + 's';
+                    particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+                    particle.style.width = particle.style.height = (2 + Math.random() * 3) + 'px';
+                    particle.style.opacity = 0.2 + Math.random() * 0.4;
+                    particlesContainer.appendChild(particle);
+                }
+            }
+
+            const btn = document.querySelector('.btn-start');
+            if (btn) {
+                btn.addEventListener('click', function(e) {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => this.style.transform = '', 150);
+                });
+            }
+
+            const card = document.querySelector('.card');
+            if (card && !prefersReducedMotion) {
+                card.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = (y - centerY) / 20;
+                    const rotateY = (centerX - x) / 20;
+                    this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                });
+            }
+        })();
+    </script>
+body>
 
 </body>
 </html>
