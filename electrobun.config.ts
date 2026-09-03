@@ -18,7 +18,7 @@ export default {
 			},
 		},
 		copy: {
-			"index.html": "views/mainview/index.html",
+			"game.html": "views/mainview/game.html",
 			"engine/core": "views/mainview/engine/core",
 			"engine/debug": "views/mainview/engine/debug",
 			"assets": "views/mainview/assets",

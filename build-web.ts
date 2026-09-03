@@ -17,6 +17,7 @@ const include = [
   "favicon.ico",
   "manifest.json",
   "service-worker.js",
+  "game.html",
 ];
 
 for (const entry of include) {
@@ -24,10 +25,10 @@ for (const entry of include) {
 }
 
 // Copy index.html with debug script removed
-const html = readFileSync("index.html", "utf-8");
+const html = readFileSync("game.html", "utf-8");
 const cleanedHtml = html
   .replace(/\s*<!-- Debug Library\..*?-->\s*\n/s, "\n")
   .replace(/\s*<script src="\.\/engine\/debug\/debug\.js"><\/script>\s*\n/, "\n");
-writeFileSync(join(OUT_DIR, "index.html"), cleanedHtml);
+writeFileSync(join(OUT_DIR, "game.html"), cleanedHtml);
 
 console.log(`Web build output: ${OUT_DIR}`);

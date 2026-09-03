@@ -103,7 +103,7 @@ const monogatariRPC = BrowserView.defineRPC<MonogatariRPC>({
 
 const win = new BrowserWindow({
 	title: "",
-	url: "views://mainview/index.html",
+	url: "views://mainview/game.html",
 	frame: {
 		width: 960,
 		height: 540,
