@@ -69,6 +69,8 @@ monogatari.assets ('sounds', {
 	'clap': 'clap.mp3',
 	'school': 'school.mp3',
 	'heel-walk': "heel-walk.mp3",
+	'school-bell2': 'school-bell2.mp3',
+	'book': 'book.mp3',
 });
 
 // Define the videos used in the game.
@@ -172,7 +174,7 @@ monogatari.script ({
 		'"Đứng trước cả lớp, cô gái ấy nhẹ xiết cuốn sổ tay, lấy hết dũng khí để giới thiệu"',
 		'tl Chào c-các bạn. M-mình là Trúc Linh. Mong mọi người giúp đỡ mình!',
 		'ct Từ nay về sau chúng ta là người một nhà sống hòa thuận với nhau nhé!',
-		'play sound clap with fade 2',
+		'play sound clap with',
 
 		'pl bạn ấy có vẻ hơi hồi hộp.<br>-{{player.name}} nói với Minh Anh-',
 		'ma Ùm... Nhưng mà nếu cậu chuyển đến một môi trường hoàn toàn mới thì cậu cũng hồi hộp như bạn ấy thôi.',
@@ -297,6 +299,19 @@ monogatari.script ({
 		'jump scene2',
 	],
 	'scene2': [
+		'hide scene with fadeOut',
+		'show scene school_yard with fadeIn',
+		'play school-bell2',
+		'ct Lớp ơi, chúng ta kết thúc ở đây nhé!<br>Hẹn gặp lại các em vào tiết học tiếp theo!',
+		'stop sound with fade 1',
+		'"Hành lang dần trở nên vắng vẻ, học sinh lớp 8A lần lượt rời khỏi lớp học, tiếng cười nói dần trở nên thưa thớt."',
+		'"{{player.name}} và Mai Anh đang cùng nhau đi về cầu thang thì bỗng nghe thấy giọng Tuấn vang vọng từ cầu thang lên:"',
+		'qt Ê con kia, bộ cuốn sổ đó đáng giá đến mức mày luôn phải cầm theo hả?',
+		'tl ...',
+		'tl M-mình thích vẽ...',
+		'qt Đưa tao xem nào.',
+		'"Linh do dự vài giây nhưng vẫn quyết định đưa Tuấn',
+		'play sound  book',
 		'end',
 	],
 });
