@@ -85,9 +85,10 @@ monogatari.assets ('images', {
 
 // Define the backgrounds for each scene.
 monogatari.assets ('scenes', {
-	'school_yard': 'school_yard.png',
-	'classroom': "classroom.png",
-	'cr2': 'classroom2.png',
+	'school_entrance': 'BG-01A.png',
+	'classroom': "BG-03.png",
+	'cr2': "BG-04.png",
+	'hallway': 'BG-02.png',
 });
 
 
@@ -146,7 +147,7 @@ monogatari.script ({
 		}, 
 		'play sound bell',
 		'7:05 sáng',
-		'show scene school_yard with fadeIn',
+		'show scene school_entrance with fadeIn',
 		'play sound school with fade 2 loop',
 		'"Sân trường vào đầu tuần. Học sinh từ nhiều hướng bước vào cổng. Những chiếc xe đạp lần lượt được dựng ngay ngắn trong khu vực để xe."',
 		'"Tiếng bánh xe lăn trên sân. Tiếng gọi nhau í ới. Tiếng cười nói về những câu chuyện cuối tuần."',
@@ -158,6 +159,7 @@ monogatari.script ({
 		'pl Chết rồi sắp trễ học đến nơi rồi!!',
 		'hide character pl with fadeOutRightBig',
 		'"{{player.name}} chạy vụt về phía dãy phòng học khối 8, xuyên qua dãy người đông đúc."',
+		'show scene hallway with fadeIn',
 		'"Thứ Hai luôn bắt đầu bằng rất nhiều âm thanh"',
 		'"Tiếng bạn bè kể chuyện cuối tuần"',
 		'"Tiếng bàn luận về bài kiểm tra sắp tới"',
@@ -200,6 +202,11 @@ monogatari.script ({
 			'Dialog': 'pl ...',
 			'1': {
 				'Text': 'Kệ dù sao cũng không phải việc của mình.',
+				'onChosen':function(){
+					addempathy(-5);
+					addawareness(-3);
+					monogatari.storage().choice[1] = false;
+				},
 				'Do': 'jump không_liên_quan',
 				'Condition': function(){
 					return monogatari.storage().choice[1]
@@ -245,11 +252,6 @@ monogatari.script ({
 				'Dialog': 'Bạn có muốn thử lại?',
 				'1': {
 					'Text': 'Có',
-					'onChosen':function(){
-						addempathy(-5);
-						addawareness(-3);
-						monogatari.storage().choice[1] = false;
-					},
 					'Do': 'jump choice1',
 				},
 				'2': {
@@ -299,9 +301,8 @@ monogatari.script ({
 		'jump scene2',
 	],
 	'scene2': [
-		'hide scene with fadeOut',
-		'show scene school_yard with fadeIn',
-		'play school-bell2',
+		'show scene hallway with fadeIn',
+		'play sound school-bell2',
 		'ct Lớp ơi, chúng ta kết thúc ở đây nhé!<br>Hẹn gặp lại các em vào tiết học tiếp theo!',
 		'stop sound with fade 1',
 		'"Hành lang dần trở nên vắng vẻ, học sinh lớp 8A lần lượt rời khỏi lớp học, tiếng cười nói dần trở nên thưa thớt."',
@@ -310,8 +311,57 @@ monogatari.script ({
 		'tl ...',
 		'tl M-mình thích vẽ...',
 		'qt Đưa tao xem nào.',
-		'"Linh do dự vài giây nhưng vẫn quyết định đưa Tuấn',
-		'play sound  book',
-		'end',
+		'"Linh do dự vài giây nhưng vẫn quyết định đưa Tuấn"',
+		'play sound book',
+		'qt Vãi, mày cũng vẽ được đấy chứ',
+		'mh Nhưng mà... Sao toàn vẽ mấy thứ buồn không vậy?',
+		'"Linh nhanh tay chốp lại cuốn sổ"',
+		'tl ...',
+		'jump choice2',
+	],
+	'choice2': [
+		{
+			'Choice': {
+				'Dialog': 'ma Cậu thấy sao?',
+				'1': {
+					'Text': 'Chắc mọi người chỉ đùa thôi.',
+					'onChosen':function(){
+						addempathy(-8);
+						addawareness(-5);
+					},
+					'Do': 'jump joke',
+				},
+				'2': {
+					'Text': 'Hỏi Linh thử.',
+
+				},
+				'3': {
+					'Text': 'Khuyên Tuấn.',
+
+				},
+				'4': {
+					'Text': 'Tiếp tục quan sát',
+
+				}
+			},
+		},
+	],
+	'joke':[
+		'pl Haha, đúng là kỳ lạ thật đấy!',
+		'"Linh im lặng ôm cuốn sổ trước ngực.<br>Cậu ấy lặng lẽ bước đi về."',
+		'<h5>❓Giỡn quá đà?</h5><br>Khi một người không thoải mái với một trò đùa, việc tiếp tục cười theo có thể khiến họ cảm thấy mình không được tôn trọng.<br>Cho dù câu nói đó chỉ đơn giản là đùa vui đều vẫn có thể tạo ra tác động không tích cực.',
+		{
+			'Choice': {
+				'Dialog': 'Bạn có muốn thử lại?',
+				'1': {
+					'Text': 'Có',
+					'Do': 'jump choice2',
+				},
+				'2': {
+					'Text': 'Không',
+					'Do': 'end',
+				},
+			},
+		}
 	],
 });
