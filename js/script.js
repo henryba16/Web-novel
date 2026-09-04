@@ -325,19 +325,31 @@ monogatari.script ({
 				'Dialog': 'ma Cậu thấy sao?',
 				'1': {
 					'Text': 'Chắc mọi người chỉ đùa thôi.',
+					'Condition': function(){
+						return monogatari.storage().choice[2];
+					},
 					'onChosen':function(){
 						addempathy(-8);
 						addawareness(-5);
+						monogatari.storage().choice[2]=false;
 					},
 					'Do': 'jump joke',
 				},
 				'2': {
-					'Text': 'Hỏi Linh thử.',
-
+					'Text': 'Hỏi thăm Linh.',
+					'onChosen':function(){
+						addawareness(5);
+						addempathy(8);
+					},
+					'Do': 'jump asklinh',
 				},
 				'3': {
-					'Text': 'Khuyên Tuấn.',
-
+					'Text': 'Nhắc Tuấn.',
+					'onChosen':function(){
+						addawareness(8);
+						addsafe(5);
+					},
+					'Do': 'jump telltuan',
 				},
 				'4': {
 					'Text': 'Tiếp tục quan sát',
@@ -363,5 +375,24 @@ monogatari.script ({
 				},
 			},
 		}
+	],
+	'asklinh':[
+		'pl Nào 2 người tha cho Linh đi.',
+		'qt Ý! thằng bạn trai nhỏ mày đến rồi kia, thôi bọn tao về trước đây {{player.name}}.',
+		'"Tiếng cười đùa của Tuấn và Hạnh khuất dần theo tiếng bước chân của họ."',
+		'pl Linh, cậu ổn chứ?',
+		'Ừ... M-mình ổn, m-mấy bức tranh này không phải thế đâu...',
+		'ma Ừm, mình hiểu mà, cậu không cần nói đâu.',
+		'tl ...',
+		'tl Cảm ơn cậu.',
+		'ma Cậu có muốn đi chung với bọn tớ không?',
+		'tl Đ-được chứ?',
+		'pl Vậy chúng ta ra thư viện nhé?',
+		'"Linh và cả nhóm sau đó cùng đi vào thư viện với nhau"',
+		'<h5>🤝 Biết lắng nghe!</h5><br>Bạn đã chủ động kiểm tra cảm xúc của người đang có dấu hiệu không thoải mái.<br>Lắng nghe không nhất thiết phải ép họ kể hết mọi chuyện, mà chỉ đơn giản là cho họ biết rằng họ không cần phải đối mặt với mọi thứ một mình!',
+
+	],
+	'telltuan':[
+
 	],
 });
