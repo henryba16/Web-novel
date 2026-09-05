@@ -303,7 +303,7 @@ monogatari.script ({
 	'scene2': [
 		'show scene hallway with fadeIn',
 		'play sound school-bell2',
-		'ct Lớp ơi, chúng ta kết thúc ở đây nhé!<br>Hẹn gặp lại các em vào tiết học tiếp theo!',
+		'ct Lớp ơi, chúng ta kết thúc ở đây nhé!<br>Hẹn gặp lại các em vào tiết học chiều nhé!',
 		'stop sound with fade 1',
 		'"Hành lang dần trở nên vắng vẻ, học sinh lớp 8A lần lượt rời khỏi lớp học, tiếng cười nói dần trở nên thưa thớt."',
 		'"{{player.name}} và Mai Anh đang cùng nhau đi về cầu thang thì bỗng nghe thấy giọng Tuấn vang vọng từ cầu thang lên:"',
@@ -326,7 +326,7 @@ monogatari.script ({
 				'1': {
 					'Text': 'Chắc mọi người chỉ đùa thôi.',
 					'Condition': function(){
-						return monogatari.storage().choice[2];
+						return monogatari.storage().choice[2].a;
 					},
 					'onChosen':function(){
 						addempathy(-8);
@@ -353,7 +353,11 @@ monogatari.script ({
 				},
 				'4': {
 					'Text': 'Tiếp tục quan sát',
-
+					'onChosen':function(){
+						addawareness(5);
+						addsafe(8);
+					},
+					'Do': 'jump observe',
 				}
 			},
 		},
@@ -377,9 +381,7 @@ monogatari.script ({
 		}
 	],
 	'asklinh':[
-		'pl Nào 2 người tha cho Linh đi.',
-		'qt Ý! thằng bạn trai nhỏ mày đến rồi kia, thôi bọn tao về trước đây {{player.name}}.',
-		'"Tiếng cười đùa của Tuấn và Hạnh khuất dần theo tiếng bước chân của họ."',
+		'"{{player.name}} thấy vậy liền nắm tay Linh đến nơi khác để nói chuyện."',
 		'pl Linh, cậu ổn chứ?',
 		'Ừ... M-mình ổn, m-mấy bức tranh này không phải thế đâu...',
 		'ma Ừm, mình hiểu mà, cậu không cần nói đâu.',
@@ -390,9 +392,72 @@ monogatari.script ({
 		'pl Vậy chúng ta ra thư viện nhé?',
 		'"Linh và cả nhóm sau đó cùng đi vào thư viện với nhau"',
 		'<h5>🤝 Biết lắng nghe!</h5><br>Bạn đã chủ động kiểm tra cảm xúc của người đang có dấu hiệu không thoải mái.<br>Lắng nghe không nhất thiết phải ép họ kể hết mọi chuyện, mà chỉ đơn giản là cho họ biết rằng họ không cần phải đối mặt với mọi thứ một mình!',
-
+		'jump scene2b',
+	],
+	'scene2b':[
+		'"Trên đường đi mặc dù {{player.name}} và Mai Anh trò chuyện rôm rả, nhưng Linh vẫn trầm lặng chẳng nói câu nào, chỉ chăm chú ôm chặt cuốn sổ tay nhỏ..."',
+		'pl ...<br>"Đúng là cô ấy vẽ giỏi thật, nhưng mà sao chúng lại *trù tượng* đến mức này?"',
+		'"Nhóm bạn cuối cùng cũng đến thư viện"',
+		{
+			'Choice': {
+				'Dialog': 'Giây phút bạn ngồi xuống thì bạn bỗng thấy những bức tranh kỳ lạ ấy.',
+				'1': {
+					'Text': 'Thảo luận với Mai.',
+					'Condition':function(){
+						return monogatari.storage().choice[2].b;
+					},
+					'onChosen':function(){
+						addempathy(-4);
+						addawareness(-5);
+						monogatari.storage().choice[2].b=false;
+					},
+					'Do': 'jump discussmai',
+				},
+			}
+		}
+	],
+	'discussmai':[
+		'pl nè, Mai Anh Mai Anh',
+		'pl Cậu thấy những bức tranh đó chứ? Chúng thật kì quặc!',
+		'ma Đúng đấy. Có vẻ như Trúc Linh có điều gì đó muốn tâm sự chăng?',
+		'tl ...',
+		'pl Nè Linh sao cậu im thế?',
+		'ma Thôi nào!',
+		'play sound school-bell2',
+		'"Trúc Linh lặng lẽ đi về lớp một mình."',
+		'ma Thấy chưa cậu làm Linh buồn rồi đó!!',
+		'pl Ủa tớ đã nói gì sai đâu ta?',
+		'ma Thôi vô tiết rồi kìa lo mà xin lỗi cậu ấy đi!',
+		'"Hai người cùng tiến về phía lớp học, nhưng giờ đây cả hai đã không còn nói chuyện như xưa.',
+		'<h5>💔 Gây tổn thương</h5><br>Bạn đã vô tình làm tổn thương Linh.<br>Có những sự thật không bao giờ được nói ra, nên việc bàn tán về nó chỉ tổ làm người khác tổn thương mà thôi!',
+		{
+			'Choice': {
+				'Dialog': 'Bạn có muốn thử lại?',
+				'1': {
+					'Text': 'Có',
+					'Do': 'jump scene2b',
+				},
+				'2': {
+					'Text': 'Không',
+					'Do': 'end',
+				},
+			},
+		}
 	],
 	'telltuan':[
+		'pl Nào 2 người tha cho Linh đi, mấy cậu không thấy cậu ấy đang không thích à?',
+		'qt Ý! thằng bạn trai nhỏ mày đến rồi kia, mà có gì to tát đâu. Bọn tao chỉ đùa chút thôi mà {{player.name}}.',
+		'pl Mấy cậu có thể thấy điều đó vui. Nhưng nó không có nghĩa là Linh sẽ thấy vui!',
+		'qt Kệ dù sao chọc con này cũng chẳn có gì vui, thôi bọn tao về trước đây {{player.name}}!',
+		'"Tiếng cười đùa của Tuấn và Hạnh khuất dần theo tiếng bước chân của họ."',
+		'<h5>💡 Nhận diện tốt!</h5><br>Việc nhận biết tác động của hành vi/lời nói... đối với người xung quanh là chìa khóa dẫn đến một tình bạn đẹp!<br>Một lời nói/hành vi có thể không có ý làm tổn thương người khác, nhưng chúng ta phải biết dừng lại khi nó khiến người khác không thoải mái.',
+
+	],
+	'observe':[
+		'pl ...',
+		'pl "Linh liên tục nhìn xuống cuốn sổ"<br>"Cậu ấy ôm nó sát vào người"<br>"Mọi chuyện không đơn giản đến thế..."',
+		'"Linh nhanh chóng rời khỏi hành lang."',
+		'<h5>👁️ Bạn đã nhận ra dấu hiệu!</h5><br>Quan sát là bước đầu tiên trong giải quyết vấn đề.<br>Nhưng việc nhận ra vấn đề và xỷ lý vấn đề là hai điều hoàn toàn khác nhau!<br>Nhưng bạn nên làm gì tiếp theo để  vừa đảm bảo an toàn cho bạn và mọi người nhưng vẫn có thể giúp họ?',
 
 	],
 });
