@@ -18,5 +18,9 @@ monogatari.storage ({
 	},
 	choice: {
 		1: true,
+		2: {
+			a: true,
+			b: true,
+		},
 	},
 });
