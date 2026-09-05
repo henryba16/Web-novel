@@ -413,6 +413,30 @@ monogatari.script ({
 					},
 					'Do': 'jump discussmai',
 				},
+				'2': {
+					'Text': 'Hỏi riêng Trúc Linh.',
+					'onChosen':function(){
+						addawareness(4);
+						addempathy(2)
+					},
+					'Do': 'jump asklinh2b',
+				},
+				'3': {
+					'Text': 'Thảo luận chung với nhóm.',
+					'onChosen':function(){
+						addempathy(10);
+						addawareness(12);
+					},
+					'Do': 'jump discussgrp',
+				},
+				'4': {
+					'Text': 'Tiếp tục quan sát.',
+					'onChosen':function(){
+						addsafe(3);
+						addempathy(-2);
+					},
+					'Do': 'jump observe2b',
+				}
 			}
 		}
 	],
@@ -444,6 +468,47 @@ monogatari.script ({
 			},
 		}
 	],
+	'asklinh2b':[
+		'"bạn khều nhẹ Linh."',
+		'pl Này Linh! Tớ đang thắc mắc tại sao cậu lại vẽ những bức tranh kì cục này đấy? Bộ cậu không biết vẽ à?',
+		'tl ...',
+		'play sound school-bell2',
+		'"Bạn cố hỏi thăm Linh cho đến khi"',
+		'stop sound with fade 1',
+		'"Linh lặng lẽ bước về lớp một mình..."',
+		'ma Cậu đã nói gì với Linh vậy?',
+		'pl Tớ chỉ hỏi cậu ấy về những bức tranh của Linh thôi.',
+		'ma Tớ nghĩ Linh có những điều khó nói. Thôi chúng mình vào lớp kẻo trễ.',
+		'<h5>🤐 Người thầm lặng</h5><br>Bạn đã quan tâm đến Linh nhưng cách thể hiện chưa khiến Linh có thể dũng cảm chia sẻ được...<br>Đôi khi chỉ cần cho họ biết rằng họ không phải ở một mình sẽ giúp họ có can đảm mở lòng nhiều hơn!',
+		'jump scene3',
+	],
+	'discussgrp':[
+		'pl Này, Linh! Cậu vẽ những bức tranh kỳ lạ thật đấy!',
+		'ma Tớ cũng thắc mắc thật đó. Nếu cậu cần tâm sự thì chúng tớ sẽ luôn sẵn sàng!',
+		'tl ...',
+		'tl Chúng... Từng là tất cả những kỷ niệm của tớ khi ở những trường cũ.',
+		'pl Trường cũ? Chúng như thế nào vậy?',
+		'"Khóe mi Linh bỗng không kìm được một vài giọt nước mắt mà rơi xuống...',
+		'tl Chúng-C-chúng kinh khủng v-và xấu xí... Tớ s-sợ lắm...',
+		'ma Hả, ai đã làm những gì mà khiến cậu ra nông nổi này vậy?',
+		'tl C-các bạn ấy đã đánh tớ. Mấy bạn đó muốn tớ c-chết đi...',
+		'tl T-tớ sợ lắm Mai Anh ơi...',
+		'pl Không sao đã có bọn tớ ở đây rồi! Sẽ không có ai sẽ bắt nạt cậu đâu Linh!',
+		'play sound school-bell2',
+		'"..."',
+		'"Trúc Linh vội lau nước mắt, nụ cười dần hiện trên đôi môi cô."',
+		'ma Chúng mình mau vào lớp thôi. Đi cùng tụi mình nhé Trúc Linh.',
+		'<h5>🥰 Yêu thương</h5><br>Bạn cùng Mai Anh đã giúp đỡ Linh tâm sự nỗi lòng của mình bằng sự chân thành.<br>Trong cuộc sống, sự chân thành và yêu thương là liều thuốc kỳ diệu giúp vượt qua khó khăn.<br>',
+		'jump scene3',
+	],
+	'observe2b':[
+		'"{{player.name}} nhìn Linh với vẻ mặt hoài nghi cho dù vậy Linh vẫn im lặngkhông nói nửa lời"',
+		'play school-bell2',
+		'ma Nào hai người, đùng nhìn nhau nữa, chúng ta cùng về lớp nào.',
+		'tl ...',
+		'<h5>🔇 Im lặng</h5><br>Mặc dù bạn đã nhận ra điểm bất thường từ Linh nhưng vẫn chọn tiếp tục quan sát.<br>Sự im lặng kéo dài sẽ khiến bất kỳ người nào kể cả bạn thân của bạn cũng sẽ cảm thấy khó chịu<br>Thay vào đó ta có thể  bắt đầu cuộc trò chuyện bằng một vài thứ gần gũi.',
+		'jump scene3',
+	],
 	'telltuan':[
 		'pl Nào 2 người tha cho Linh đi, mấy cậu không thấy cậu ấy đang không thích à?',
 		'qt Ý! thằng bạn trai nhỏ mày đến rồi kia, mà có gì to tát đâu. Bọn tao chỉ đùa chút thôi mà {{player.name}}.',
@@ -451,13 +516,16 @@ monogatari.script ({
 		'qt Kệ dù sao chọc con này cũng chẳn có gì vui, thôi bọn tao về trước đây {{player.name}}!',
 		'"Tiếng cười đùa của Tuấn và Hạnh khuất dần theo tiếng bước chân của họ."',
 		'<h5>💡 Nhận diện tốt!</h5><br>Việc nhận biết tác động của hành vi/lời nói... đối với người xung quanh là chìa khóa dẫn đến một tình bạn đẹp!<br>Một lời nói/hành vi có thể không có ý làm tổn thương người khác, nhưng chúng ta phải biết dừng lại khi nó khiến người khác không thoải mái.',
-
+		'jump scene3',
 	],
 	'observe':[
 		'pl ...',
 		'pl "Linh liên tục nhìn xuống cuốn sổ"<br>"Cậu ấy ôm nó sát vào người"<br>"Mọi chuyện không đơn giản đến thế..."',
 		'"Linh nhanh chóng rời khỏi hành lang."',
 		'<h5>👁️ Bạn đã nhận ra dấu hiệu!</h5><br>Quan sát là bước đầu tiên trong giải quyết vấn đề.<br>Nhưng việc nhận ra vấn đề và xỷ lý vấn đề là hai điều hoàn toàn khác nhau!<br>Nhưng bạn nên làm gì tiếp theo để  vừa đảm bảo an toàn cho bạn và mọi người nhưng vẫn có thể giúp họ?',
-
+		'jump scene3',
+	],
+	'scene3':[
+		'end',
 	],
 });
