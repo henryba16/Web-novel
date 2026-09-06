@@ -1,6 +1,7 @@
 # Vệt nắng cuối hành lang
 
 Visual novel tương tác tiếng Việt được xây dựng trên nền tảng [Monogatari](https://monogatari.io/). Trò chơi lấy bối cảnh lớp 8A, cho người chơi nhập tên và đưa ra các lựa chọn ảnh hưởng đến các chỉ số như đồng cảm, nhận thức và mức độ an toàn.
+Website:https://web-novel-rosy.vercel.app
 
 ## Tổng quan
 
