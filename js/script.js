@@ -279,7 +279,7 @@ monogatari.script ({
 		'ma Trúc Linh ơi! Nhóm tớ còn người này!',
 		'"Linh ngạc nhiên quay đầu lại nhìn"',
 		'tl T-tớ c-có thể vô nhóm cậu ư?',
-		'Được, cậu vào ngồi với tụi mình đi.',
+		'ma Được, cậu vào ngồi với tụi mình đi.',
 		'"Trúc Linh bối rối khẻ kéo ghế ngồi chung nhóm với Mai Anh."',
 		'<h5>💬Một bước còn thiếu?</h5><br>Bạn đã nhận ra Linh đang đứng một mình và muốn tìm cách giúp đỡ.<br>Nhưng có lẽ vì bạn sợ các thành viên khác không đồng ý?.<br>Hay đến cả bạn còn không biết tại sao bạn chọn.',
 		'May mắn thay, Mai Anh đã chủ động bước đến và mời Linh vào nhóm.<br>Nhưng liệu bạn có chắc rằng Mai Anh sẽ luôn đứng lên thay bạn...<br>Đôi khi, chúng ta chỉ cần thêm một chút tự tin để tự mình nói ra điều mà mình đã nghĩ.',
@@ -400,7 +400,7 @@ monogatari.script ({
 		'"Nhóm bạn cuối cùng cũng đến thư viện"',
 		{
 			'Choice': {
-				'Dialog': 'Giây phút bạn ngồi xuống thì bạn bỗng thấy những bức tranh kỳ lạ ấy.',
+				'Dialog': '"Giây phút bạn ngồi xuống thì bạn bỗng thấy những bức tranh kỳ lạ ấy."',
 				'1': {
 					'Text': 'Thảo luận với Mai.',
 					'Condition':function(){
