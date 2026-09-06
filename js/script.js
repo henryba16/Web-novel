@@ -400,7 +400,7 @@ monogatari.script ({
 		'"Nhóm bạn cuối cùng cũng đến thư viện"',
 		{
 			'Choice': {
-				'Dialog': 'Giây phút bạn ngồi xuống thì bạn bỗng thấy những bức tranh kỳ lạ ấy.',
+				'Dialog': '"Giây phút bạn ngồi xuống thì bạn bỗng thấy những bức tranh kỳ lạ ấy."',
 				'1': {
 					'Text': 'Thảo luận với Mai.',
 					'Condition':function(){
