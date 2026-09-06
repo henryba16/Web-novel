@@ -59,6 +59,7 @@
     "build:electrobun": "bunx electrobun build"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "electrobun": "^1.18.1"
   }
 }
