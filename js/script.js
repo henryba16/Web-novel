@@ -71,6 +71,8 @@ monogatari.assets ('sounds', {
 	'heel-walk': "heel-walk.mp3",
 	'school-bell2': 'school-bell2.mp3',
 	'book': 'book.mp3',
+	'noti': 'notification.mp3',
+	'noti2': 'notificationv2.mp3',
 });
 
 // Define the videos used in the game.
@@ -87,7 +89,8 @@ monogatari.assets ('images', {
 monogatari.assets ('scenes', {
 	'school_entrance': 'BG-01A.png',
 	'classroom': "BG-03.png",
-	'cr2': "BG-04.png",
+	'cr2': "BG-03C.png",
+	'desk': "BG-04.png",
 	'hallway': 'BG-02.png',
 });
 
@@ -95,7 +98,16 @@ monogatari.assets ('scenes', {
 // Define the Characters
 monogatari.characters ({
 	'bcl': {
-		name: 'Các bạn cùng lớp',
+		name: 'Bạn cùng lớp',
+		color: '#57e16e'
+	},
+	'bcl2': {
+		name: 'Bạn cùng lớp',
+		color: '#e16457',
+	},
+	'bcl3': {
+		name: 'Bạn cùng lớp',
+		color: '#6c7fd3',
 	},
 	'pl': {
 		name: '{{player.name}}',
@@ -526,6 +538,15 @@ monogatari.script ({
 		'jump scene3',
 	],
 	'scene3':[
+		'show desk with fadeIn',
+		'play sound noti',
+		'pl "?Group lớp à"',
+		'bcl2 |Có ai thấy tranh của Linh hôm nay không?|',
+		'|Một bức ảnh chụp những trang trong cuốn sổ xuất hiện.|',
+		'bcl3 |Cái hình gì đây?|',
+		'"Bắt đầu càng nhiều người bình luận sôi nổi hơn."',
+		'"Bạn nhìn danh sách thành viên và không có linh ở nhóm lớp."',
+		
 		'end',
 	],
 });
