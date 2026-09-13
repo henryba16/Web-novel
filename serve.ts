@@ -54,7 +54,9 @@ Bun.serve({
   port: PORT,
   async fetch(req) {
     const url = new URL(req.url);
-    let pathname = url.pathname === "/" ? "/index.html" : url.pathname;
+    let pathname = decodeURIComponent(
+      url.pathname === "/" ? "/index.html" : url.pathname
+    );
 
     // Upgrade WebSocket for live-reload
     if (pathname === "/__reload") {
