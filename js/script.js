@@ -796,8 +796,61 @@ monogatari.script ({
 		{
 			'choice': {
 				'Dialog': 'Màn hình điện thoại của bạn hiện lên những tin nhắn từ nhóm bạn thân của bạn.',
-				
+				'1': {
+					'Text': 'Nghe lời Mai Anh',
+					'onChosen':function(){
+						addempathy(-4);
+						addawareness(-3);
+						addsafe(-5);
+					},
+					'Do': 'jump delete',
+				},
+				'2': {
+					'Text': 'Nghe lời bạn thân',
+					'Condition': function(){
+						return monogatari.storage().choice[3];
+					},
+					'onChosen':function(){
+						addempathy(-10);
+						addawareness(-5);
+						addsafe(-12);
+						monogatari.storage().choice[3]=false;
+					},
+					'Do': 'jump friends',
+				}
 			}
 		}
-	]
+	],
+	'delete':[
+		'pl Thôi được rồi, tớ sẽ xóa tin nhắn này đi.',
+		'"Bạn xóa tin nhắn và gục đầu xuống bàn ngủ"',
+		'Ma |Linh ơi cậu đi ăn trưa với tụi tớ nhé?|',
+		'play sound noti2',
+		'tl |Tớ bận việc rồi! Tí tớ ăn sau!|',
+		'<h5>🗑️ Xóa tin nhắn</h5><br>Bạn đã chọn lan truyền hình ảnh đi<br>Dù cho bạn có thu hồi thì danh tiếng Trúc Linh cũng đã bị ảnh hưởng ít nhiều!',
+
+	],
+	'friends':[
+		'pl Có sao đâu, ai cũng muốn xem những bức tranh này mà!',
+		'"bạn chia sẻ cho các nhóm bạn thân của mình."',
+		'play sound noti',
+		'play sound noti',
+		'play sound noti',
+		'"Một nội dung ban đầu chỉ được chia sẻ trong một nhóm nhỏ, nhưng giờ đây nó đã được lan truyền rộng rãi..."',
+		'<h5>⚠️ BAD ENDING</h5><br>Nội dung trên mạng có thể được chia sẻ rất nhanh.<br>Việc tiếp tục lan truyền hoặc cổ vũ những nội dung khiến một người cảm thấy bị tổn thương có thể làm tình huống trở nên nghiêm trọng hơn.',
+		{
+			'Choice': {
+				'Dialog': 'Bạn có muốn thử lại?',
+				'1': {
+					'Text': 'Có',
+					'Do': 'jump scene3',
+				},
+				'2': {
+					'Text': 'Không',
+					'Do': 'end',
+				},
+			},
+		}
+	],
+	
 });
