@@ -24,6 +24,7 @@ const files = [
 
 	// HTML Files
 	'index.html',
+	'game.html',
 
 	// Style Sheets
 	'style/main.css',
@@ -33,6 +34,8 @@ const files = [
 	'js/storage.js',
 	'js/script.js',
 	'js/main.js',
+	'js/analytics.js',
+	'js/speed-insights.js',
 
 	// App Images
 	'favicon.ico',
@@ -50,7 +53,9 @@ const files = [
 	'assets/icons/icon_192x192.png',
 	'assets/icons/icon_310x150.png',
 	'assets/icons/icon_310x310.png',
-	'assets/icons/icon_512x512.png'
+	'assets/icons/icon_512x512.png',
+	'assets/icons/logo.png',
+	'assets/scenes/BG-01A.png'
 ];
 
 // Offline fallback, only ever returned for navigations that can't be served
