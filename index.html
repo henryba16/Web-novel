@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vệt nắng cuối hành lang — SchoolShield</title>
-    <meta name="description" content="SchoolShield là công cụ giáo dục hỗ trợ sức khỏe tinh thần học sinh THCS-THPT qua visual novel tương tác 'Vệt nắng cuối hành lang'. Thực hành nhận diện cảm xúc, đồng cảm và ứng phó lành mạnh trước các tình huống học đường.">
-    <meta property="og:title" content="Vệt nắng cuối hành lang — SchoolShield">
-    <meta property="og:description" content="Công cụ giáo dục sức khỏe tinh thần học sinh dưới dạng visual novel tương tác, mô phỏng các tình huống học đường.">
+    <title>Vệt nắng cuối hành lang — Sức khỏe tinh thần học đường</title>
+    <meta name="description" content="Visual novel tương tác giúp học sinh rèn nhận thức, đồng cảm và kỹ năng ứng phó lành mạnh.">
+    <meta name="application-name" content="SchoolShield">
+    <meta name="apple-mobile-web-app-title" content="SchoolShield">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta property="og:title" content="Vệt nắng cuối hành lang - Sức khỏe tinh thần học đường">
+    <meta property="og:description" content="SchoolShield là công cụ giáo dục hỗ trợ sức khỏe tinh thần học sinh THCS-THPT qua visual novel tương tác 'Vệt nắng cuối hành lang'. Thực hành nhận diện cảm xúc, đồng cảm và ứng phó lành mạnh trước các tình huống học đường.">
     <meta property="og:image" content="assets/scenes/BG-01A.png">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://web-novel-rosy.vercel.app">
@@ -1270,5 +1275,14 @@
         </footer>
     </div>
     <script src="js/analytics.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('./service-worker.js').catch(function () {
+                    // PWA features are optional when the page is not served securely.
+                });
+            });
+        }
+    </script>
 </body>
 </html>
