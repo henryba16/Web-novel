@@ -358,7 +358,7 @@ monogatari.script ({
 
 		'pl Cũng đúng...',
 		'show scene cr2 with fadeIn',
-		'show character ct talk at left with fadeIn',
+		'show character ct talk at left with fadeIn end-fadeOut',
 		'ct Lớp ơi hôm nay chúng ta sẽ làm hoạt động nhóm nhé!<br>Cô cần các bạn tự chọn ra nhóm của mình, mỗi nhóm gồm 3 thành viên và 1 nhóm trưởng.',
 		'bcl {{player.name}}, Mai Anh, tớ bên này nè, vô chung cho vui!',
 		'show character pl happy at center with fadeIn',
@@ -371,12 +371,12 @@ monogatari.script ({
 		'mh Ok ông.',
 		'hide character mh with fadeOut',
 		'"Sau 5 phút náo loạn thì lớp bắt đầu trật tự lại, cô Thảo nhìn một vòng quanh lớp.<br>Cô chợt nhận thấy Linh đang đứng cô đơn lẻ loi một mình."',
-		//'show character ct normal at left with end-fadeOut',
 		'show character ct think at left with fadeIn',
 		'ct Linh ơi con ra hỏi xem nhóm bạn nào còn thiếu người không nè!',
 		'show character tl shy at right with fadeIn',
 		'tl D-dạ.',
 		'show character tl shy at center with move transition 1s',
+		'hide character ct with fadeOut',
 		'"Linh dè chừng bước tới nhóm của Tuấn và hỏi:"',
 		'tl M-mình có thể vô nhóm các bạn được không?',
 		'qt Nhóm tao đủ rồi, mày sang chỗ khác đi!',
@@ -451,9 +451,6 @@ monogatari.script ({
 		}
 	],
 	'mời_linh': [
-		'hide character ct with fadeOut',
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
 		'show character pl happy at left with fadeIn',
 		'show character tl fluster at right with fadeIn',
 		'pl Linh ơi, nhóm tớ còn thiếu thành viên nè! Bạn tham gia với tụi mình nhé!',
@@ -468,9 +465,6 @@ monogatari.script ({
 
 	],
 	'hỏi_ý_kiến': [
-		'hide character ct with fadeOut',
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
 		'show character ma happy at left with fadeIn',
 		'show character tl fluster at right with fadeIn',
 		'pl Mai Anh, cậu thấy sao? Tớ không biết có nên mời cậu ấy không nữa...',
@@ -487,9 +481,6 @@ monogatari.script ({
 
 	],
 	'chờ_giáo_viên': [
-		'hide character ma with fadeOut',
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
 		'show character ct think at left with fadeIn',
 		'show character tl shy at right with fadeIn',
 		'pl ...',
@@ -575,8 +566,6 @@ monogatari.script ({
 		},
 	],
 	'joke':[
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
 		'show character pl talk at left with fadeIn',
 		'show character ma uncomfortable at right with fadeIn',
 		'show character tl shy at center with fadeIn',
@@ -601,8 +590,6 @@ monogatari.script ({
 		}
 	],
 	'asklinh':[
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
 		'"{{player.name}} thấy vậy liền đi theo Linh. {{player.name}} cùng Mai Anh theo sau cô bé rời khỏi nơi đó."',
 		'"Một lúc sau, cả ba cùng đi đến một góc khuất của hành lang, nơi có một chiếc ghế dài. Linh ngồi xuống, ôm chặt cuốn sổ tay trước ngực."',
 		'"{{player.name}} và Mai Anh đến cạnh Linh."',
@@ -626,9 +613,6 @@ monogatari.script ({
 		'jump scene2b',
 	],
 	'scene2b':[
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
-		'hide character ct with fadeOut',
 		'show character tl think at right with fadeIn',
 		'"Trên đường đi mặc dù {{player.name}} và Mai Anh trò chuyện rôm rả, nhưng Linh vẫn trầm lặng chẳng nói câu nào, chỉ chăm chú ôm chặt cuốn sổ tay nhỏ..."',
 		'pl ...<br>"Đúng là cô ấy vẽ giỏi thật, nhưng mà sao lại có bạn nói những bức tranh này kỳ lạ đến vậy?"',
@@ -676,8 +660,6 @@ monogatari.script ({
 		}
 	],
 	'discussmai':[
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
 		'show character pl talk at left with fadeIn',
 		'show character ma uncomfortable at right with fadeIn',
 		'show character tl shy at center with fadeIn',
@@ -709,10 +691,6 @@ monogatari.script ({
 		}
 	],
 	'asklinh2b':[
-		'hide character pl with fadeOut',
-		'hide character ma with fadeOut',
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
 		'show character tl fluster at center with fadeIn',
 		'"bạn khều nhẹ Linh."',
 		'pl Này Linh! Tớ đang thắc mắc tại sao cậu lại vẽ những bức tranh kỳ cục này đấy. Bộ cậu không biết vẽ à?',
@@ -728,8 +706,6 @@ monogatari.script ({
 		'jump scene3',
 	],
 	'discussgrp':[
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
 		'show character pl talk at left with fadeIn',
 		'show character ma normal at right with fadeIn',
 		'show character tl cry at center with fadeIn',
@@ -752,9 +728,6 @@ monogatari.script ({
 		'jump scene3',
 	],
 	'observe2b':[
-		'hide character pl with fadeOut',
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
 		'show character ma normal at left with fadeIn',
 		'show character tl shy at right with fadeIn',
 		'"{{player.name}} nhìn Linh với vẻ mặt hoài nghi cho dù vậy Linh vẫn im lặng không nói nửa lời."',
@@ -765,9 +738,6 @@ monogatari.script ({
 		'jump scene3',
 	],
 	'telltuan':[
-		'hide character ma with fadeOut',
-		'hide character tl with fadeOut',
-		'hide character mh with fadeOut',
 		'show character pl talk at center with fadeIn',
 		'show character qt mad at right with fadeIn',
 		'pl Nào, hai người, tha cho Linh đi. Mấy cậu không thấy cậu ấy đang không thích à?',
@@ -779,9 +749,6 @@ monogatari.script ({
 		'jump scene3',
 	],
 	'observe':[
-		'hide character ma with fadeOut',
-		'hide character qt with fadeOut',
-		'hide character mh with fadeOut',
 		'show character pl think at left with fadeIn',
 		'show character tl shy at right with fadeIn',
 		'pl ...',
@@ -791,7 +758,7 @@ monogatari.script ({
 		'jump scene3',
 	],
 	'scene3':[
-		'show desk with fadeIn',
+		'show scene desk with fadeIn',
 		'show character pl think at left with fadeIn',
 		'show character ma normal at right with fadeIn',
 		'play sound noti',
