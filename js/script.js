@@ -762,7 +762,7 @@ monogatari.script ({
 		'show character pl think at left with fadeIn',
 		'show character ma normal at right with fadeIn',
 		'play sound noti',
-		'pl "?Group lớp à"',
+		'pl "Group lớp à?"',
 		'bcl2 |Có ai thấy tranh của Linh hôm nay không?|',
 		'|Một bức ảnh chụp những trang trong cuốn sổ xuất hiện.|',
 		'bcl3 |Cái hình gì đây?|',
@@ -793,6 +793,11 @@ monogatari.script ({
 		'ma Ê tuyệt đối không được! Cậu nghĩ sao lại có thể lan truyền những tin tức này?',
 		'play sound noti',
 		'play sound noti',
-
+		{
+			'choice': {
+				'Dialog': 'Màn hình điện thoại của bạn hiện lên những tin nhắn từ nhóm bạn thân của bạn.',
+				
+			}
+		}
 	]
 });

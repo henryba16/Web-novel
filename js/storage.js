@@ -22,5 +22,7 @@ monogatari.storage ({
 			a: true,
 			b: true,
 		},
+		3: true,
+		
 	},
 });
