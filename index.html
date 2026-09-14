@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SchoolShield - Sức khỏe tinh thần học đường</title>
+    <title>Vệt nắng cuối hành lang — Sức khỏe tinh thần học đường</title>
     <meta name="description" content="Visual novel tương tác giúp học sinh rèn nhận thức, đồng cảm và kỹ năng ứng phó lành mạnh.">
     <meta name="application-name" content="SchoolShield">
     <meta name="apple-mobile-web-app-title" content="SchoolShield">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta property="og:title" content="SchoolShield - Sức khỏe tinh thần học đường">
-    <meta property="og:description" content="Visual novel tương tác giúp học sinh rèn nhận thức, đồng cảm và kỹ năng ứng phó lành mạnh.">
+    <meta property="og:title" content="Vệt nắng cuối hành lang - Sức khỏe tinh thần học đường">
+    <meta property="og:description" content="SchoolShield là công cụ giáo dục hỗ trợ sức khỏe tinh thần học sinh THCS-THPT qua visual novel tương tác 'Vệt nắng cuối hành lang'. Thực hành nhận diện cảm xúc, đồng cảm và ứng phó lành mạnh trước các tình huống học đường.">
     <meta property="og:image" content="assets/scenes/BG-01A.png">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://web-novel-rosy.vercel.app">
+    <meta property="og:locale" content="vi_VN">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Vệt nắng cuối hành lang — SchoolShield">
+    <meta name="twitter:description" content="Công cụ giáo dục sức khỏe tinh thần học sinh dưới dạng visual novel tương tác.">
     <link rel="icon" href="favicon.ico">
     <link rel="icon" sizes="192x192" href="assets/icons/icon_192x192.png">
     <link rel="apple-touch-icon" href="assets/icons/icon_180x180.png">
@@ -722,6 +727,146 @@
             line-height: 1.6;
         }
 
+        .about-section,
+        .product-section,
+        .faq-section {
+            margin-top: 1rem;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 1.5rem;
+            box-shadow: 0 14px 36px var(--shadow);
+        }
+
+        .about-section p,
+        .product-section > p {
+            color: var(--text-soft);
+            font-size: 0.92rem;
+            line-height: 1.8;
+            max-width: 72ch;
+        }
+
+        .about-sub {
+            margin-top: 1.5rem;
+        }
+
+        .about-sub h4 {
+            color: var(--ink);
+            font-size: 1rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .check-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+            gap: 0.9rem;
+            margin-top: 0.9rem;
+        }
+
+        .check-item {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+            background: var(--sage-light);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 0.9rem 1.1rem;
+        }
+
+        .check-item svg {
+            flex: 0 0 auto;
+            width: 20px;
+            height: 20px;
+            stroke: var(--sage-dark);
+            fill: none;
+            stroke-width: 2;
+            margin-top: 0.1rem;
+        }
+
+        .check-item p {
+            font-size: 0.84rem;
+            color: var(--text-soft);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .scope-note {
+            margin-top: 1.5rem;
+            background: var(--sage-light);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--sage-dark);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .scope-note h4 {
+            color: var(--ink);
+            font-size: 0.95rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .scope-note p {
+            color: var(--text-soft);
+            font-size: 0.85rem;
+            line-height: 1.75;
+            margin-bottom: 0.75rem;
+            max-width: none;
+        }
+
+        .scope-note p:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--line);
+            padding: 1rem 0;
+        }
+
+        .faq-item:first-child {
+            padding-top: 0.25rem;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0.25rem;
+        }
+
+        .faq-item summary {
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 0.95rem;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-item summary::after {
+            content: "+";
+            font-size: 1.3rem;
+            line-height: 1;
+            color: var(--sage-dark);
+            flex: 0 0 auto;
+            transition: transform 0.2s ease;
+        }
+
+        .faq-item[open] summary::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-item p {
+            margin-top: 0.75rem;
+            color: var(--text-soft);
+            font-size: 0.86rem;
+            line-height: 1.75;
+        }
+
         @media (max-width: 900px) {
             .hero-panel,
             .category-strip,
@@ -828,9 +973,13 @@
             .features {
                 grid-template-columns: 1fr;
             }
+
+            .check-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
-    <script src="./js/speed-insights.js"></script>
+    <script src="./js/speed-insights.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -843,20 +992,23 @@
             </a>
             <div class="topbar-links">
                 <a class="active" href="#story">Câu chuyện</a>
+                <a href="#about">Về SchoolShield</a>
                 <a href="#category">Nội dung</a>
                 <a href="#mechanism">Cơ chế hoạt động</a>
+                <a href="#faq">Câu hỏi thường gặp</a>
                 <a href="game.html">Chơi</a>
             </div>
         </nav>
 
         <header>
+            <span class="section-kicker">SchoolShield</span>
             <div class="logo">
                 <div class="logo-icon">
                     <img src="assets/icons/logo.png" alt="">
                 </div>
                 <h1>Vệt nắng cuối hành lang</h1>
             </div>
-            <p class="tagline">Visual novel tương tác tiếng Việt về lớp 8A, nơi mỗi lựa chọn đều để lại dấu ấn</p>
+            <p class="tagline">Công cụ giáo dục hỗ trợ sức khỏe tinh thần học sinh, mô phỏng tình huống học đường qua visual novel tương tác</p>
         </header>
 
         <main class="home-main">
@@ -918,6 +1070,47 @@
                         </div>
                     </div>
                 </aside>
+            </section>
+
+            <section class="about-section" id="about">
+                <div class="section-head">
+                    <span class="section-kicker">Giới thiệu</span>
+                    <h3>SchoolShield là gì?</h3>
+                </div>
+                <p>SchoolShield là công cụ giáo dục hỗ trợ sức khỏe tinh thần học sinh, mô phỏng các tình huống học đường dưới dạng visual novel tương tác. Sản phẩm được xây dựng trên nền tảng <a href="https://monogatari.io/" target="_blank" rel="noopener">Monogatari</a>, đặt người chơi vào các tình huống xã hội cụ thể để thực hành nhận diện cảm xúc, đồng cảm và lựa chọn cách ứng phó lành mạnh.</p>
+
+                <div class="about-sub">
+                    <h4>Bối cảnh vấn đề</h4>
+                    <p>Học sinh THCS-THPT có thể gặp lo âu, căng thẳng và suy giảm tự tin trong giai đoạn phát triển tâm sinh lý quan trọng. Nhiều em chưa được trang bị đầy đủ kỹ năng nhận diện cảm xúc của bản thân hoặc phản ứng phù hợp trước các tình huống xã hội gây tổn thương, trong đó có bắt nạt học đường. Các chương trình giáo dục sức khỏe tinh thần ở trường thường thiên về lý thuyết qua poster, buổi nói chuyện hoặc tiết sinh hoạt — SchoolShield hướng đến việc bổ sung một môi trường trải nghiệm, nơi học sinh trực tiếp đối mặt với tình huống mô phỏng và quan sát hệ quả của từng lựa chọn.</p>
+                </div>
+
+                <div class="about-sub">
+                    <h4>Mục tiêu</h4>
+                    <div class="check-grid">
+                        <div class="check-item">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            <p>Rèn khả năng nhận diện sớm các dấu hiệu tổn thương tâm lý ở bản thân và bạn bè qua tình huống tương tác.</p>
+                        </div>
+                        <div class="check-item">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            <p>Xây dựng năng lực đồng cảm bằng cách lựa chọn cách phản hồi trước cảm xúc của nhân vật khác.</p>
+                        </div>
+                        <div class="check-item">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            <p>Hình thành thói quen lựa chọn hành vi ứng phó lành mạnh khi gặp xung đột hoặc áp lực xã hội.</p>
+                        </div>
+                        <div class="check-item">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            <p>Hỗ trợ giáo viên và nhà trường bằng dữ liệu định lượng từ Research Dashboard, giúp nhận diện xu hướng chung để có phương án giáo dục phù hợp.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scope-note">
+                    <h4>Phạm vi và nguyên tắc sử dụng</h4>
+                    <p>SchoolShield là công cụ hỗ trợ giáo dục nhận thức và kỹ năng phòng ngừa, <strong>không phải công cụ đánh giá hoặc chẩn đoán lâm sàng</strong>. Các chỉ số trong game phản ánh lựa chọn trong tình huống mô phỏng, không phải kết luận về sức khỏe tinh thần hay tính cách của người chơi.</p>
+                    <p>Khi triển khai trong môi trường trường học, dữ liệu cần được sử dụng theo nguyên tắc bảo mật, tôn trọng học sinh và phục vụ mục đích giáo dục. Tình huống nhạy cảm nên đi kèm hướng dẫn kết nối tới giáo viên, cán bộ tâm lý học đường, gia đình hoặc nguồn hỗ trợ chuyên môn khi cần thiết. Research Dashboard chỉ hỗ trợ nhận diện xu hướng ở cấp độ phù hợp, không thay thế vai trò tư vấn và chẩn đoán của chuyên gia.</p>
+                </div>
             </section>
 
             <section class="category-strip" id="category">
@@ -1017,17 +1210,79 @@
                     </article>
                 </div>
             </section>
+
+            <section class="product-section" id="product">
+                <div class="section-head">
+                    <span class="section-kicker">Sản phẩm</span>
+                    <h3>Tổng quan phiên bản hiện tại</h3>
+                </div>
+                <div class="check-grid">
+                    <div class="check-item">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                        <p>Nhập tên người chơi ở đầu game, đặt trong bối cảnh học đường cùng các nhân vật bạn cùng lớp.</p>
+                    </div>
+                    <div class="check-item">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                        <p>Các nhánh lựa chọn ảnh hưởng trực tiếp tới ba chỉ số mô phỏng: đồng cảm, nhận thức và hành vi an toàn.</p>
+                    </div>
+                    <div class="check-item">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                        <p>Tiến trình được lưu bằng IndexedDB ngay trên thiết bị người chơi.</p>
+                    </div>
+                    <div class="check-item">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                        <p>Hỗ trợ chạy trên web, Electron và Electrobun.</p>
+                    </div>
+                </div>
+                <p style="margin-top: 1rem;">Research Dashboard là hướng phát triển tiếp theo, cung cấp góc nhìn định lượng cho giáo viên và nhà trường — không nên diễn giải dữ liệu này như hồ sơ sức khỏe tinh thần cá nhân.</p>
+            </section>
+
+            <section class="faq-section" id="faq">
+                <div class="section-head">
+                    <span class="section-kicker">Hỏi & đáp</span>
+                    <h3>Câu hỏi thường gặp</h3>
+                </div>
+                <details class="faq-item">
+                    <summary>SchoolShield có phải công cụ chẩn đoán tâm lý không?</summary>
+                    <p>Không. Đây là công cụ hỗ trợ giáo dục nhận thức và kỹ năng phòng ngừa. Các chỉ số trong game phản ánh lựa chọn trong tình huống mô phỏng, không phải kết luận về sức khỏe tinh thần hay tính cách của người chơi.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Tôi có thể chơi trên nền tảng nào?</summary>
+                    <p>SchoolShield hỗ trợ chạy trên web, Electron và Electrobun.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Dữ liệu chơi được lưu ở đâu?</summary>
+                    <p>Tiến trình được lưu bằng IndexedDB ngay trên thiết bị của người chơi.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Research Dashboard là gì?</summary>
+                    <p>Đây là hướng phát triển tiếp theo nhằm cung cấp góc nhìn định lượng cho giáo viên và nhà trường, giúp nhận diện xu hướng chung ở cấp độ phù hợp. Dashboard không thay thế vai trò tư vấn và chẩn đoán của chuyên gia, và không nên được diễn giải như hồ sơ sức khỏe tinh thần cá nhân.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Khi triển khai trong trường học cần lưu ý gì?</summary>
+                    <p>Dữ liệu cần được sử dụng theo nguyên tắc bảo mật, tôn trọng học sinh và phục vụ mục đích giáo dục. Với các tình huống nhạy cảm, nên có hướng dẫn kết nối học sinh tới giáo viên, cán bộ tâm lý học đường, gia đình hoặc nguồn hỗ trợ chuyên môn khi cần thiết.</p>
+                </details>
+            </section>
         </main>
 
         <footer>
             <div class="footer-links">
                 <a href="game.html">Chơi ngay</a>
+                <a href="#faq">Câu hỏi thường gặp</a>
                 <a href="https://monogatari.io" target="_blank" rel="noopener">Monogatari Engine</a>
-                <a href="https://github.com" target="_blank" rel="noopener">Mã nguồn</a>
             </div>
-            <p class="copyright">© 2026 Vệt nắng cuối hành lang. Được xây dựng với Monogatari Visual Novel Engine.</p>
+            <p class="copyright">© 2026 SchoolShield — Vệt nắng cuối hành lang. Công cụ giáo dục, không thay thế tư vấn chuyên môn. Xây dựng với Monogatari Visual Novel Engine.</p>
         </footer>
     </div>
     <script src="js/analytics.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('./service-worker.js').catch(function () {
+                    // PWA features are optional when the page is not served securely.
+                });
+            });
+        }
+    </script>
 </body>
 </html>
