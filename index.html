@@ -548,6 +548,26 @@
             background: var(--sage-dark);
         }
 
+        .pwa-help {
+            display: none;
+            margin-top: 1rem;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--sage-light);
+            color: var(--text-soft);
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+
+        .pwa-help.is-visible {
+            display: block;
+        }
+
+        .pwa-help strong {
+            color: var(--ink);
+        }
+
         .hero-scene {
             position: relative;
             min-height: 380px;
@@ -1056,7 +1076,11 @@
                         <a href="#mechanism" class="btn-ghost">
                             Cơ chế hoạt động
                         </a>
+                        <button type="button" class="btn-ghost pwa-install" id="pwa-install" hidden>
+                            Cài SchoolShield
+                        </button>
                     </div>
+                    <p class="pwa-help" id="pwa-help" role="status" aria-live="polite"></p>
                 </div>
 
                 <aside class="hero-scene">
@@ -1276,13 +1300,59 @@
     </div>
     <script src="js/analytics.js"></script>
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register('./service-worker.js').catch(function () {
-                    // PWA features are optional when the page is not served securely.
+        (function () {
+            var installButton = document.getElementById('pwa-install');
+            var installHelp = document.getElementById('pwa-help');
+            var deferredPrompt = null;
+
+            function showHelp(message) {
+                if (!installHelp) return;
+                installHelp.innerHTML = message;
+                installHelp.classList.add('is-visible');
+            }
+
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                    navigator.serviceWorker.register('./service-worker.js').catch(function () {
+                        showHelp('Không thể bật chế độ offline trong môi trường hiện tại. Hãy mở website bằng HTTPS hoặc localhost.');
+                    });
                 });
+            }
+
+            window.addEventListener('beforeinstallprompt', function (event) {
+                event.preventDefault();
+                deferredPrompt = event;
+                if (installButton) installButton.hidden = false;
             });
-        }
+
+            if (installButton) {
+                installButton.addEventListener('click', async function () {
+                    if (!deferredPrompt) return;
+                    deferredPrompt.prompt();
+                    await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                    installButton.hidden = true;
+                });
+            }
+
+            window.addEventListener('appinstalled', function () {
+                if (installButton) installButton.hidden = true;
+                showHelp('SchoolShield đã được cài đặt trên thiết bị.');
+            });
+
+            var userAgent = navigator.userAgent || '';
+            var isIos = /iphone|ipad|ipod/i.test(userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            var isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                window.navigator.standalone === true;
+            var isFirefox = /firefox/i.test(userAgent);
+
+            if (!isStandalone && isIos) {
+                showHelp('<strong>Cài trên iPhone/iPad:</strong> mở bằng Safari, chọn Chia sẻ, sau đó chọn Thêm vào Màn hình chính.');
+            } else if (!isStandalone && isFirefox) {
+                showHelp('<strong>Firefox:</strong> trình duyệt này không hỗ trợ nút cài PWA chuẩn trên máy tính. Hãy dùng Chrome/Edge để cài, hoặc dùng Safari trên iPhone/iPad.');
+            }
+        }());
     </script>
 </body>
 </html>
