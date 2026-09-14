@@ -783,7 +783,22 @@ monogatari.script ({
 					'Do': 'jump share',
 				},
 				'2': {
-
+					'Text': 'Bình luận về bức ảnh',
+					'onChosen':function(){
+						addawareness(-5);
+						addempathy(-7);
+						addsafe(-8);
+					},
+					'Do': 'jump comment',
+				},
+				'3': {
+					'Text': 'Hỏi Linh thử',
+					'onChosen':function(){
+						addawareness(8);
+						addempathy(5);
+						addsafe(3);
+					},
+					'Do': 'jump asklinh3',
 				}
 			}
 		},
@@ -852,5 +867,118 @@ monogatari.script ({
 			},
 		}
 	],
-	
+	'comment':[
+		'pl Tớ thấy rồi, khá là thú vị, để tớ bình luận về bức ảnh này!',
+		'ma Ê tuyệt đối không được! Cậu nghĩ sao lại có thể bình luận về những tin tức này?',
+		'play sound noti',
+		'play sound noti',
+		'pl Có sao đâu ai cũng bình luận cả mà!',
+		'"Bạn bình luận về anh. Một nội dung ban đầu chỉ xuất hiện trong một nhóm nhỏ bắt đầu được nhiều người biết đến."',
+		'pl |Haha, bức tranh này thật là kỳ quặc!|',
+		'pl Cậu đi ăn chứ',
+		'ma Tớ bận việc rồi! Tí tớ ăn sau!',
+		'"Khang đi đến căn tin của trường để Mai Anh ở lại một mình."',
+		'<h5>⚠️ Bình luận ác ý</h5><br>Nội dung trên mạng có thể được chia sẻ rất nhanh.<br>Việc tiếp tục lan truyền hoặc cổ vũ những nội dung khiến một người cảm thấy bị tổn thương có thể làm tình huống trở nên nghiêm trọng hơn.',
+
+	],
+	'asklinh3':[
+		'pl Này Linh! Cậu có biết mọi người đang chia sẻ ảnh tranh của cậu không?',
+		'tl Mình biết...',
+		'pl ...Cậu có muốn mình giúp gì không?',
+		'tl ...',
+		'tl Mình… không biết phải làm sao. T-tớ chỉ muốn vẽ thôi...',
+		"{player.name} Nhìn sang Mai Anh.",
+		"Mai Anh gật đầu.",
+		'<h5>🤝 Bạn đã lựa chọn hỗ trợ</h5><br>Bạn đã chủ động kiểm tra cảm xúc của người đang có dấu hiệu không thoải mái.<br>Lắng nghe không nhất thiết phải ép họ kể hết mọi chuyện, mà chỉ đơn giản là cho họ biết rằng họ không cần phải đối mặt với mọi thứ một mình!',
+		'pl Linh hãy cùng chúng mình đi tìm kiếm sự giúp đỡ."',
+		'ma Nhưng chúng ta phải hỏi ai mới được?',
+		'tl Tớ nghĩ… hay là mình bỏ đi… có được không?',
+		'ma Tớ nghĩ chúng ta nên nói chuyện lại với các bạn. Nếu vẫn còn tiếp tục, chúng mình sẽ tìm sự hỗ trợ của cô giáo.',
+		{
+			'Choice': {
+				'Dialog': 'Trong suy nghĩ của bạn lúc này rất phân vân, cậu muốn báo cáo lại với giáo viên về việc này ngay lập tức nhưng chưa biết phải làm như thế nào?',
+				'1': {
+					'Text': 'Nghe theo Trúc Linh.',
+					'onChosen':function(){
+						addawareness(-5);
+						addempathy(3);
+						addsafe(8);
+					},
+					'Do': 'jump asklinh4',
+				},
+				'2': {
+					'Text': 'Nghe theo Mai Anh.',
+					'onChosen':function(){
+						addawareness(4);
+						addempathy(10);
+						addsafe(-4);
+					},
+					'Do': 'jump gomanh',
+				},
+				'3': {
+					'Text': 'Nghe theo bản thân.',
+					'onChosen':function(){
+						addawareness(14);
+						addempathy(8);
+						addsafe(3);
+					},
+					'Do': 'jump self',
+				},
+				'4': {
+					'Text': 'Tiếp tục quan sát.',
+					'onChosen':function(){
+						addawareness(-3);
+						addempathy(-5);
+						addsafe(-2);
+					},
+					'Do': 'jump observe3',
+				},
+			}
+		}
+	],
+	'asklinh4':[
+		'pl Tớ thấy sẽ tốt hơn hết là để mọi chuyện đi theo tự nhiên. Đừng nên can thiệp quá nhiều vào vụ này vì rất có thể chúng mình sẽ bị bắt nạt!',
+		'ma Tuyệt đối không được nhân nhượng! Cậu nghĩ sao lại để cho các bạn ấy lan truyền những tin tức này?',
+		'tl Ừm… cứ để như vậy… Làm phiền các bạn nhiều rồi…',
+		'"Cuối cùng, nhờ Mai Anh đã giúp cho Trúc Linh giải thích được sự việc."',
+		'<h5>Bạn đã lựa chọn không hành động</5><br>Đôi khi, việc không hành động sẽ khiến cho người khác cảm thấy bị bỏ rơi.<br>Hãy thử tưởng tượng nếu bạn là Trúc Linh, bạn sẽ cảm thấy thế nào nếu những người bạn của mình không đứng lên bảo vệ mình?',
+
+	],
+	'gomanh':[
+		'pl Tớ thấy Mai Anh nói đúng! Chúng ta nên nói chuyện lại với các bạn.',
+		'tl Không… được.',
+		'pl Cậu hãy yên tâm. Tớ và Mai Anh sẽ giúp cậu!',
+		'tl Cảm ơn các bạn…',
+		'"Ngay lập tức, Mai Anh và Khang liền lên nhóm chat của lớp tường thuật lại mọi sự việc và yêu cầu các bạn ngừng ngay lập tức các hoạt động xấu của mình."',
+		'"Các bạn trong lớp đã nhận thức được sự việc, các thông tin về Trúc Linh đã được thu hồi và ngăn chặn. Sau đó, Khang nhắn với Trúc Linh."',
+		'pl Cậu ổn chứ? Tớ và Mai Anh đã giúp cậu thu hồi những bức tranh đó rồi.',
+		'tl Cảm ơn các bạn rất nhiều! Tớ… tớ không biết phải nói gì nữa…',
+		'ma Không có gì đâu! Chúng tớ sẽ luôn ở bên cậu mà!',
+		'<h5>🤝 Bạn đã lựa chọn hỗ trợ</h5><br>Bạn đã chủ động kiểm tra cảm xúc của người đang có dấu hiệu không thoải mái.<br>Lắng nghe không nhất thiết phải ép họ kể hết mọi chuyện, mà chỉ đơn giản là cho họ biết rằng họ không cần phải đối mặt với mọi thứ một mình!',
+		'jump scene4',
+
+	],
+	'self':[
+		'pl Tớ nghĩ tốt hơn hết là hãy báo với giáo viên chủ nhiệm!',
+		'tl Không… được.',
+		'pl Cậu hãy yên tâm. Tớ và Mai Anh sẽ giúp cậu!',
+		'tl Cảm ơn các bạn…',
+		'"Sau đó, Mai Anh và Khang tường thuật lại với cô Thảo về sự việc của Trúc Linh trên nhóm chat của lớp."',
+		'"Cô Thảo vào nhóm chat, báo cáo vấn đề của lớp và khiển trách lớp vụ việc lần này."',
+		'ct Các em không được phép bôi nhọ danh dự người khác! Hành động của các em là vi phạm pháp luật và bị nghiêm cấm! Lập tức xóa hết các nội dung về vụ việc lần này nếu không cô sẽ báo lại với nhà trường!',
+		'"Mai Anh nhìn Khang rất hài lòng và vui vẻ. Cuối cùng, mọi chuyện đã được giải quyết hoàn toàn."',
+		'<h5>Bạn đã tìm kiếm sự giúp đỡ</5><br>Việc lựa chọn hành động để ngăn chặn sự việc tiếp tục lan truyền hoặc cổ xúy đã giúp Trúc Linh an toàn.<br>Tìm kiếm sự giúp đỡ của người lớn đáng tin cậy là cách hiệu quả giúp ngăn chặn các sự việc xấu. Bạn đã nhận thức rất tốt và đưa ra quyết định đúng đắn.',
+
+	],
+	'observe3':[
+		'tl Vậy thôi nhé… Chào các cậu.',
+		'"Mai Anh liền tỏ vẻ phản đối."',
+		'ma Tuyệt đối không được nhân nhượng! Cậu nghĩ sao lại để cho các bạn ấy lan truyền những tin tức này?',
+		'pl Không sao đâu! Chào cậu.',
+		'"Linh nhanh chóng rời khỏi hành lang."',
+		'"Mai Anh rất không thích hành động của Khang và ngay lập tức lấy điện thoại của mình để nói chuyện về Trúc Linh."',
+		'"Cuối cùng, nhờ Mai Anh đã giúp cho Trúc Linh giải thích được sự việc."',
+		'<h5>👁️ Bạn đã lựa chọn không hành động</h5><br>Việc lựa chọn không hành động để cho sự việc tiếp tục lan truyền hoặc cổ xúy sẽ gây ra hậu quả rất khôn lường.<br>Bạn nên khai báo sự việc cho những người đáng tin cậy để tìm kiếm sự trợ giúp kịp thời.',
+		
+	],
 });
