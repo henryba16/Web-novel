@@ -998,6 +998,60 @@ monogatari.script ({
 		'jump scene4',
 	],
 	'scene4':[
-		'end',
+		'centered Sáng hôm sau, tại 7:10.',
+		'centered {{player.name}} bước vào lớp với tâm trạng thư thỏa.',
+		'centered Ánh nắng buổi sáng chiếu qua cửa sổ.',
+		'centered Cậu nhìn về phía chỗ ngồi hôm qua Linh từng ngồi một mình.',
+		'centered Nhưng hôm nay, Linh đang ngồi cùng Mai Anh.',
+		'centered Bạn nhìn thấy bức tranh Linh đang vẽ.',
+		'show scene desk with fadeIn',
+		'pl WOW, Cậu vẽ đẹp thật đấy!',
+		'tl Hôm nay mình muốn vẽ một lớp học mà ai cũng có chỗ.',
+		'ma Có khi một chiếc ghế trống không chỉ là một chiếc ghế.',
+		'centered Có những điều rất dễ bị bỏ qua.',
+		'centered Một bạn ngồi một mình.',
+		'centered Một bạn ngồi một mình.',
+		'centered Một câu nói được gọi là “chỉ đùa thôi”.',
+		'centered Một bức ảnh được chia sẻ mà chưa ai hỏi người trong ảnh có đồng ý hay không.',
+		'centered Những điều ấy có thể rất nhỏ nhưng cách chúng ta phản ứng với chúng có thể tạo nên một khác biệt rất lớn.',
+		'hide scene desk with fadeOut',
+		'centered Theo bạn, điều quan trọng nhất trong Chapter này là gì?',
+		{
+			'Choice': {
+				'Dialog': 'Hãy chọn một trong những điều quan trọng nhất mà bạn học được từ Chapter này.',
+				'1': {
+					'Text': 'Không trêu chọc bạn bè vì đó là một hành động xấu.',
+					'onChosen':function(){
+						addawareness(2);
+						addsafe(7);
+					},
+					'Do': 'jump end',
+				},
+				'2': {
+					'Text': 'Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.',
+					'onChosen':function(){
+						addempathy(5);
+						addawareness(3);
+					},
+					'Do': 'jump end',
+				},
+				'3': {
+					'Text': 'Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.',
+					'onChosen':function(){
+						addawareness(3);
+						addsafe(4);
+					},
+					'Do': 'jump end',
+				},
+				'4': {
+					'Text': 'Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.',
+					'onChosen':function(){
+						addsafe(7);
+					},
+					'Do': 'jump end',
+				}
+			}
+		}
 	],
+	
 });
