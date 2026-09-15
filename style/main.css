@@ -48,7 +48,7 @@ button:hover {
 
 /* Main Menu Styling */
 [data-screen="main"] {
-	background: url('https://storage.monogatari.io/demo/assets/images/monogatari-promo.svg');
+	background-image: url('../assets/icons/mainscreen.png');
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
