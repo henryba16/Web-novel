@@ -30,6 +30,16 @@ monogatari.debug.level(5);
 
 $_ready (() => {
 	// 2. Inside the $_ready function:
+	const enterFullscreenFromStart = (event) => {
+		const startButton = event.target.closest?.('button[data-action="start"]');
+		if (!startButton || document.fullscreenElement || typeof document.documentElement.requestFullscreen !== 'function') {
+			return;
+		}
+
+		document.documentElement.requestFullscreen().catch(() => {});
+	};
+
+	document.addEventListener('click', enterFullscreenFromStart, true);
 
 	monogatari.init ('#monogatari').then (() => {
 		// 3. Inside the init function:

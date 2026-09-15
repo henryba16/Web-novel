@@ -314,7 +314,7 @@ monogatari.script ({
 			}
 		}, 
 		'play sound bell',
-		'07:05 sáng.',
+		'centered 07:05 sáng.',
 		'show scene school_entrance with fadeIn',
 		'play sound school with fade 2 loop',
 		'"Sân trường vào đầu tuần. Học sinh từ nhiều hướng bước vào cổng. Những chiếc xe đạp lần lượt được dựng ngay ngắn trong khu vực để xe."',
@@ -799,6 +799,14 @@ monogatari.script ({
 						addsafe(3);
 					},
 					'Do': 'jump asklinh3',
+				},
+				'4': {
+					'Text': 'Méc cô.',
+					'onChosen':function(){
+						addawareness(8);
+						addsafe(10);
+					},
+					'Do': 'jump tellct',
 				}
 			}
 		},
@@ -843,7 +851,7 @@ monogatari.script ({
 		'play sound noti2',
 		'tl |Tớ bận việc rồi! Tí tớ ăn sau!|',
 		'<h5>🗑️ Xóa tin nhắn</h5><br>Bạn đã chọn lan truyền hình ảnh đi<br>Dù cho bạn có thu hồi thì danh tiếng Trúc Linh cũng đã bị ảnh hưởng ít nhiều!',
-
+		'jump scene4',
 	],
 	'friends':[
 		'pl Có sao đâu, ai cũng muốn xem những bức tranh này mà!',
@@ -879,7 +887,7 @@ monogatari.script ({
 		'ma Tớ bận việc rồi! Tí tớ ăn sau!',
 		'"Khang đi đến căn tin của trường để Mai Anh ở lại một mình."',
 		'<h5>⚠️ Bình luận ác ý</h5><br>Nội dung trên mạng có thể được chia sẻ rất nhanh.<br>Việc tiếp tục lan truyền hoặc cổ vũ những nội dung khiến một người cảm thấy bị tổn thương có thể làm tình huống trở nên nghiêm trọng hơn.',
-
+		'jump scene4',
 	],
 	'asklinh3':[
 		'pl Này Linh! Cậu có biết mọi người đang chia sẻ ảnh tranh của cậu không?',
@@ -942,7 +950,7 @@ monogatari.script ({
 		'tl Ừm… cứ để như vậy… Làm phiền các bạn nhiều rồi…',
 		'"Cuối cùng, nhờ Mai Anh đã giúp cho Trúc Linh giải thích được sự việc."',
 		'<h5>Bạn đã lựa chọn không hành động</5><br>Đôi khi, việc không hành động sẽ khiến cho người khác cảm thấy bị bỏ rơi.<br>Hãy thử tưởng tượng nếu bạn là Trúc Linh, bạn sẽ cảm thấy thế nào nếu những người bạn của mình không đứng lên bảo vệ mình?',
-
+		'jump scene4',
 	],
 	'gomanh':[
 		'pl Tớ thấy Mai Anh nói đúng! Chúng ta nên nói chuyện lại với các bạn.',
@@ -956,7 +964,6 @@ monogatari.script ({
 		'ma Không có gì đâu! Chúng tớ sẽ luôn ở bên cậu mà!',
 		'<h5>🤝 Bạn đã lựa chọn hỗ trợ</h5><br>Bạn đã chủ động kiểm tra cảm xúc của người đang có dấu hiệu không thoải mái.<br>Lắng nghe không nhất thiết phải ép họ kể hết mọi chuyện, mà chỉ đơn giản là cho họ biết rằng họ không cần phải đối mặt với mọi thứ một mình!',
 		'jump scene4',
-
 	],
 	'self':[
 		'pl Tớ nghĩ tốt hơn hết là hãy báo với giáo viên chủ nhiệm!',
@@ -967,8 +974,8 @@ monogatari.script ({
 		'"Cô Thảo vào nhóm chat, báo cáo vấn đề của lớp và khiển trách lớp vụ việc lần này."',
 		'ct Các em không được phép bôi nhọ danh dự người khác! Hành động của các em là vi phạm pháp luật và bị nghiêm cấm! Lập tức xóa hết các nội dung về vụ việc lần này nếu không cô sẽ báo lại với nhà trường!',
 		'"Mai Anh nhìn Khang rất hài lòng và vui vẻ. Cuối cùng, mọi chuyện đã được giải quyết hoàn toàn."',
-		'<h5>Bạn đã tìm kiếm sự giúp đỡ</5><br>Việc lựa chọn hành động để ngăn chặn sự việc tiếp tục lan truyền hoặc cổ xúy đã giúp Trúc Linh an toàn.<br>Tìm kiếm sự giúp đỡ của người lớn đáng tin cậy là cách hiệu quả giúp ngăn chặn các sự việc xấu. Bạn đã nhận thức rất tốt và đưa ra quyết định đúng đắn.',
-
+		'<h5>🛡️ Bạn đã tìm kiếm sự giúp đỡ</h5><br>Việc lựa chọn hành động để ngăn chặn sự việc tiếp tục lan truyền hoặc cổ xúy đã giúp Trúc Linh an toàn.<br>Tìm kiếm sự giúp đỡ của người lớn đáng tin cậy là cách hiệu quả giúp ngăn chặn các sự việc xấu. Bạn đã nhận thức rất tốt và đưa ra quyết định đúng đắn.',
+		'jump scene4',
 	],
 	'observe3':[
 		'tl Vậy thôi nhé… Chào các cậu.',
@@ -979,6 +986,18 @@ monogatari.script ({
 		'"Mai Anh rất không thích hành động của Khang và ngay lập tức lấy điện thoại của mình để nói chuyện về Trúc Linh."',
 		'"Cuối cùng, nhờ Mai Anh đã giúp cho Trúc Linh giải thích được sự việc."',
 		'<h5>👁️ Bạn đã lựa chọn không hành động</h5><br>Việc lựa chọn không hành động để cho sự việc tiếp tục lan truyền hoặc cổ xúy sẽ gây ra hậu quả rất khôn lường.<br>Bạn nên khai báo sự việc cho những người đáng tin cậy để tìm kiếm sự trợ giúp kịp thời.',
-		
+		'jump scene4',
+	],
+	'tellct':[
+		'pl Tớ nghĩ tốt hơn hết là hãy báo với giáo viên chủ nhiệm!',
+		'"Bạn và Mai Anh liền tường thuật lại với cô Thảo về sự việc của Trúc Linh trên nhóm chat của lớp."',
+		'"Cô thảo báo phụ huynh của các em và khiển trách lớp vụ việc lần này."',
+		'ct Các em không được phép bôi nhọ danh dự người khác! Hành động của các em là vi phạm pháp luật và bị nghiêm cấm! Lập tức xóa hết các nội dung về vụ việc lần này nếu không cô sẽ báo lại với nhà trường!',
+		'"Mai Anh nhìn Khang rất hài lòng và vui vẻ. Cuối cùng, mọi chuyện đã được giải quyết hoàn toàn."',
+		'<h5>🛡️ Biết tìm kiếm sự hỗ trợ</h5><br>Việc lựa chọn tìm kiếm sự hỗ trợ từ người lớn đáng tin cậy là cách hiệu quả để ngăn chặn các sự việc xấu.<br>Bạn đã thể hiện sự thông minh và trách nhiệm trong việc xử lý tình huống.',
+		'jump scene4',
+	],
+	'scene4':[
+		'end',
 	],
 });
