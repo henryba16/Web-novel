@@ -330,7 +330,7 @@
             stats: [
                 { key: "empathy", label: "Đồng cảm", value: 78 },
                 { key: "awareness", label: "Nhận thức", value: 65 },
-                { key: "safety", label: "An toàn", value: 82 }
+                { key: "safe", label: "An toàn", value: 82 }
             ],
             keyChoices: [
                 { scene: "Một câu nói đùa", choice: "Bạn dừng lại và hỏi han cảm xúc của bạn mình." },
@@ -411,11 +411,45 @@
             content.innerHTML = html;
         }
 
-        /* ============================================================
-           Điểm khởi chạy — thay demoEndingData bằng dữ liệu thật.
-           Ví dụ: renderEnding(window.SS_ENDING_DATA || demoEndingData);
-           ============================================================ */
-        renderEnding(window.SS_ENDING_DATA || demoEndingData);
+        function normalizeEndingData(data) {
+            if (!data || typeof data !== "object" || !Array.isArray(data.stats)) {
+                return null;
+            }
+
+            const stats = data.stats
+                .map((stat) => ({
+                    key: stat.key === "safety" ? "safe" : stat.key,
+                    label: stat.label,
+                    value: Number(stat.value)
+                }))
+                .filter((stat) => stat.label && Number.isFinite(stat.value))
+                .map((stat) => ({ ...stat, value: Math.max(0, Math.min(100, stat.value)) }));
+
+            if (stats.length !== 3 || !data.ending || typeof data.ending !== "object") {
+                return null;
+            }
+
+            return {
+                playerName: typeof data.playerName === "string" ? data.playerName : "",
+                ending: {
+                    name: typeof data.ending.name === "string" ? data.ending.name : "Người đồng hành",
+                    description: typeof data.ending.description === "string" ? data.ending.description : ""
+                },
+                stats,
+                keyChoices: Array.isArray(data.keyChoices) ? data.keyChoices : []
+            };
+        }
+
+        function getEndingData() {
+            try {
+                const storedData = sessionStorage.getItem("schoolshield-ending-data");
+                return normalizeEndingData(storedData ? JSON.parse(storedData) : null);
+            } catch (error) {
+                return null;
+            }
+        }
+
+        renderEnding(getEndingData() || demoEndingData);
     </script>
 </body>
 </html>

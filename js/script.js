@@ -9,6 +9,33 @@ function addawareness(value) {
 function addsafe(value) {
 	monogatari.storage().stats.safe += value;
 }
+
+function finishChapter(choice) {
+	const storage = monogatari.storage();
+	const endingData = {
+		playerName: storage.player.name,
+		ending: {
+			name: 'Người đồng hành',
+			description: 'Bạn đã nhìn lại những lựa chọn của mình trước các tình huống học đường và cách chúng có thể tạo ra khác biệt cho người khác.'
+		},
+		stats: [
+			{ key: 'empathy', label: 'Đồng cảm', value: storage.stats.empathy },
+			{ key: 'awareness', label: 'Nhận thức', value: storage.stats.awareness },
+			{ key: 'safe', label: 'An toàn', value: storage.stats.safe }
+		],
+		keyChoices: [
+			{ scene: 'Tổng kết chương', choice }
+		]
+	};
+
+	try {
+		sessionStorage.setItem('schoolshield-ending-data', JSON.stringify(endingData));
+	} catch (error) {
+		// The ending page keeps its fallback when browser storage is unavailable.
+	}
+
+	window.location.href = 'ending.html';
+}
  
 // Define the messages used in the game.
 monogatari.action ('message').messages ({
@@ -726,9 +753,9 @@ monogatari.script ({
 		}
 	],
 	'discussmai':[
-		'show character pl nc at left with fadeIn',
-		'show character ma kc at right with fadeIn',
-		'show character tl tti at center with fadeIn',
+		'show character pl nc at left with fadeIn end-fadeIn',
+		'show character ma sn at center with fadeIn end-fadeIn',
+		'show character tl tti at right with fadeIn end-fadeIn',
 		'pl Này Mai Anh! Mai Anh!',
 		'pl Cậu thấy những bức tranh đó chứ? Chúng thật kỳ quặc!',
 		'ma Đúng đấy. Có vẻ như Trúc Linh có điều gì đó muốn tâm sự chăng?',
@@ -1090,31 +1117,31 @@ monogatari.script ({
 					'onChosen':function(){
 						addawareness(2);
 						addsafe(7);
+						finishChapter('Không trêu chọc bạn bè vì đó là một hành động xấu.');
 					},
-					'Do': 'jump end',
 				},
 				'2': {
 					'Text': 'Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.',
 					'onChosen':function(){
 						addempathy(5);
 						addawareness(3);
+						finishChapter('Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.');
 					},
-					'Do': 'jump end',
 				},
 				'3': {
 					'Text': 'Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.',
 					'onChosen':function(){
 						addawareness(3);
 						addsafe(4);
+						finishChapter('Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.');
 					},
-					'Do': 'jump end',
 				},
 				'4': {
 					'Text': 'Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.',
 					'onChosen':function(){
 						addsafe(7);
+						finishChapter('Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.');
 					},
-					'Do': 'jump end',
 				}
 			}
 		}
