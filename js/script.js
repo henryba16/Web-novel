@@ -670,26 +670,28 @@ monogatari.script ({
 		'show character pl ttinb at center with fadeIn end-fadeOut',
 		'pl Vậy chúng ta ra thư viện nhé?',
 		'"Linh và cả nhóm sau đó cùng đi vào thư viện với nhau"',
-		'hide character tl',
-		'hide character pl',
-		'hide character ma',
 		'<h5>🤝 Biết lắng nghe!</h5><br>Bạn đã chủ động kiểm tra cảm xúc của người đang có dấu hiệu không thoải mái.<br>Lắng nghe không nhất thiết phải ép họ kể hết mọi chuyện, mà chỉ đơn giản là cho họ biết rằng họ không cần phải đối mặt với mọi thứ một mình!',
 		'jump scene2b',
 	],
 	'scene2b':[
-		'show character tl sn at right with fadeIn',
+		'show scene libraryA with fadeIn end-fadeOut',
+		'show character tl sn at right with slideInLeft',
+		'show character pl vvb at center with slideInLeft end-fadeOut',
+		'show character ma chb at left with slideInLeft end-fadeOut',
 		'"Trên đường đi mặc dù {{player.name}} và Mai Anh trò chuyện rôm rả, nhưng Linh vẫn trầm lặng chẳng nói câu nào, chỉ chăm chú ôm chặt cuốn sổ tay nhỏ..."',
+		'show character pl snb at center with fadeIn end-fadeOut',
 		'pl ...<br>"Đúng là cô ấy vẽ giỏi thật, nhưng mà sao lại có bạn nói những bức tranh này kỳ lạ đến vậy?"',
+		'show scene libraryB with fadeIn end-fadeOut',
 		'"Nhóm bạn cuối cùng cũng đến thư viện"',
 		{
 			'Choice': {
 				'Dialog': 'Giây phút bạn ngồi xuống thì bạn tình cờ nhìn thấy những bức tranh kỳ lạ ấy.',
 				'1': {
 					'Text': 'Nói chuyện với Mai.',
-					'Condition':function(){
+					'Condition':async function(){
 						return monogatari.storage().choice[2].b;
 					},
-					'onChosen':function(){
+					'onChosen':async function(){
 						addempathy(-4);
 						addawareness(-5);
 						monogatari.storage().choice[2].b=false;
@@ -698,7 +700,7 @@ monogatari.script ({
 				},
 				'2': {
 					'Text': 'Hỏi riêng Trúc Linh.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(4);
 						addempathy(2)
 					},
@@ -706,7 +708,7 @@ monogatari.script ({
 				},
 				'3': {
 					'Text': 'Nói chuyện với nhóm.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addempathy(10);
 						addawareness(12);
 					},
@@ -714,7 +716,7 @@ monogatari.script ({
 				},
 				'4': {
 					'Text': 'Tiếp tục quan sát.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addsafe(3);
 						addempathy(-2);
 					},
