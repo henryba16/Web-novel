@@ -778,6 +778,13 @@ monogatari.script ({
 						addempathy(-4);
 						addawareness(-5);
 						monogatari.storage().choice[2].b=false;
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Linh, Mai Anh, người chơi vô thư viện",
+						context: "Người chơi thấy bức tranh kỳ lạ của Linh thêm 1 lần nữa",
+						choice: "Nói xấu vơi Mai Anh",
+						});
 					},
 					'Do': 'jump discussmai',
 				},
@@ -786,6 +793,13 @@ monogatari.script ({
 					'onChosen':async function(){
 						addawareness(4);
 						addempathy(2)
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Linh, Mai Anh, người chơi vô thư viện",
+						context: "Người chơi thấy bức tranh kỳ lạ của Linh thêm 1 lần nữa",
+						choice: "Hỏi riêng Linh(nói Linh không biết vẽ)",
+						});
 					},
 					'Do': 'jump asklinh2b',
 				},
@@ -794,6 +808,13 @@ monogatari.script ({
 					'onChosen':async function(){
 						addempathy(10);
 						addawareness(12);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Linh, Mai Anh, người chơi vô thư viện",
+						context: "Người chơi thấy bức tranh kỳ lạ của Linh thêm 1 lần nữa",
+						choice: "Cùng Mai Anh hỏi thăm Linh",
+						});
 					},
 					'Do': 'jump discussgrp',
 				},
@@ -802,6 +823,13 @@ monogatari.script ({
 					'onChosen':async function(){
 						addsafe(3);
 						addempathy(-2);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Linh, Mai Anh, người chơi vô thư viện",
+						context: "Người chơi thấy bức tranh kỳ lạ của Linh thêm 1 lần nữa",
+						choice: "im lặng không nó gì(Linh thấy khó chịu và đi về)",
+						});
 					},
 					'Do': 'jump observe2b',
 				}
@@ -928,6 +956,13 @@ monogatari.script ({
 						addawareness(-3);
 						addempathy(4);
 						addsafe(-5);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Người chơi thấy ảnh của Linh trên nhóm lớp",
+						context: "Một thành viên trong lớp gửi bức vẽ lạ của Linh và nói xấu",
+						choice: "Gửi ảnh đó cho nhóm khác",
+						});
 					},
 					'Do': 'jump share',
 				},
@@ -937,6 +972,13 @@ monogatari.script ({
 						addawareness(-5);
 						addempathy(-7);
 						addsafe(-8);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Người chơi thấy ảnh của Linh trên nhóm lớp",
+						context: "Một thành viên trong lớp gửi bức vẽ lạ của Linh và nói xấu",
+						choice: "Bình luận xấu về bức ảnh",
+						});
 					},
 					'Do': 'jump comment',
 				},
