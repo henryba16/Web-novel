@@ -450,6 +450,13 @@ monogatari.script ({
 					addempathy(-5);
 					addawareness(-3);
 					monogatari.storage().choice[1] = false;
+
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Hoạt động nhóm",
+						context: "Linh không có nhóm",
+						choice: "Mặc kệ",
+					});
 				},
 				'Do': 'jump không_liên_quan',
 				'Condition':async function(){
@@ -461,6 +468,13 @@ monogatari.script ({
 				'onChosen':async function(){
 					addempathy(8);
 					addawareness(5);
+
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Hoạt động nhóm",
+						context: "Linh không có nhóm",
+						choice: "Mời Linh vào nhóm",
+					});
 				},
 				'Do': 'jump mời_linh',
 			},
@@ -469,6 +483,13 @@ monogatari.script ({
 				'onChosen':async function(){
 					addempathy(3);
 					addsafe(2);
+
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Hoạt động nhóm",
+						context: "Linh không có nhóm",
+						choice: "Hỏi Mai Anh có nên mời Linh vô nhóm",
+					});
 				},
 				'Do': 'jump hỏi_ý_kiến',
 			},
@@ -477,6 +498,13 @@ monogatari.script ({
 				'onChosen':async function(){
 					addsafe(2);
 					addawareness(1);
+
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Hoạt động nhóm",
+						context: "Linh không có nhóm",
+						choice: "Không làm gì(chờ giáo viên giải quyết)",
+					});
 				},
 				'Do': 'jump chờ_giáo_viên',
 			},
@@ -614,6 +642,13 @@ monogatari.script ({
 						addempathy(-8);
 						addawareness(-5);
 						monogatari.storage().choice[2]=false;
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Tuấn, Hạnh cười Linh sau giờ học",
+						context: "Tuấn, Hạnh thấy các bức vẽ kỳ lạ của Linh",
+						choice: "Hùa, đùa theo",
+						});
 					},
 					'Do': 'jump joke',
 				},
@@ -622,6 +657,13 @@ monogatari.script ({
 					'onChosen':async function(){
 						addawareness(5);
 						addempathy(8);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Tuấn, Hạnh cười Linh sau giờ học",
+						context: "Tuấn, Hạnh thấy các bức vẽ kỳ lạ của Linh",
+						choice: "Hỏi thăm Linh",
+						});
 					},
 					'Do': 'jump asklinh',
 				},
@@ -630,6 +672,13 @@ monogatari.script ({
 					'onChosen':async function(){
 						addawareness(8);
 						addsafe(5);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Tuấn, Hạnh cười Linh sau giờ học",
+						context: "Tuấn, Hạnh thấy các bức vẽ kỳ lạ của Linh",
+						choice: "Nhắc nhỏ tuấn",
+					});
 					},
 					'Do': 'jump telltuan',
 				},
@@ -638,6 +687,13 @@ monogatari.script ({
 					'onChosen':async function(){
 						addawareness(5);
 						addsafe(8);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Tuấn, Hạnh cười Linh sau giờ học",
+						context: "Tuấn, Hạnh thấy các bức vẽ kỳ lạ của Linh",
+						choice: "Tiếp tục quan sát để đưa lụa chọn phù hợp",
+					});
 					},
 					'Do': 'jump observe',
 				}
