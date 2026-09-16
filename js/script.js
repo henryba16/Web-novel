@@ -9,6 +9,33 @@ function addawareness(value) {
 function addsafe(value) {
 	monogatari.storage().stats.safe += value;
 }
+
+function finishChapter(choice) {
+	const storage = monogatari.storage();
+	const endingData = {
+		playerName: storage.player.name,
+		ending: {
+			name: 'Người đồng hành',
+			description: 'Bạn đã nhìn lại những lựa chọn của mình trước các tình huống học đường và cách chúng có thể tạo ra khác biệt cho người khác.'
+		},
+		stats: [
+			{ key: 'empathy', label: 'Đồng cảm', value: storage.stats.empathy },
+			{ key: 'awareness', label: 'Nhận thức', value: storage.stats.awareness },
+			{ key: 'safe', label: 'An toàn', value: storage.stats.safe }
+		],
+		keyChoices: [
+			{ scene: 'Tổng kết chương', choice }
+		]
+	};
+
+	try {
+		sessionStorage.setItem('schoolshield-ending-data', JSON.stringify(endingData));
+	} catch (error) {
+		// The ending page keeps its fallback when browser storage is unavailable.
+	}
+
+	window.location.href = 'ending.html';
+}
  
 // Define the messages used in the game.
 monogatari.action ('message').messages ({
@@ -419,37 +446,65 @@ monogatari.script ({
 			'Dialog': 'pl ...',
 			'1': {
 				'Text': 'Kệ dù sao cũng không phải việc của mình.',
-				'onChosen':function(){
+				'onChosen':async function(){
 					addempathy(-5);
 					addawareness(-3);
 					monogatari.storage().choice[1] = false;
+
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Hoạt động nhóm",
+						context: "Linh không có nhóm",
+						choice: "Mặc kệ",
+					});
 				},
 				'Do': 'jump không_liên_quan',
-				'Condition': function(){
+				'Condition':async function(){
 					return monogatari.storage().choice[1]
 				},
 			},
 			'2': {
 				'Text': 'Mời Linh vào nhóm của mình.',
-				'onChosen':function(){
+				'onChosen':async function(){
 					addempathy(8);
 					addawareness(5);
+
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Hoạt động nhóm",
+						context: "Linh không có nhóm",
+						choice: "Mời Linh vào nhóm",
+					});
 				},
 				'Do': 'jump mời_linh',
 			},
 			'3': {
 				'Text': 'Hỏi ý kiến Mai Anh cho chắc.',
-				'onChosen':function(){
+				'onChosen':async function(){
 					addempathy(3);
 					addsafe(2);
+
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Hoạt động nhóm",
+						context: "Linh không có nhóm",
+						choice: "Hỏi Mai Anh có nên mời Linh vô nhóm",
+					});
 				},
 				'Do': 'jump hỏi_ý_kiến',
 			},
 			'4': {
 				'Text': 'Chờ cô Thảo xử lý.',
-				'onChosen':function(){
+				'onChosen':async function(){
 					addsafe(2);
 					addawareness(1);
+
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Hoạt động nhóm",
+						context: "Linh không có nhóm",
+						choice: "Không làm gì(chờ giáo viên giải quyết)",
+					});
 				},
 				'Do': 'jump chờ_giáo_viên',
 			},
@@ -541,27 +596,35 @@ monogatari.script ({
 		'jump scene2',
 	],
 	'scene2': [
-		'show scene hallwayB with fadeIn',
-		'show character qt nc1 at left with fadeIn',
-		'show character tl tti at center with fadeIn',
-		'show character ma bt at right with fadeIn',
+		'show scene classroomD with fadeIn end-fadeOut',
 		'play sound school-bell2',
+		'show character ct gt2 at center with fadeIn end-fadeOut',
 		'ct Lớp ơi, chúng ta kết thúc ở đây nhé!<br>Hẹn gặp lại các em vào tiết học sau nhé!',
 		'stop sound with fade 1',
+		'hide character ct',
+		'show scene hallwayA with fadeIn end-fadeOut',
 		'"Hành lang dần trở nên đông đúc, học sinh lớp 8A lần lượt rời khỏi lớp học, tiếng cười nói dần trở nên náo nhiệt."',
 		'"{{player.name}} và Mai Anh đang cùng nhau đi về cầu thang thì bỗng nghe thấy giọng Tuấn vang vọng từ cầu thang lên:"',
+		'show scene stairwayB with fadeIn end-fadeOut',
+		'show character qt btb at left with fadeIn end-fadeOut',
 		'qt Ê con kia! Bộ cuốn sổ đó đáng giá đến mức mày luôn phải cầm theo hả?',
+		'show character tl brb at center with fadeIn end-fadeOut',
 		'tl ...',
 		'tl T-tớ thích vẽ...',
 		'qt Mày đưa đây tao xem nào.',
+		'show character tl ttib at center with fadeIn end-fadeOut',
 		'"Linh do dự vài giây nhưng vẫn quyết định đưa cho Tuấn."',
 		'play sound book',
+		'show character qt vvb at left with fadeIn end-fadeOut',
 		'qt Vãi! Mày cũng vẽ được đấy chứ.',
+		'show character tl ttib at right with slideInLeft',
+		'show character mh brb at center with fadeIn end-fadeOut',
 		'"Mỹ Hạnh cũng bước tới và nhìn vào cuốn sổ tay của Linh. Sau vài giây, cô bé cười khẩy."',
 		'mh Ủa Linh? Sao cậu toàn vẽ mấy thứ buồn không vậy?',
+		'hide character tl with fadeOutLeftBig',
+		'show character mh sn2b at center with fadeIn end-fadeOut',
+		'show character qt tg2b at left with fadeIn end-fadeOut',
 		'"Linh nhanh tay lấy lại cuốn sổ của mình. Cô ấy lặng lẽ ôm nó trước ngực và bước đi về phía cầu thang."',
-		'hide character qt with fadeOut',
-		'show character mh kc at left with fadeIn',
 		'"{{player.name}} và Mai Anh tình cờ đi ngang qua và nghe thấy những lời nói đó, cả hai đều cảm thấy có gì đó không ổn."',
 		'tl ...',
 		'jump choice2',
@@ -572,37 +635,65 @@ monogatari.script ({
 				'Dialog': 'ma Cậu thấy sao?',
 				'1': {
 					'Text': 'Chắc mọi người chỉ đùa thôi.',
-					'Condition': function(){
+					'Condition':async function(){
 						return monogatari.storage().choice[2].a;
 					},
-					'onChosen':function(){
+					'onChosen':async function(){
 						addempathy(-8);
 						addawareness(-5);
 						monogatari.storage().choice[2]=false;
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Tuấn, Hạnh cười Linh sau giờ học",
+						context: "Tuấn, Hạnh thấy các bức vẽ kỳ lạ của Linh",
+						choice: "Hùa, đùa theo",
+						});
 					},
 					'Do': 'jump joke',
 				},
 				'2': {
 					'Text': 'Đến hỏi thăm Linh.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(5);
 						addempathy(8);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Tuấn, Hạnh cười Linh sau giờ học",
+						context: "Tuấn, Hạnh thấy các bức vẽ kỳ lạ của Linh",
+						choice: "Hỏi thăm Linh",
+						});
 					},
 					'Do': 'jump asklinh',
 				},
 				'3': {
 					'Text': 'Nhắc nhở Tuấn.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(8);
 						addsafe(5);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Tuấn, Hạnh cười Linh sau giờ học",
+						context: "Tuấn, Hạnh thấy các bức vẽ kỳ lạ của Linh",
+						choice: "Nhắc nhỏ tuấn",
+					});
 					},
 					'Do': 'jump telltuan',
 				},
 				'4': {
 					'Text': 'Tiếp tục quan sát.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(5);
 						addsafe(8);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Tuấn, Hạnh cười Linh sau giờ học",
+						context: "Tuấn, Hạnh thấy các bức vẽ kỳ lạ của Linh",
+						choice: "Tiếp tục quan sát để đưa lụa chọn phù hợp",
+					});
 					},
 					'Do': 'jump observe',
 				}
@@ -610,14 +701,17 @@ monogatari.script ({
 		},
 	],
 	'joke':[
-		'show character pl nc at left with fadeIn',
-		'show character ma kc at right with fadeIn',
-		'show character tl tti at center with fadeIn',
+		'hide character mh',
+		'show character qt vvb at right with slideInLeft end-fadeOut',
+		'show character pl vvb at center with fadeIn end-fadeOut',
 		'pl Haha, đúng là kỳ lạ thật đấy!',
+		'show character ma ngb at left with fadeIn end-fadeOut',
 		'ma Tớ thấy cậu ấy có vẻ không thoải mái với trò đùa này.',
 		'pl Cơ mà sao cậu ấy chẳng nói gì cả. Chắc cậu ấy cũng biết là chúng ta chỉ đùa thôi mà.',
+		'show character qt ngb at right with fadeIn end-fadeOut',
+		'show character pl mmb at center with fadeIn end-fadeOut',
+		'show character ma brb at left with fadeIn end-fadeOut',
 		'"Mai Anh lặng lẽ nhìn Linh với vẻ mặt lo lắng, còn {{player.name}} thì vẫn tiếp tục cười theo Tuấn và Hạnh."',
-		'"Linh im lặng ôm cuốn sổ trước ngực.<br>Cậu ấy lặng lẽ bước đi."',
 		'<h5>❓Giỡn quá đà?</h5><br>Khi một người không thoải mái với một trò đùa, việc tiếp tục cười theo có thể khiến họ cảm thấy mình không được tôn trọng.<br>Cho dù câu nói đó chỉ đơn giản là đùa vui đều vẫn có thể tạo ra tác động không tích cực.',
 		{
 			'Choice': {
@@ -634,13 +728,17 @@ monogatari.script ({
 		}
 	],
 	'asklinh':[
+		'show character pl btb at right',
+		'hide character pl with fadeOutLeftBig',
 		'"{{player.name}} thấy vậy liền đi theo Linh. {{player.name}} cùng Mai Anh theo sau cô bé rời khỏi nơi đó."',
+		'show scene hallwayA with fadeIn end-fadeOut',
 		'"Một lúc sau, cả ba cùng đi đến một góc khuất của hành lang, nơi có một chiếc ghế dài. Linh ngồi xuống, ôm chặt cuốn sổ tay trước ngực."',
 		'"{{player.name}} và Mai Anh đến cạnh Linh."',
-		'show character pl bt at left with fadeIn',
-		'show character tl kl at center with fadeIn',
+		'show character pl btb at center with fadeIn end-fadeOut',
+		'show character tl ttib at left with fadeIn end-fadeOut',
 		'pl Chào Linh, tớ là {{player.name}}. Cậu có ổn không?',
 		'tl ...',
+		'show character ma nc2b at right with fadeIn end-fadeOut',
 		'ma Còn tớ là Mai Anh, cậu ổn chứ?',
 		'tl ...',
 		'tl T-tớ không sao.',
@@ -650,26 +748,33 @@ monogatari.script ({
 		'tl ...',
 		'tl Ừm... T-tớ chỉ muốn vẽ thôi...',
 		'ma Cậu có muốn đi chung với bọn tớ không?',
+		'show character tl qsb at left with fadeIn end-fadeOut',
 		'tl Đ-được chứ?',
+		'show character pl ttinb at center with fadeIn end-fadeOut',
 		'pl Vậy chúng ta ra thư viện nhé?',
 		'"Linh và cả nhóm sau đó cùng đi vào thư viện với nhau"',
 		'<h5>🤝 Biết lắng nghe!</h5><br>Bạn đã chủ động kiểm tra cảm xúc của người đang có dấu hiệu không thoải mái.<br>Lắng nghe không nhất thiết phải ép họ kể hết mọi chuyện, mà chỉ đơn giản là cho họ biết rằng họ không cần phải đối mặt với mọi thứ một mình!',
 		'jump scene2b',
 	],
 	'scene2b':[
-		'show character tl sn at right with fadeIn',
+		'show scene libraryA with fadeIn end-fadeOut',
+		'show character tl sn at right with slideInLeft',
+		'show character pl vvb at center with slideInLeft end-fadeOut',
+		'show character ma chb at left with slideInLeft end-fadeOut',
 		'"Trên đường đi mặc dù {{player.name}} và Mai Anh trò chuyện rôm rả, nhưng Linh vẫn trầm lặng chẳng nói câu nào, chỉ chăm chú ôm chặt cuốn sổ tay nhỏ..."',
+		'show character pl snb at center with fadeIn end-fadeOut',
 		'pl ...<br>"Đúng là cô ấy vẽ giỏi thật, nhưng mà sao lại có bạn nói những bức tranh này kỳ lạ đến vậy?"',
+		'show scene libraryB with fadeIn end-fadeOut',
 		'"Nhóm bạn cuối cùng cũng đến thư viện"',
 		{
 			'Choice': {
 				'Dialog': 'Giây phút bạn ngồi xuống thì bạn tình cờ nhìn thấy những bức tranh kỳ lạ ấy.',
 				'1': {
 					'Text': 'Nói chuyện với Mai.',
-					'Condition':function(){
+					'Condition':async function(){
 						return monogatari.storage().choice[2].b;
 					},
-					'onChosen':function(){
+					'onChosen':async function(){
 						addempathy(-4);
 						addawareness(-5);
 						monogatari.storage().choice[2].b=false;
@@ -678,7 +783,7 @@ monogatari.script ({
 				},
 				'2': {
 					'Text': 'Hỏi riêng Trúc Linh.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(4);
 						addempathy(2)
 					},
@@ -686,7 +791,7 @@ monogatari.script ({
 				},
 				'3': {
 					'Text': 'Nói chuyện với nhóm.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addempathy(10);
 						addawareness(12);
 					},
@@ -694,7 +799,7 @@ monogatari.script ({
 				},
 				'4': {
 					'Text': 'Tiếp tục quan sát.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addsafe(3);
 						addempathy(-2);
 					},
@@ -704,9 +809,9 @@ monogatari.script ({
 		}
 	],
 	'discussmai':[
-		'show character pl nc at left with fadeIn',
-		'show character ma kc at right with fadeIn',
-		'show character tl tti at center with fadeIn',
+		'show character pl nc at left with fadeIn end-fadeIn',
+		'show character ma sn at center with fadeIn end-fadeIn',
+		'show character tl tti at right with fadeIn end-fadeIn',
 		'pl Này Mai Anh! Mai Anh!',
 		'pl Cậu thấy những bức tranh đó chứ? Chúng thật kỳ quặc!',
 		'ma Đúng đấy. Có vẻ như Trúc Linh có điều gì đó muốn tâm sự chăng?',
@@ -1068,31 +1173,31 @@ monogatari.script ({
 					'onChosen':function(){
 						addawareness(2);
 						addsafe(7);
+						finishChapter('Không trêu chọc bạn bè vì đó là một hành động xấu.');
 					},
-					'Do': 'jump end',
 				},
 				'2': {
 					'Text': 'Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.',
 					'onChosen':function(){
 						addempathy(5);
 						addawareness(3);
+						finishChapter('Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.');
 					},
-					'Do': 'jump end',
 				},
 				'3': {
 					'Text': 'Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.',
 					'onChosen':function(){
 						addawareness(3);
 						addsafe(4);
+						finishChapter('Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.');
 					},
-					'Do': 'jump end',
 				},
 				'4': {
 					'Text': 'Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.',
 					'onChosen':function(){
 						addsafe(7);
+						finishChapter('Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.');
 					},
-					'Do': 'jump end',
 				}
 			}
 		}

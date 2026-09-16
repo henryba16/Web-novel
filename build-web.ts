@@ -14,11 +14,11 @@ const include = [
   "engine/LICENSE",
   "js",
   "style",
-  "favicon.ico",
   "manifest.json",
   "service-worker.js",
   "index.html",
   "game.html",
+  "ending.html",
 ];
 
 for (const entry of include) {
