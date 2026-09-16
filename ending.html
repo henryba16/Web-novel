@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kết thúc chương — Vệt nắng cuối hành lang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --page-bg: #f7f0e8;
+        --paper: #fffaf3;
+        --ink: #2d2d2d;
+        --muted: #706d63;
+        --text-soft: #655f56;
+        --line: #d6baa1;
+        --sage: #909f8f;
+        --sage-dark: #596c58;
+        --sage-light: #eef1e8;
+        --brown: #7b604a;
+        --shadow: rgba(45, 30, 25, 0.14);
+        --serif: "Noto Serif", "Noto Serif JP", Georgia, "Times New Roman", serif;
+    }
+
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+    body {
+        margin: 0;
+        font-family: var(--serif);
+        color: var(--ink);
+        min-height: 100vh;
+        line-height: 1.7;
+        background:
+            radial-gradient(circle at 65% 10%, rgba(234, 222, 198, 0.9), transparent 22%),
+            radial-gradient(circle at 32% 95%, rgba(180, 170, 143, 0.12), transparent 25%),
+            linear-gradient(135deg, var(--page-bg), #efe7db);
+    }
+
+    .container {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 4rem;
+    }
+
+    .fade-in {
+        opacity: 0;
+        transform: translateY(10px);
+        animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 2.25rem;
+    }
+
+    .kicker {
+        display: inline-block;
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--sage-dark);
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    header h1 {
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        margin: 0 0 0.5rem;
+        color: var(--ink);
+    }
+
+    .player-line {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin: 0;
+    }
+
+    header::after {
+        content: "";
+        display: block;
+        width: min(160px, 28vw);
+        height: 2px;
+        background: var(--brown);
+        margin: 1.5rem auto 0;
+        opacity: 0.85;
+    }
+
+    .card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 1.6rem 1.75rem;
+        box-shadow: 0 14px 36px var(--shadow);
+        margin-bottom: 1.5rem;
+    }
+
+    .card > .section-head {
+        margin-bottom: 1rem;
+    }
+
+    .section-kicker {
+        display: block;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--sage-dark);
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+    }
+
+    .card h2 {
+        font-size: 1.1rem;
+        margin: 0;
+        color: var(--ink);
+    }
+
+    #ending-desc {
+        color: var(--text-soft);
+        font-size: 0.95rem;
+    }
+
+    .stat-row {
+        margin-bottom: 1.1rem;
+    }
+
+    .stat-row:last-child { margin-bottom: 0; }
+
+    .stat-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 0.4rem;
+        font-size: 0.88rem;
+    }
+
+    .stat-name { font-weight: 700; color: var(--ink); }
+    .stat-tag { color: var(--sage-dark); font-size: 0.78rem; }
+    .stat-value { color: var(--muted); font-size: 0.82rem; }
+
+    .stat-track {
+        height: 10px;
+        border-radius: 999px;
+        background: var(--sage-light);
+        border: 1px solid var(--line);
+        overflow: hidden;
+    }
+
+    .stat-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--sage), var(--sage-dark));
+        transition: width 1s ease 0.2s;
+    }
+
+    .choice-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .choice-list li {
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 0.86rem;
+    }
+
+    .choice-list li:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .choice-scene {
+        color: var(--muted);
+        font-size: 0.78rem;
+        display: block;
+        margin-bottom: 0.2rem;
+    }
+
+    .choice-made { color: var(--text-soft); }
+
+    /* Khu vực dành cho phân tích AI — tự tích hợp API ở đây */
+    .ai-placeholder {
+        color: var(--text-soft);
+        font-size: 0.88rem;
+    }
+
+    .ai-loading {
+        display: none;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+    }
+
+    .ai-loading.active { display: flex; }
+
+    .spinner {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid var(--line);
+        border-top-color: var(--sage-dark);
+        animation: spin 0.8s linear infinite;
+        flex: 0 0 auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.75rem 1.4rem;
+        border-radius: 999px;
+        font-family: var(--serif);
+        font-size: 0.88rem;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+        background: var(--sage-dark);
+        color: #fff;
+        border-color: var(--sage-dark);
+        box-shadow: 0 10px 22px rgba(89, 108, 88, 0.28);
+    }
+
+    .btn-ghost {
+        background: transparent;
+        color: var(--ink);
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 2.5rem;
+        font-size: 0.75rem;
+        color: var(--muted);
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <header class="fade-in">
+            <span class="kicker">Kết thúc chương</span>
+            <h1 id="ending-title">Đang tải kết quả…</h1>
+            <p class="player-line" id="player-line"></p>
+        </header>
+
+        <section class="card fade-in" style="animation-delay:0.05s">
+            <div class="section-head">
+                <span class="section-kicker">Câu chuyện của bạn</span>
+                <h2 id="ending-name">—</h2>
+            </div>
+            <p id="ending-desc">—</p>
+        </section>
+
+        <section class="card fade-in" style="animation-delay:0.1s" id="stats-card">
+            <div class="section-head">
+                <span class="section-kicker">Tổng kết</span>
+                <h2>Ba chỉ số hành trình</h2>
+            </div>
+            <div id="stats-list"></div>
+        </section>
+
+        <section class="card fade-in" style="animation-delay:0.15s" id="choices-card">
+            <div class="section-head">
+                <span class="section-kicker">Nhìn lại</span>
+                <h2>Những lựa chọn đáng nhớ</h2>
+            </div>
+            <ul class="choice-list" id="choice-list"></ul>
+        </section>
+
+        <!--
+            ================================================================
+            KHU VỰC PHÂN TÍCH AI — chỗ này để bạn tự tích hợp API sau.
+            - Gọi showAILoading() khi bắt đầu gửi request tới AI của bạn.
+            - Khi có kết quả, gọi setAIAnalysis(htmlString) để hiển thị.
+            - Container nội dung: #ai-analysis-content
+            ================================================================
+        -->
+        <section class="card fade-in" style="animation-delay:0.2s" id="ai-section">
+            <div class="section-head">
+                <span class="section-kicker">Phân tích thêm</span>
+                <h2>AI nhận xét về lối chơi của bạn</h2>
+            </div>
+            <div class="ai-loading" id="ai-loading">
+                <span class="spinner"></span>
+                <span>Đang phân tích lối chơi…</span>
+            </div>
+            <div class="ai-placeholder" id="ai-analysis-content">
+                <p>Phần này sẽ hiển thị nhận xét từ AI về cách bạn phản ứng trước từng tình huống, dựa trên các lựa chọn và chỉ số ở trên.</p>
+            </div>
+        </section>
+
+        <div class="actions fade-in" style="animation-delay:0.25s">
+            <a class="btn btn-primary" href="game.html">Chơi lại</a>
+            <a class="btn btn-ghost" href="index.html">Về trang chủ</a>
+        </div>
+
+        <footer>SchoolShield — Vệt nắng cuối hành lang</footer>
+    </div>
+
+    <script>
+        /* ============================================================
+           DỮ LIỆU MẪU (demo) — thay bằng dữ liệu thật lấy từ save game
+           (IndexedDB / state của Monogatari) trước khi gọi renderEnding().
+           ============================================================ */
+        const demoEndingData = {
+            playerName: "Người chơi",
+            ending: {
+                name: "Người đồng hành",
+                description: "Bạn đã chọn ở lại bên cạnh bạn mình trong những lúc khó khăn nhất, dù điều đó không phải lúc nào cũng dễ dàng."
+            },
+            stats: [
+                { key: "empathy", label: "Đồng cảm", value: 78 },
+                { key: "awareness", label: "Nhận thức", value: 65 },
+                { key: "safety", label: "An toàn", value: 82 }
+            ],
+            keyChoices: [
+                { scene: "Một câu nói đùa", choice: "Bạn dừng lại và hỏi han cảm xúc của bạn mình." },
+                { scene: "Chiếc ghế trống", choice: "Bạn chủ động mời bạn mới ngồi cùng." },
+                { scene: "Tin nhắn lúc 10 giờ tối", choice: "Bạn không lan truyền và tìm người lớn để hỏi ý kiến." }
+            ]
+        };
+
+        // Ngưỡng diễn giải cho từng chỉ số — chỉnh lại nếu cần
+        function statTag(value) {
+            if (value >= 75) return "Cao";
+            if (value >= 45) return "Trung bình";
+            return "Cần chú ý thêm";
+        }
+
+        function renderEnding(data) {
+            document.getElementById("ending-title").textContent = "Câu chuyện đã khép lại";
+            document.getElementById("player-line").textContent = data.playerName
+                ? `Hành trình của ${data.playerName}`
+                : "";
+
+            document.getElementById("ending-name").textContent = data.ending.name;
+            document.getElementById("ending-desc").textContent = data.ending.description;
+
+            const statsList = document.getElementById("stats-list");
+            statsList.innerHTML = "";
+            data.stats.forEach((stat) => {
+                const row = document.createElement("div");
+                row.className = "stat-row";
+                row.innerHTML = `
+                    <div class="stat-top">
+                        <span class="stat-name">${stat.label}</span>
+                        <span class="stat-tag">${statTag(stat.value)}</span>
+                        <span class="stat-value">${stat.value}/100</span>
+                    </div>
+                    <div class="stat-track">
+                        <div class="stat-fill" data-target="${stat.value}"></div>
+                    </div>
+                `;
+                statsList.appendChild(row);
+            });
+
+            // Kích hoạt animation lấp đầy thanh chỉ số
+            requestAnimationFrame(() => {
+                document.querySelectorAll(".stat-fill").forEach((el) => {
+                    el.style.width = el.dataset.target + "%";
+                });
+            });
+
+            const choiceList = document.getElementById("choice-list");
+            choiceList.innerHTML = "";
+            if (!data.keyChoices || data.keyChoices.length === 0) {
+                document.getElementById("choices-card").style.display = "none";
+            } else {
+                data.keyChoices.forEach((item) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        <span class="choice-scene">${item.scene}</span>
+                        <span class="choice-made">${item.choice}</span>
+                    `;
+                    choiceList.appendChild(li);
+                });
+            }
+        }
+
+        /* ============================================================
+           HÀM DÙNG CHO PHẦN TÍCH HỢP AI (bạn tự gọi ở code của bạn)
+           ============================================================ */
+        function showAILoading() {
+            document.getElementById("ai-loading").classList.add("active");
+            document.getElementById("ai-analysis-content").style.display = "none";
+        }
+
+        function setAIAnalysis(html) {
+            document.getElementById("ai-loading").classList.remove("active");
+            const content = document.getElementById("ai-analysis-content");
+            content.style.display = "block";
+            content.innerHTML = html;
+        }
+
+        /* ============================================================
+           Điểm khởi chạy — thay demoEndingData bằng dữ liệu thật.
+           Ví dụ: renderEnding(window.SS_ENDING_DATA || demoEndingData);
+           ============================================================ */
+        renderEnding(window.SS_ENDING_DATA || demoEndingData);
+    </script>
+</body>
+</html>
