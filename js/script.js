@@ -87,11 +87,30 @@ monogatari.assets ('images', {
 
 // Define the backgrounds for each scene.
 monogatari.assets ('scenes', {
-	'school_entrance': 'BG-01A.png',
-	'classroom': "BG-03B.png",
-	'cr2': "BG-03C.png",
-	'desk': "BG-04.png",
-	'hallway': 'BG-02B.png',
+	'entranceA': 'BG-01A.png',
+	'entranceB': 'BG-01B.png',
+	'entranceC': 'BG-01C.png',
+	'entranceD': 'BG-01D.png',
+	'hallwayA': 'BG-02A.png',
+	'hallwayB': 'BG-02B.png',
+	'classroomA': 'BG-03A.png',
+	'classroomB': 'BG-03B.png',
+	'classroomC': 'BG-03C.png',
+	'classroomD': 'BG-03D.png',
+	'desk': 'BG-04.png',
+	'yardA': 'BG-05A.png',
+	'yardB': 'BG-05B.png',
+	'yardC': 'BG-05C.png',
+	'catinA': 'BG-06A.png',
+	'catinB': 'BG-06B.png',
+	'libraryA': 'BG-07A.png',
+	'libraryB': 'BG-07B.png',
+	'officeA': 'BG-08A.png',
+	'officeB': 'BG-08B.png',
+	'stairwayA': 'BG-09A.png',
+	'stairwayB': 'BG-09B.png',
+	'medic': 'BG-10.png',
+	'waitroom': 'BG-11.png'
 });
 
 
@@ -314,7 +333,7 @@ monogatari.script ({
 		}, 
 		'play sound bell',
 		'centered 07:05 sáng.',
-		'show scene school_entrance with fadeIn',
+		'show scene entranceA with fadeIn',
 		'play sound school with fade 2 loop',
 		'"Sân trường vào đầu tuần. Học sinh từ nhiều hướng bước vào cổng. Những chiếc xe đạp lần lượt được dựng ngay ngắn trong khu vực để xe."',
 		'"Tiếng bánh xe lăn trên sân. Tiếng gọi nhau í ới. Tiếng cười nói về những câu chuyện cuối tuần."',
@@ -325,8 +344,9 @@ monogatari.script ({
 		'"..."',
 		'pl Chết rồi sắp trễ học đến nơi rồi!',
 		'hide character pl with fadeOutRightBig',
+
 		'"{{player.name}} chạy vụt về phía dãy phòng học khối 8, xuyên qua dãy người đông đúc."',
-		'show scene hallway with fadeIn',
+		'show scene hallwayB with fadeIn',
 		'"Thứ Hai luôn bắt đầu bằng rất nhiều âm thanh."',
 		'"Tiếng bạn bè kể chuyện cuối tuần."',
 		'"Tiếng bàn luận về bài kiểm tra sắp tới."',
@@ -335,7 +355,7 @@ monogatari.script ({
 		'"Nhưng từ hôm nay, lớp 8A sẽ đón thêm một thành viên mới."',
 
 		'play sound heel-walk',
-		'show scene classroom with fadeIn',
+		'show scene classroomB with fadeIn',
 		'"Tiếng bước chân vang vọng ngoài lớp học, học sinh dù có đang làm gì đều bỏ dở việc đang làm mà ngoan ngoãn quay về chỗ ngồi của họ."',
 		'stop sound with fade 1',
 		'show character ct bt at left with fadeIn',
@@ -347,8 +367,8 @@ monogatari.script ({
 		'ct Từ nay về sau chúng ta là người một nhà sống hòa thuận với nhau nhé!',
 		'hide character tl with fadeOut',
 		'hide character ct with fadeOut',
-		'play sound clap with',
-
+		
+		'play sound clap',
 		'show character pl bt at center with fadeIn',
 		'pl Bạn ấy có vẻ hơi hồi hộp.<br>-{{player.name}} nói với Mai Anh-',
 		'hide character pl with fadeOut',
@@ -357,7 +377,7 @@ monogatari.script ({
 		'ma Ừ... Nhưng mà nếu cậu chuyển đến một môi trường hoàn toàn mới thì cậu cũng hồi hộp như bạn ấy thôi.',
 
 		'pl Cũng đúng...',
-		'show scene cr2 with fadeIn',
+		'show scene classroomC with fadeIn',
 		'show character ct nc at left with fadeIn end-fadeOut',
 		'ct Lớp ơi hôm nay chúng ta sẽ làm hoạt động nhóm nhé!<br>Cô cần các bạn tự chọn ra nhóm của mình, mỗi nhóm gồm 3 thành viên và 1 nhóm trưởng.',
 		'bcl {{player.name}}, Mai Anh, tớ bên này nè, vô chung cho vui!',
@@ -380,10 +400,16 @@ monogatari.script ({
 		'hide character ct with fadeOut',
 		'"Linh dè chừng bước tới nhóm của Tuấn và hỏi:"',
 		'tl M-mình có thể vô nhóm các bạn được không?',
+		'show character qt nc2 at right with fadeIn',
 		'qt Nhóm tao đủ rồi, mày sang chỗ khác đi!',
 		'"Linh buồn bã nhìn về phía nhóm của bạn cùng lớp, nhưng chẳng có ai lên tiếng."',
+		'hide character qt with fadeOut',
+		'show character mh tg at right with fadeIn',
 		'mh Ừ đủ rồi cậu tìm chỗ khác đi',
 		'tl Ừm... tớ sẽ tìm nhóm khác.',
+		'hide character mh with fadeOut',
+		'hide character tl with fadeOut',
+		'show character tl tti at left with slideInRight',
 		'"Linh lủi thủi trở về chỗ ngồi của cô ấy"',
 		'jump choice1',
 	],
@@ -429,6 +455,7 @@ monogatari.script ({
 		}
 	}],
 	'không_liên_quan': [
+		
 		'pl Tiếp tục làm bài nào các bạn!',
 		'"Mọi chuyện vẫn tiếp tục"',
 		'"Một lúc sau, cô Thảo đành sắp xếp cho Linh tham gia vào một nhóm khác."',
@@ -498,7 +525,7 @@ monogatari.script ({
 		'jump scene2',
 	],
 	'scene2': [
-		'show scene hallway with fadeIn',
+		'show scene hallwayB with fadeIn',
 		'show character qt nc1 at left with fadeIn',
 		'show character tl tti at center with fadeIn',
 		'show character ma bt at right with fadeIn',

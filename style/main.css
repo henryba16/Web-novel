@@ -122,7 +122,12 @@ button:hover {
 
 /* Character Images Styles */
 [data-screen="game"] [data-character] {
-
+	--character-scale: 1;
+	width: auto;
+	height: auto;
+	max-height: none;
+	max-width: none;
+	zoom: var(--character-scale);
 }
 
 /* Other Images Styles */
@@ -194,6 +199,12 @@ input[type=range]::-ms-fill-upper {
 }
 
 /** Medium Screens, Phablets (601px) **/
+@media screen and (max-width: 37.5625em) {
+	[data-screen="game"] [data-character] {
+		--character-scale: 1.5;
+	}
+}
+
 @media screen and (min-width: 37.56255em) {
 	/* Styles for the desktop version of the Quick Menu */
 
