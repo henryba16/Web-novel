@@ -419,19 +419,19 @@ monogatari.script ({
 			'Dialog': 'pl ...',
 			'1': {
 				'Text': 'Kệ dù sao cũng không phải việc của mình.',
-				'onChosen':function(){
+				'onChosen':async function(){
 					addempathy(-5);
 					addawareness(-3);
 					monogatari.storage().choice[1] = false;
 				},
 				'Do': 'jump không_liên_quan',
-				'Condition': function(){
+				'Condition':async function(){
 					return monogatari.storage().choice[1]
 				},
 			},
 			'2': {
 				'Text': 'Mời Linh vào nhóm của mình.',
-				'onChosen':function(){
+				'onChosen':async function(){
 					addempathy(8);
 					addawareness(5);
 				},
@@ -439,7 +439,7 @@ monogatari.script ({
 			},
 			'3': {
 				'Text': 'Hỏi ý kiến Mai Anh cho chắc.',
-				'onChosen':function(){
+				'onChosen':async function(){
 					addempathy(3);
 					addsafe(2);
 				},
@@ -447,7 +447,7 @@ monogatari.script ({
 			},
 			'4': {
 				'Text': 'Chờ cô Thảo xử lý.',
-				'onChosen':function(){
+				'onChosen':async function(){
 					addsafe(2);
 					addawareness(1);
 				},
@@ -580,10 +580,10 @@ monogatari.script ({
 				'Dialog': 'ma Cậu thấy sao?',
 				'1': {
 					'Text': 'Chắc mọi người chỉ đùa thôi.',
-					'Condition': function(){
+					'Condition':async function(){
 						return monogatari.storage().choice[2].a;
 					},
-					'onChosen':function(){
+					'onChosen':async function(){
 						addempathy(-8);
 						addawareness(-5);
 						monogatari.storage().choice[2]=false;
@@ -592,7 +592,7 @@ monogatari.script ({
 				},
 				'2': {
 					'Text': 'Đến hỏi thăm Linh.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(5);
 						addempathy(8);
 					},
@@ -600,7 +600,7 @@ monogatari.script ({
 				},
 				'3': {
 					'Text': 'Nhắc nhở Tuấn.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(8);
 						addsafe(5);
 					},
@@ -608,7 +608,7 @@ monogatari.script ({
 				},
 				'4': {
 					'Text': 'Tiếp tục quan sát.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(5);
 						addsafe(8);
 					},
@@ -618,14 +618,17 @@ monogatari.script ({
 		},
 	],
 	'joke':[
-		'show character pl nc at left with fadeIn',
-		'show character ma kc at right with fadeIn',
-		'show character tl tti at center with fadeIn',
+		'hide character mh',
+		'show character qt vvb at right with slideInLeft end-fadeOut',
+		'show character pl vvb at center with fadeIn end-fadeOut',
 		'pl Haha, đúng là kỳ lạ thật đấy!',
+		'show character ma ngb at left with fadeIn end-fadeOut',
 		'ma Tớ thấy cậu ấy có vẻ không thoải mái với trò đùa này.',
 		'pl Cơ mà sao cậu ấy chẳng nói gì cả. Chắc cậu ấy cũng biết là chúng ta chỉ đùa thôi mà.',
+		'show character qt ngb at right with fadeIn end-fadeOut',
+		'show character pl mmb at center with fadeIn end-fadeOut',
+		'show character ma brb at left with fadeIn end-fadeOut',
 		'"Mai Anh lặng lẽ nhìn Linh với vẻ mặt lo lắng, còn {{player.name}} thì vẫn tiếp tục cười theo Tuấn và Hạnh."',
-		'"Linh im lặng ôm cuốn sổ trước ngực.<br>Cậu ấy lặng lẽ bước đi."',
 		'<h5>❓Giỡn quá đà?</h5><br>Khi một người không thoải mái với một trò đùa, việc tiếp tục cười theo có thể khiến họ cảm thấy mình không được tôn trọng.<br>Cho dù câu nói đó chỉ đơn giản là đùa vui đều vẫn có thể tạo ra tác động không tích cực.',
 		{
 			'Choice': {
