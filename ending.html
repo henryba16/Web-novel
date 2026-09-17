@@ -342,6 +342,7 @@
         // Ngưỡng diễn giải cho từng chỉ số — chỉnh lại nếu cần
         function statTag(value) {
             if (value >= 75) return "Cao";
+            if (value >= 60) return "Tốt";
             if (value >= 45) return "Trung bình";
             return "Cần chú ý thêm";
         }
