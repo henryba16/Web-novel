@@ -122,18 +122,21 @@ button:hover {
 
 /* Character Images Styles */
 [data-screen="game"] [data-character] {
-	--character-scale: 1;
-	width: auto;
-	height: auto;
-	max-height: none;
-	max-width: none;
-	zoom: var(--character-scale);
+    width: auto !important;
+    height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+
+    transform: scale(var(--character-scale));
+    transform-origin: bottom center;
 }
 
 /* Other Images Styles */
-[data-screen="game"] [data-image] {
-
+[data-screen="game"] {
+    --character-scale: calc(100vh / 900px * 1.2);
 }
+
+
 
 /**
  * ===========================
@@ -199,10 +202,10 @@ input[type=range]::-ms-fill-upper {
 }
 
 /** Medium Screens, Phablets (601px) **/
-@media screen and (max-width: 37.5625em) {
-	[data-screen="game"] [data-character] {
-		--character-scale: 1.5;
-	}
+@media screen and (max-width: 600px) {
+    [data-screen="game"] [data-character] {
+        height: 65vh !important;
+    }
 }
 
 @media screen and (min-width: 37.56255em) {

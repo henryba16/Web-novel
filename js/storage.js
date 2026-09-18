@@ -25,6 +25,10 @@ monogatari.storage ({
 		3: true,
 		
 	},
-	end_choice: "",
+	chap1_end:{
+		choice: '',
+		ending: '',
+		description: '',
+	},
 	route: [],
 });

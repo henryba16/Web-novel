@@ -19,8 +19,8 @@ function finishChapter(choice) {
 	const endingData = {
 		playerName: storage.player.name,
 		ending: {
-			name: 'Người đồng hành',
-			description: 'Bạn đã nhìn lại những lựa chọn của mình trước các tình huống học đường và cách chúng có thể tạo ra khác biệt cho người khác.'
+			name: storage.ending,
+			description: storage.description,
 		},
 		stats: [
 			{ key: 'empathy', label: 'Đồng cảm', value: storage.stats.empathy },
@@ -1277,7 +1277,7 @@ monogatari.script ({
 					'onChosen':async function(){
 						addawareness(2);
 						addsafe(7);
-						monogatari.storage().end_choice="Không trêu chọc bạn bè vì đó là một hành động xấu.";
+						monogatari.storage().end_choice='Không trêu chọc bạn bè vì đó là một hành động xấu.';
 					},
 					'Do': 'jump ending',
 				},
@@ -1286,7 +1286,7 @@ monogatari.script ({
 					'onChosen':async function(){
 						addempathy(5);
 						addawareness(3);
-						monogatari.storage().end_choice="Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.";
+						monogatari.storage().end_choice='Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.';
 					},
 					'Do': 'jump ending',
 				},
@@ -1295,7 +1295,7 @@ monogatari.script ({
 					'onChosen':async function(){
 						addawareness(3);
 						addsafe(4);
-						monogatari.storage().end_choice="Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.";
+						monogatari.storage().end_choice='Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.';
 					},
 					'Do': 'jump ending',
 				},
@@ -1303,7 +1303,7 @@ monogatari.script ({
 					'Text': 'Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.',
 					'onChosen':async function(){
 						addsafe(7);
-						monogatari.storage().end_choice="Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.";
+						monogatari.storage().end_choice='Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.';
 					},
 					'Do': 'jump ending',
 				}
@@ -1319,7 +1319,8 @@ monogatari.script ({
 						scene: "end",
 						context: "chỉ số đồng cảm, nhận diện, an toàn của người chơi ở mức xuất sắc(có thể cân nhắc nói những câu ấm áp vì không phải người bình thường có thể hiểu lòng người).",
 						choice: "true ending",
-					});
+					});monogatari.storage().ending='True Ending';
+					monogatari.storage().description='Bạn đã chủ động tìm cách tạo ra một thay đổi tích cực mà vẫn đảm bảo an toàn cho bản thân và những người xung quanh. Bạn là người bạn tâm lý của mọi người xung quanh! Nhưng đừng quên bản thân, đôi lúc tựa vào ai đó cũng chính là cách bạn tự ôm lấy mình.';
 					return 'end-D';
 				}
 				else if(monogatari.storage().stats.empathy>=70 && monogatari.storage().stats.awareness>=70){
@@ -1328,7 +1329,8 @@ monogatari.script ({
 						scene: "end",
 						context: "chỉ số đồng cảm và nhận của người chơi ở tốt(chưa đủ cao để đến ending cuối).",
 						choice: "good ending",
-					});
+					});monogatari.storage().ending='Good Ending';
+					monogatari.storage().description='Bạn đã biết quan sát, lắng nghe và lựa chọn cách hỗ trợ phù hợp. Đôi khi, một câu hỏi đơn giản như “Cậu ổn không?” cũng có thể tạo ra sự khác biệt!';
 					return 'end-C';
 				}
 				else if(monogatari.storage().stats.empathy>=45){
@@ -1337,7 +1339,8 @@ monogatari.script ({
 						scene: "end",
 						context: "chỉ số đồng cảm của người chơi ở mức trung bình.",
 						choice: "normal ending",
-					});
+					});monogatari.storage().ending='Normal Ending';
+					monogatari.storage().description='Bạn đã nhận ra một số vấn đề, nhưng đôi khi vẫn còn do dự trước khi hành động. Quan sát là bước đầu tiên. Bước tiếp theo là học cách lựa chọn một hành động phù hợp và an toàn!';
 					return 'end-B';
 				}
 				else{
@@ -1346,7 +1349,8 @@ monogatari.script ({
 						scene: "end",
 						context: "chỉ số đồng cảm của người chơi quá thấp để vào ending.",
 						choice: "bad ending",
-					});
+					});monogatari.storage().ending='Bad Ending';
+					monogatari.storage().description='Bạn đã nhìn thấy nhiều dấu hiệu trong câu chuyện, nhưng thường lựa chọn đứng ngoài. Có thể bạn chưa biết phải làm gì hoặc lo rằng mình sẽ khiến tình hình tệ hơn.';
 					return 'end-A';
 				}
 			},
@@ -1362,21 +1366,21 @@ monogatari.script ({
 		'centered Có thể bạn chưa biết phải làm gì hoặc lo rằng mình sẽ khiến tình hình tệ hơn.',
 		'centered Hãy thử lại Chapter để khám phá những lựa chọn khác.',
 		'centered <h5>ENDING A<br>NGƯỜI ĐỨNG NGOÀI</h5>',
-		'end',
+		function(){finishChapter(monogatari.storage().end_choice);},
 	],
 	'ending_B':[
 		'centered <h5>Bạn đã nhận ra một số vấn đề, nhưng đôi khi vẫn còn do dự trước khi hành động.</h5>',
 		'centered Quan sát là bước đầu tiên.',
 		'centered Bước tiếp theo là học cách lựa chọn một hành động phù hợp và an toàn.',
 		'centered <h5>ENDING B<br>NGƯỜI QUAN SÁT</h5>',
-		'jump ending1',
+		function(){finishChapter(monogatari.storage().end_choice);},
 	],
 	'ending_C':[
 		'centered <h5>Bạn đã biết quan sát, lắng nghe và lựa chọn cách hỗ trợ phù hợp.</h5>',
 		'centered Bạn hiểu rằng giúp đỡ người khác không nhất thiết phải bắt đầu bằng một hành động lớn.',
 		'centered Đôi khi, một câu hỏi đơn giản như “Cậu ổn không?” cũng có thể tạo ra sự khác biệt.',
 		'centered <h5>ENDING C<br>NGƯỜI ĐỒNG HÀNH</h5>',
-		'jump ending1',
+		function(){finishChapter(monogatari.storage().end_choice);},
 	],
 	'ending_D':[
 		'centered <h5>Bạn không chỉ nhận ra vấn đề.</h5>',
@@ -1384,6 +1388,6 @@ monogatari.script ({
 		'centered Bạn là người bạn tâm lý của mọi người xung quanh!',
 		'centered Nhưng đừng quên bản thân, đôi lúc tựa vào ai đó cũng chính là cách bạn tự ôm lấy mình.',
 		'centered <h5>TRUE ENDING<br>NGƯỜI TẠO THAY ĐỔI</h5>',
-		'jump ending1',
+		function(){finishChapter(monogatari.storage().end_choice);},
 	],
 });
