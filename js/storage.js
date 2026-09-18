@@ -26,7 +26,6 @@ monogatari.storage ({
 		
 	},
 	chap1_end:{
-		choice: '',
 		ending: '',
 		description: '',
 	},
