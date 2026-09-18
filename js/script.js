@@ -1,5 +1,9 @@
 /* global monogatari */
 
+const particlePointerFix = document.createElement('style');
+particlePointerFix.textContent = '#tsparticles { pointer-events: none !important; }';
+document.head.appendChild(particlePointerFix);
+
 function addempathy(value) {
 	monogatari.storage().stats.empathy += value;
 }
@@ -15,8 +19,8 @@ function finishChapter(choice) {
 	const endingData = {
 		playerName: storage.player.name,
 		ending: {
-			name: 'Người đồng hành',
-			description: 'Bạn đã nhìn lại những lựa chọn của mình trước các tình huống học đường và cách chúng có thể tạo ra khác biệt cho người khác.'
+			name: storage.ending,
+			description: storage.description,
 		},
 		stats: [
 			{ key: 'empathy', label: 'Đồng cảm', value: storage.stats.empathy },
@@ -641,7 +645,7 @@ monogatari.script ({
 					'onChosen':async function(){
 						addempathy(-8);
 						addawareness(-5);
-						monogatari.storage().choice[2]=false;
+						monogatari.storage().choice[2].a=false;
 
 						monogatari.storage().route.push({
 						chapter: 1,
@@ -778,6 +782,13 @@ monogatari.script ({
 						addempathy(-4);
 						addawareness(-5);
 						monogatari.storage().choice[2].b=false;
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Linh, Mai Anh, người chơi vô thư viện",
+						context: "Người chơi thấy bức tranh kỳ lạ của Linh thêm 1 lần nữa",
+						choice: "Nói xấu vơi Mai Anh",
+						});
 					},
 					'Do': 'jump discussmai',
 				},
@@ -785,7 +796,14 @@ monogatari.script ({
 					'Text': 'Hỏi riêng Trúc Linh.',
 					'onChosen':async function(){
 						addawareness(4);
-						addempathy(2)
+						addempathy(2);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Linh, Mai Anh, người chơi vô thư viện",
+						context: "Người chơi thấy bức tranh kỳ lạ của Linh thêm 1 lần nữa",
+						choice: "Hỏi riêng Linh(nói Linh không biết vẽ)",
+						});
 					},
 					'Do': 'jump asklinh2b',
 				},
@@ -794,6 +812,13 @@ monogatari.script ({
 					'onChosen':async function(){
 						addempathy(10);
 						addawareness(12);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Linh, Mai Anh, người chơi vô thư viện",
+						context: "Người chơi thấy bức tranh kỳ lạ của Linh thêm 1 lần nữa",
+						choice: "Cùng Mai Anh hỏi thăm, an ủi Linh",
+						});
 					},
 					'Do': 'jump discussgrp',
 				},
@@ -802,6 +827,13 @@ monogatari.script ({
 					'onChosen':async function(){
 						addsafe(3);
 						addempathy(-2);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Linh, Mai Anh, người chơi vô thư viện",
+						context: "Người chơi thấy bức tranh kỳ lạ của Linh thêm 1 lần nữa",
+						choice: "im lặng không nó gì(Linh thấy khó chịu và đi về)",
+						});
 					},
 					'Do': 'jump observe2b',
 				}
@@ -924,36 +956,64 @@ monogatari.script ({
 				'Dialog': '"Ở trên mạng, một nội dung có thể được chia sẻ nhanh hơn rất nhiều"',
 				'1': {
 					'Text': 'Chia sẻ cho bạn mình',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(-3);
 						addempathy(4);
 						addsafe(-5);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Người chơi thấy ảnh của Linh trên nhóm lớp",
+						context: "Một thành viên trong lớp gửi bức vẽ lạ của Linh và nói xấu",
+						choice: "Gửi ảnh đó cho nhóm khác",
+						});
 					},
 					'Do': 'jump share',
 				},
 				'2': {
 					'Text': 'Bình luận về bức ảnh',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(-5);
 						addempathy(-7);
 						addsafe(-8);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Người chơi thấy ảnh của Linh trên nhóm lớp",
+						context: "Một thành viên trong lớp gửi bức vẽ lạ của Linh và nói xấu",
+						choice: "Bình luận xấu về bức ảnh",
+						});
 					},
 					'Do': 'jump comment',
 				},
 				'3': {
 					'Text': 'Hỏi Linh thử',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(8);
 						addempathy(5);
 						addsafe(3);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Người chơi thấy ảnh của Linh trên nhóm lớp",
+						context: "Một thành viên trong lớp gửi bức vẽ lạ của Linh và nói xấu",
+						choice: "Hỏi thăm Linh",
+						});
 					},
 					'Do': 'jump asklinh3',
 				},
 				'4': {
 					'Text': 'Méc cô.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(8);
 						addsafe(10);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Người chơi thấy ảnh của Linh trên nhóm lớp",
+						context: "Một thành viên trong lớp gửi bức vẽ lạ của Linh và nói xấu",
+						choice: "Báo giáo viên",
+						});
 					},
 					'Do': 'jump tellct',
 				}
@@ -966,20 +1026,27 @@ monogatari.script ({
 		'play sound noti',
 		'play sound noti',
 		{
-			'choice': {
+			'Choice': {
 				'Dialog': 'Màn hình điện thoại của bạn hiện lên những tin nhắn từ nhóm bạn thân của bạn.',
 				'1': {
 					'Text': 'Nghe lời Mai Anh',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addempathy(-4);
 						addawareness(-3);
 						addsafe(-5);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Người chơi chia sẻ tấm ảnh cho nhóm bạn",
+						context: "Mai Anh đã thấy và khuyên người chơi xóa ảnh",
+						choice: "Người chơi nghe lời Mai Anh(nhưng bạn bè đã thấy hết)",
+						});
 					},
 					'Do': 'jump delete',
 				},
 				'2': {
 					'Text': 'Nghe lời bạn thân',
-					'Condition': function(){
+					'Condition':async function(){
 						return monogatari.storage().choice[3];
 					},
 					'onChosen':function(){
@@ -987,6 +1054,13 @@ monogatari.script ({
 						addawareness(-5);
 						addsafe(-12);
 						monogatari.storage().choice[3]=false;
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Người chơi chia sẻ tấm ảnh cho nhóm bạn",
+						context: "Mai Anh đã thấy và khuyên người chơi xóa ảnh",
+						choice: "Người chơi tiếp tục chia sẻ cho nhiều nhóm hơn(fail, Người chơi đã bị bad ending)",
+						});
 					},
 					'Do': 'jump friends',
 				}
@@ -1053,40 +1127,68 @@ monogatari.script ({
 		'ma Tớ nghĩ chúng ta nên nói chuyện lại với các bạn. Nếu vẫn còn tiếp tục, chúng mình sẽ tìm sự hỗ trợ của cô giáo.',
 		{
 			'Choice': {
-				'Dialog': 'Trong suy nghĩ của bạn lúc này rất phân vân, cậu muốn báo cáo lại với giáo viên về việc này ngay lập tức nhưng chưa biết phải làm như thế nào?',
+				'Dialog': 'Trong suy nghĩ của bạn lúc này rất phân vân, cậu muốn báo cáo lại với giáo viên về việc này ngay lập tức nhưng sợ làm chuyện lơn hơn!',
 				'1': {
 					'Text': 'Nghe theo Trúc Linh.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(-5);
 						addempathy(3);
 						addsafe(8);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Sau khi hỏi Linh, Linh thấy không thoải mái",
+						context: "Linh kêu không cần quan tâm",
+						choice: "Người chơi nghe lời Linh và không làm gì và Mai Anh phải giải quyết hộ.",
+						});
 					},
 					'Do': 'jump asklinh4',
 				},
 				'2': {
 					'Text': 'Nghe theo Mai Anh.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(4);
 						addempathy(10);
 						addsafe(-4);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Sau khi hỏi Linh, Linh thấy không thoải mái",
+						context: "Linh kêu không cần quan tâm",
+						choice: "Người chơi và Mai Anh lên nhóm nói chuyện và yêu cầu thu hồi.",
+						});
 					},
 					'Do': 'jump gomanh',
 				},
 				'3': {
 					'Text': 'Nghe theo bản thân.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(14);
 						addempathy(8);
 						addsafe(3);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Sau khi hỏi Linh, Linh thấy không thoải mái",
+						context: "Linh kêu không cần quan tâm",
+						choice: "Người chơi liền đi báo giáo viên chủ nhiệm để giải quyết.",
+						});
 					},
 					'Do': 'jump self',
 				},
 				'4': {
 					'Text': 'Tiếp tục quan sát.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(-3);
 						addempathy(-5);
 						addsafe(-2);
+
+						monogatari.storage().route.push({
+						chapter: 1,
+						scene: "Sau khi hỏi Linh, Linh thấy không thoải mái",
+						context: "Linh kêu không cần quan tâm",
+						choice: "Người chơi không làm gì và ngăn Mai Anh giúp vì sợ lớn chuyện.",
+						});
 					},
 					'Do': 'jump observe3',
 				},
@@ -1147,6 +1249,7 @@ monogatari.script ({
 		'jump scene4',
 	],
 	'scene4':[
+		'show scene black with fadeIn',
 		'centered Sáng hôm sau, tại 7:10.',
 		'centered {{player.name}} bước vào lớp với tâm trạng thư thỏa.',
 		'centered Ánh nắng buổi sáng chiếu qua cửa sổ.',
@@ -1157,50 +1260,134 @@ monogatari.script ({
 		'pl WOW, Cậu vẽ đẹp thật đấy!',
 		'tl Hôm nay mình muốn vẽ một lớp học mà ai cũng có chỗ.',
 		'ma Có khi một chiếc ghế trống không chỉ là một chiếc ghế.',
+		'show scene black with fadeIn',
 		'centered Có những điều rất dễ bị bỏ qua.',
 		'centered Một bạn ngồi một mình.',
 		'centered Một bạn ngồi một mình.',
 		'centered Một câu nói được gọi là “chỉ đùa thôi”.',
 		'centered Một bức ảnh được chia sẻ mà chưa ai hỏi người trong ảnh có đồng ý hay không.',
 		'centered Những điều ấy có thể rất nhỏ nhưng cách chúng ta phản ứng với chúng có thể tạo nên một khác biệt rất lớn.',
-		'hide scene desk with fadeOut',
-		'centered Theo bạn, điều quan trọng nhất trong Chapter này là gì?',
+		'show scene black',
+		'vibrate 200',
 		{
 			'Choice': {
-				'Dialog': 'Hãy chọn một trong những điều quan trọng nhất mà bạn học được từ Chapter này.',
+				'Dialog': 'centered Nè, chơi xong rồi, cậu đã rút ra được bài học gì vậy?',
 				'1': {
 					'Text': 'Không trêu chọc bạn bè vì đó là một hành động xấu.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(2);
 						addsafe(7);
-						finishChapter('Không trêu chọc bạn bè vì đó là một hành động xấu.');
+						monogatari.storage().end_choice='Không trêu chọc bạn bè vì đó là một hành động xấu.';
 					},
+					'Do': 'jump ending',
 				},
 				'2': {
 					'Text': 'Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addempathy(5);
 						addawareness(3);
-						finishChapter('Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.');
+						monogatari.storage().end_choice='Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.';
 					},
+					'Do': 'jump ending',
 				},
 				'3': {
 					'Text': 'Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addawareness(3);
 						addsafe(4);
-						finishChapter('Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.');
+						monogatari.storage().end_choice='Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.';
 					},
+					'Do': 'jump ending',
 				},
 				'4': {
 					'Text': 'Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.',
-					'onChosen':function(){
+					'onChosen':async function(){
 						addsafe(7);
-						finishChapter('Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.');
+						monogatari.storage().end_choice='Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.';
 					},
+					'Do': 'jump ending',
 				}
 			}
 		}
 	],
-	
+	'ending':[
+		{'Conditional': {
+			'Condition': function () {
+				if(monogatari.storage().stats.empathy>=80 && monogatari.storage().stats.awareness>=80 && monogatari.storage().stats.safe>=60){
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "end",
+						context: "chỉ số đồng cảm, nhận diện, an toàn của người chơi ở mức xuất sắc(có thể cân nhắc nói những câu ấm áp vì không phải người bình thường có thể hiểu lòng người).",
+						choice: "true ending",
+					});monogatari.storage().ending='True Ending';
+					monogatari.storage().description='Bạn đã chủ động tìm cách tạo ra một thay đổi tích cực mà vẫn đảm bảo an toàn cho bản thân và những người xung quanh. Bạn là người bạn tâm lý của mọi người xung quanh! Nhưng đừng quên bản thân, đôi lúc tựa vào ai đó cũng chính là cách bạn tự ôm lấy mình.';
+					return 'end-D';
+				}
+				else if(monogatari.storage().stats.empathy>=70 && monogatari.storage().stats.awareness>=70){
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "end",
+						context: "chỉ số đồng cảm và nhận của người chơi ở tốt(chưa đủ cao để đến ending cuối).",
+						choice: "good ending",
+					});monogatari.storage().ending='Good Ending';
+					monogatari.storage().description='Bạn đã biết quan sát, lắng nghe và lựa chọn cách hỗ trợ phù hợp. Đôi khi, một câu hỏi đơn giản như “Cậu ổn không?” cũng có thể tạo ra sự khác biệt!';
+					return 'end-C';
+				}
+				else if(monogatari.storage().stats.empathy>=45){
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "end",
+						context: "chỉ số đồng cảm của người chơi ở mức trung bình.",
+						choice: "normal ending",
+					});monogatari.storage().ending='Normal Ending';
+					monogatari.storage().description='Bạn đã nhận ra một số vấn đề, nhưng đôi khi vẫn còn do dự trước khi hành động. Quan sát là bước đầu tiên. Bước tiếp theo là học cách lựa chọn một hành động phù hợp và an toàn!';
+					return 'end-B';
+				}
+				else{
+					monogatari.storage().route.push({
+						chapter: 1,
+						scene: "end",
+						context: "chỉ số đồng cảm của người chơi quá thấp để vào ending.",
+						choice: "bad ending",
+					});monogatari.storage().ending='Bad Ending';
+					monogatari.storage().description='Bạn đã nhìn thấy nhiều dấu hiệu trong câu chuyện, nhưng thường lựa chọn đứng ngoài. Có thể bạn chưa biết phải làm gì hoặc lo rằng mình sẽ khiến tình hình tệ hơn.';
+					return 'end-A';
+				}
+			},
+			'end-D': 'jump ending_D',
+			'end-C': 'jump ending_C',
+			'end-B': 'jump ending_B',
+			'end-A': 'jump ending_A'
+		}},
+	],
+	'ending_A':[
+		'centered <h5>Bạn đã nhìn thấy nhiều dấu hiệu trong câu chuyện, nhưng thường lựa chọn đứng ngoài.</h5>',
+		'centered Điều đó không có nghĩa bạn là người xấu.',
+		'centered Có thể bạn chưa biết phải làm gì hoặc lo rằng mình sẽ khiến tình hình tệ hơn.',
+		'centered Hãy thử lại Chapter để khám phá những lựa chọn khác.',
+		'centered <h5>ENDING A<br>NGƯỜI ĐỨNG NGOÀI</h5>',
+		function(){finishChapter(monogatari.storage().end_choice);},
+	],
+	'ending_B':[
+		'centered <h5>Bạn đã nhận ra một số vấn đề, nhưng đôi khi vẫn còn do dự trước khi hành động.</h5>',
+		'centered Quan sát là bước đầu tiên.',
+		'centered Bước tiếp theo là học cách lựa chọn một hành động phù hợp và an toàn.',
+		'centered <h5>ENDING B<br>NGƯỜI QUAN SÁT</h5>',
+		function(){finishChapter(monogatari.storage().end_choice);},
+	],
+	'ending_C':[
+		'centered <h5>Bạn đã biết quan sát, lắng nghe và lựa chọn cách hỗ trợ phù hợp.</h5>',
+		'centered Bạn hiểu rằng giúp đỡ người khác không nhất thiết phải bắt đầu bằng một hành động lớn.',
+		'centered Đôi khi, một câu hỏi đơn giản như “Cậu ổn không?” cũng có thể tạo ra sự khác biệt.',
+		'centered <h5>ENDING C<br>NGƯỜI ĐỒNG HÀNH</h5>',
+		function(){finishChapter(monogatari.storage().end_choice);},
+	],
+	'ending_D':[
+		'centered <h5>Bạn không chỉ nhận ra vấn đề.</h5>',
+		'centered Bạn đã chủ động tìm cách tạo ra một thay đổi tích cực mà vẫn đảm bảo an toàn cho bản thân và những người xung quanh.',
+		'centered Bạn là người bạn tâm lý của mọi người xung quanh!',
+		'centered Nhưng đừng quên bản thân, đôi lúc tựa vào ai đó cũng chính là cách bạn tự ôm lấy mình.',
+		'centered <h5>TRUE ENDING<br>NGƯỜI TẠO THAY ĐỔI</h5>',
+		function(){finishChapter(monogatari.storage().end_choice);},
+	],
 });

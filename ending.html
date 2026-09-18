@@ -273,7 +273,7 @@
         <section class="card fade-in" style="animation-delay:0.1s" id="stats-card">
             <div class="section-head">
                 <span class="section-kicker">Tổng kết</span>
-                <h2>Ba chỉ số hành trình</h2>
+                <h2>Nhìn lại hành trình</h2>
             </div>
             <div id="stats-list"></div>
         </section>
@@ -342,6 +342,7 @@
         // Ngưỡng diễn giải cho từng chỉ số — chỉnh lại nếu cần
         function statTag(value) {
             if (value >= 75) return "Cao";
+            if (value >= 60) return "Tốt";
             if (value >= 45) return "Trung bình";
             return "Cần chú ý thêm";
         }
