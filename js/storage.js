@@ -25,6 +25,11 @@ monogatari.storage ({
 		3: true,
 		
 	},
-	ending: true,
+	endcheck: {
+		A:false,
+		B:false,
+		C:false,
+		D:false,
+	},
 	route: [],
 });

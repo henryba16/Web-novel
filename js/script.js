@@ -645,7 +645,7 @@ monogatari.script ({
 					'onChosen':async function(){
 						addempathy(-8);
 						addawareness(-5);
-						monogatari.storage().choice[2]=false;
+						monogatari.storage().choice[2].a=false;
 
 						monogatari.storage().route.push({
 						chapter: 1,
@@ -1026,7 +1026,7 @@ monogatari.script ({
 		'play sound noti',
 		'play sound noti',
 		{
-			'choice': {
+			'Choice': {
 				'Dialog': 'Màn hình điện thoại của bạn hiện lên những tin nhắn từ nhóm bạn thân của bạn.',
 				'1': {
 					'Text': 'Nghe lời Mai Anh',
@@ -1267,85 +1267,50 @@ monogatari.script ({
 		'centered Một câu nói được gọi là “chỉ đùa thôi”.',
 		'centered Một bức ảnh được chia sẻ mà chưa ai hỏi người trong ảnh có đồng ý hay không.',
 		'centered Những điều ấy có thể rất nhỏ nhưng cách chúng ta phản ứng với chúng có thể tạo nên một khác biệt rất lớn.',
-		'show scene white with fadeIn',
-		{
-			'Choice': {
-				'Dialog': '{{stats.empathy}} {{stats.awareness}} {{stats.safe}} {{ending}}',
-				'D': {
-					'Text': '...',
-					'Condition':function(){
-						if(monogatari.storage().stats.empathy>=80 && monogatari.storage().stats.awareness>=80 && monogatari.storage().stats.safe>=60){
-							monogatari.storage().ending=0;
-							return true;
-						}
-						return false;
-					},
-					'onChosen':function(){
-						monogatari.storage().route.push({
+		{'Conditional': {
+			'Condition': function () {
+				if(monogatari.storage().stats.empathy>=80 && monogatari.storage().stats.awareness>=80 && monogatari.storage().stats.safe>=60){
+					monogatari.storage().route.push({
 						chapter: 1,
 						scene: "end",
 						context: "chỉ số đồng cảm, nhận diện, an toàn của người chơi ở mức xuất sắc(có thể cân nhắc nói những câu ấm áp vì không phải người bình thường có thể hiểu lòng người).",
 						choice: "true ending",
-						});
-					},
-					'Do': 'jump ending_D',
-				},
-				'C': {
-					'Text': '...',/*
-					'Condition':function(){
-						if(monogatari.storage().stats.empathy>=70 && monogatari.storage().stats.awareness>=70 && monogatari.storage().ending==true){
-							monogatari.storage().ending=false;
-							return true;
-						}
-						return false;
-					},*/
-					'onChosen':function(){
-						monogatari.storage().route.push({
+					});
+					return 'end-D';
+				}
+				else if(monogatari.storage().stats.empathy>=70 && monogatari.storage().stats.awareness>=70){
+					monogatari.storage().route.push({
 						chapter: 1,
 						scene: "end",
 						context: "chỉ số đồng cảm và nhận của người chơi ở tốt(chưa đủ cao để đến ending cuối).",
 						choice: "good ending",
-						});
-					},
-					'Do': 'jump ending_C',
-				},
-				'B': {
-					'Text': '...',
-					'Condition':function(){
-						if(monogatari.storage().stats.empathy>=45 && monogatari.storage().ending==true){
-							monogatari.storage().ending=false;
-							return true;
-						}
-						return false;
-					},
-					'onChosen':function(){
-						monogatari.storage().route.push({
+					});
+					return 'end-C';
+				}
+				else if(monogatari.storage().stats.empathy>=45){
+					monogatari.storage().route.push({
 						chapter: 1,
 						scene: "end",
 						context: "chỉ số đồng cảm của người chơi ở mức trung bình.",
 						choice: "normal ending",
-						});
-					},
-					'Do': 'jump ending_B',
-				},
-				'A': {
-					'Text': '...',
-					'Condition':function(){
-						return monogatari.storage().stats.empathy<46;
-					},
-					'onChosen':function(){
-						monogatari.storage().ending=false;
-						monogatari.storage().route.push({
+					});
+					return 'end-B';
+				}
+				else{
+					monogatari.storage().route.push({
 						chapter: 1,
 						scene: "end",
 						context: "chỉ số đồng cảm của người chơi quá thấp để vào ending.",
 						choice: "bad ending",
-						});
-					},
-					'Do': 'jump ending_A',
-				},
-			}
-		}
+					});
+					return 'end-A';
+				}
+			},
+			'end-D': 'jump ending_D',
+			'end-C': 'jump ending_C',
+			'end-B': 'jump ending_B',
+			'end-A': 'jump ending_A'
+		}},
 	],
 	'ending_A':[
 		'centered <h5>Bạn đã nhìn thấy nhiều dấu hiệu trong câu chuyện, nhưng thường lựa chọn đứng ngoài.</h5>',
@@ -1360,14 +1325,14 @@ monogatari.script ({
 		'centered Quan sát là bước đầu tiên.',
 		'centered Bước tiếp theo là học cách lựa chọn một hành động phù hợp và an toàn.',
 		'centered <h5>ENDING B<br>NGƯỜI QUAN SÁT</h5>',
-		'jump ending',
+		'jump ending1',
 	],
 	'ending_C':[
 		'centered <h5>Bạn đã biết quan sát, lắng nghe và lựa chọn cách hỗ trợ phù hợp.</h5>',
 		'centered Bạn hiểu rằng giúp đỡ người khác không nhất thiết phải bắt đầu bằng một hành động lớn.',
 		'centered Đôi khi, một câu hỏi đơn giản như “Cậu ổn không?” cũng có thể tạo ra sự khác biệt.',
 		'centered <h5>ENDING C<br>NGƯỜI ĐỒNG HÀNH</h5>',
-		'jump ending',
+		'jump ending1',
 	],
 	'ending_D':[
 		'centered <h5>Bạn không chỉ nhận ra vấn đề.</h5>',
@@ -1375,9 +1340,10 @@ monogatari.script ({
 		'centered Bạn là người bạn tâm lý của mọi người xung quanh!',
 		'centered Nhưng đừng quên bản thân, đôi lúc tựa vào ai đó cũng chính là cách bạn tự ôm lấy mình.',
 		'centered <h5>TRUE ENDING<br>NGƯỜI TẠO THAY ĐỔI</h5>',
-		'jump ending',
+		'jump ending1',
 	],
-	'ending':[
+	'ending1':[
+		'vibrate 200',
 		'centered Theo bạn, điều quan trọng nhất trong Chapter này là gì?',
 		{
 			'Choice': {
