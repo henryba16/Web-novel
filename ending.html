@@ -252,6 +252,11 @@
         font-size: 0.75rem;
         color: var(--muted);
     }
+
+    #ai-analysis-content {
+    white-space: pre-line;
+    }
+    
 </style>
 </head>
 <body>
@@ -323,19 +328,31 @@
            ============================================================ */
         const demoEndingData = {
             playerName: "Người chơi",
+
             ending: {
                 name: "Người đồng hành",
-                description: "Bạn đã chọn ở lại bên cạnh bạn mình trong những lúc khó khăn nhất, dù điều đó không phải lúc nào cũng dễ dàng."
+                description: "Bạn đã chọn ở lại bên cạnh bạn mình trong những lúc khó khăn nhất."
             },
+
             stats: [
                 { key: "empathy", label: "Đồng cảm", value: 78 },
                 { key: "awareness", label: "Nhận thức", value: 65 },
                 { key: "safe", label: "An toàn", value: 82 }
             ],
-            keyChoices: [
-                { scene: "Một câu nói đùa", choice: "Bạn dừng lại và hỏi han cảm xúc của bạn mình." },
-                { scene: "Chiếc ghế trống", choice: "Bạn chủ động mời bạn mới ngồi cùng." },
-                { scene: "Tin nhắn lúc 10 giờ tối", choice: "Bạn không lan truyền và tìm người lớn để hỏi ý kiến." }
+
+            route: [
+                {
+                    chapter: 1,
+                    scene: "Một câu nói đùa",
+                    context: "Bạn nhận thấy người bạn mới có vẻ không thoải mái.",
+                    choice: "Bạn dừng lại và hỏi han."
+                },
+                {
+                    chapter: 1,
+                    scene: "Chiếc ghế trống",
+                    context: "Một học sinh mới đang ngồi một mình.",
+                    choice: "Bạn chủ động mời bạn mới ngồi cùng."
+                }
             ]
         };
 
@@ -383,14 +400,18 @@
 
             const choiceList = document.getElementById("choice-list");
             choiceList.innerHTML = "";
-            if (!data.keyChoices || data.keyChoices.length === 0) {
+            if (!data.route || data.route.length === 0) {
                 document.getElementById("choices-card").style.display = "none";
             } else {
-                data.keyChoices.forEach((item) => {
+                data.route.forEach((item) => {
                     const li = document.createElement("li");
                     li.innerHTML = `
-                        <span class="choice-scene">${item.scene}</span>
-                        <span class="choice-made">${item.choice}</span>
+                        <span class="choice-scene">
+                            ${item.scene || "Không rõ"}
+                        </span>
+                        <span class="choice-made">
+                            ${item.choice || "Không rõ"}
+                        </span>
                     `;
                     choiceList.appendChild(li);
                 });
@@ -405,11 +426,11 @@
             document.getElementById("ai-analysis-content").style.display = "none";
         }
 
-        function setAIAnalysis(html) {
+        function setAIAnalysis(text) {
             document.getElementById("ai-loading").classList.remove("active");
             const content = document.getElementById("ai-analysis-content");
             content.style.display = "block";
-            content.innerHTML = html;
+            content.textContent = text;
         }
 
         function normalizeEndingData(data) {
@@ -424,20 +445,35 @@
                     value: Number(stat.value)
                 }))
                 .filter((stat) => stat.label && Number.isFinite(stat.value))
-                .map((stat) => ({ ...stat, value: Math.max(0, Math.min(100, stat.value)) }));
+                .map((stat) => ({
+                    ...stat,
+                    value: Math.max(0, Math.min(100, stat.value))
+                }));
 
             if (stats.length !== 3 || !data.ending || typeof data.ending !== "object") {
                 return null;
             }
 
             return {
-                playerName: typeof data.playerName === "string" ? data.playerName : "",
+                playerName: typeof data.playerName === "string"
+                    ? data.playerName
+                    : "",
+
                 ending: {
-                    name: typeof data.ending.name === "string" ? data.ending.name : "Người đồng hành",
-                    description: typeof data.ending.description === "string" ? data.ending.description : ""
+                    name: typeof data.ending.name === "string"
+                        ? data.ending.name
+                        : "Người đồng hành",
+
+                    description: typeof data.ending.description === "string"
+                        ? data.ending.description
+                        : ""
                 },
+
                 stats,
-                keyChoices: Array.isArray(data.keyChoices) ? data.keyChoices : []
+
+                route: Array.isArray(data.route)
+                    ? data.route
+                    : []
             };
         }
 
@@ -450,7 +486,55 @@
             }
         }
 
-        renderEnding(getEndingData() || demoEndingData);
+        const endingData = getEndingData() || demoEndingData;
+
+        renderEnding(endingData);
+        analyzeWithAI(endingData);
+
+        async function analyzeWithAI(data) {
+            const aiElement =
+                document.getElementById('ai-analysis-content');
+
+            if (!aiElement) {
+                console.error('Không tìm thấy #ai-analysis-content');
+                return;
+            }
+
+            showAILoading();
+
+            try {
+                const response = await fetch(
+                    '/api/analyze-ending',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    }
+                );
+
+                const result = await response.json();
+
+                console.log('AI API RESULT:', result);
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.error ||
+                        'AI request failed'
+                    );
+                }
+
+                setAIAnalysis(result.analysis || 'Không có kết quả phân tích.');
+
+            } catch (error) {
+                console.error('AI ERROR:', error);
+
+                setAIAnalysis(
+                    'Không thể phân tích lối chơi lúc này. Vui lòng thử lại sau.'
+                );
+            }
+        }
     </script>
     <script src="./js/analytics.js"></script>
     <script src="./js/speed-insights.js"></script>
