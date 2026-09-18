@@ -1267,6 +1267,50 @@ monogatari.script ({
 		'centered Một câu nói được gọi là “chỉ đùa thôi”.',
 		'centered Một bức ảnh được chia sẻ mà chưa ai hỏi người trong ảnh có đồng ý hay không.',
 		'centered Những điều ấy có thể rất nhỏ nhưng cách chúng ta phản ứng với chúng có thể tạo nên một khác biệt rất lớn.',
+		'show scene black',
+		'vibrate 200',
+		{
+			'Choice': {
+				'Dialog': 'centered Nè, chơi xong rồi, cậu đã rút ra được bài học gì vậy?',
+				'1': {
+					'Text': 'Không trêu chọc bạn bè vì đó là một hành động xấu.',
+					'onChosen':async function(){
+						addawareness(2);
+						addsafe(7);
+						monogatari.storage().end_choice="Không trêu chọc bạn bè vì đó là một hành động xấu.";
+					},
+					'Do': 'jump ending',
+				},
+				'2': {
+					'Text': 'Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.',
+					'onChosen':async function(){
+						addempathy(5);
+						addawareness(3);
+						monogatari.storage().end_choice="Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.";
+					},
+					'Do': 'jump ending',
+				},
+				'3': {
+					'Text': 'Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.',
+					'onChosen':async function(){
+						addawareness(3);
+						addsafe(4);
+						monogatari.storage().end_choice="Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.";
+					},
+					'Do': 'jump ending',
+				},
+				'4': {
+					'Text': 'Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.',
+					'onChosen':async function(){
+						addsafe(7);
+						monogatari.storage().end_choice="Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.";
+					},
+					'Do': 'jump ending',
+				}
+			}
+		}
+	],
+	'ending':[
 		{'Conditional': {
 			'Condition': function () {
 				if(monogatari.storage().stats.empathy>=80 && monogatari.storage().stats.awareness>=80 && monogatari.storage().stats.safe>=60){
@@ -1342,45 +1386,4 @@ monogatari.script ({
 		'centered <h5>TRUE ENDING<br>NGƯỜI TẠO THAY ĐỔI</h5>',
 		'jump ending1',
 	],
-	'ending1':[
-		'vibrate 200',
-		'centered Theo bạn, điều quan trọng nhất trong Chapter này là gì?',
-		{
-			'Choice': {
-				'Dialog': 'Hãy chọn một trong những điều quan trọng nhất mà bạn học được từ Chapter này.',
-				'1': {
-					'Text': 'Không trêu chọc bạn bè vì đó là một hành động xấu.',
-					'onChosen':async function(){
-						addawareness(2);
-						addsafe(7);
-						finishChapter('Không trêu chọc bạn bè vì đó là một hành động xấu.');
-					},
-				},
-				'2': {
-					'Text': 'Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.',
-					'onChosen':async function(){
-						addempathy(5);
-						addawareness(3);
-						finishChapter('Khi phát hiện một người bị cô lập, cần chú ý đến cảm xúc của họ và tìm cách hỗ trợ phù hợp.');
-					},
-				},
-				'3': {
-					'Text': 'Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.',
-					'onChosen':async function(){
-						addawareness(3);
-						addsafe(4);
-						finishChapter('Mọi vấn đề đều phải báo ngay cho giáo viên để được giải quyết kịp thời.');
-					},
-				},
-				'4': {
-					'Text': 'Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.',
-					'onChosen':async function(){
-						addsafe(7);
-						finishChapter('Người chứng kiến không nên can thiệp vì rất có thể sẽ bị thù ghét.');
-					},
-				}
-			}
-		}
-	],
-	
 });

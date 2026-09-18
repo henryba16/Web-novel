@@ -25,11 +25,6 @@ monogatari.storage ({
 		3: true,
 		
 	},
-	endcheck: {
-		A:false,
-		B:false,
-		C:false,
-		D:false,
-	},
+	end_choice: "",
 	route: [],
 });
