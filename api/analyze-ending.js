@@ -1,17 +1,31 @@
 export default async function handler(req, res) {
-	if (req.method !== 'POST') {
-		return res.status(405).json({
-			error: 'Method not allowed'
-		});
-	}
+    console.log("=== AI API CALLED ===");
 
-	try {
-		const {
-			playerName,
-			ending,
-			stats,
-			route
-		} = req.body;
+    if (req.method !== 'POST') {
+        return res.status(405).json({
+            error: 'Method not allowed'
+        });
+    }
+
+    try {
+        console.log(
+            "API KEY:",
+            process.env.OPENROUTER_API_KEY
+                ? "FOUND"
+                : "NOT FOUND"
+        );
+
+        const {
+            playerName,
+            ending,
+            stats,
+            route
+        } = req.body;
+
+        console.log("PLAYER:", playerName);
+        console.log("ENDING:", ending);
+        console.log("STATS:", stats);
+        console.log("ROUTE LENGTH:", route?.length);
 
 		const routeText = (route || [])
 			.map((item, index) => `
@@ -91,7 +105,7 @@ YÊU CẦU:
 				},
 
 				body: JSON.stringify({
-					model: 'openai/gpt-oss-20b:free',
+					model: 'openrouter/free',
 
 					messages: [
 						{
@@ -104,17 +118,17 @@ YÊU CẦU:
 		);
 
 		if (!response.ok) {
-			const errorText = await response.text();
+            const errorText = await response.text();
 
-			console.error(
-				'OpenRouter error:',
-				errorText
-			);
+            console.error(
+                'OpenRouter error:',
+                errorText
+            );
 
-			return res.status(500).json({
-				error: 'AI request failed'
-			});
-		}
+            return res.status(response.status).json({
+                error: errorText
+            });
+        }
 
 		const data = await response.json();
 

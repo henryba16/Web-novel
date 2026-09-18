@@ -252,6 +252,11 @@
         font-size: 0.75rem;
         color: var(--muted);
     }
+
+    #ai-analysis-content {
+    white-space: pre-line;
+    }
+    
 </style>
 </head>
 <body>
@@ -421,11 +426,11 @@
             document.getElementById("ai-analysis-content").style.display = "none";
         }
 
-        function setAIAnalysis(html) {
+        function setAIAnalysis(text) {
             document.getElementById("ai-loading").classList.remove("active");
             const content = document.getElementById("ai-analysis-content");
             content.style.display = "block";
-            content.innerHTML = html;
+            content.textContent = text;
         }
 
         function normalizeEndingData(data) {
@@ -488,29 +493,30 @@
 
         async function analyzeWithAI(data) {
             const aiElement =
-                document.getElementById('ai-analysis');
+                document.getElementById('ai-analysis-content');
 
-            if (!aiElement) return;
+            if (!aiElement) {
+                console.error('Không tìm thấy #ai-analysis-content');
+                return;
+            }
 
-            aiElement.textContent =
-                'AI đang phân tích lựa chọn của bạn...';
+            showAILoading();
 
             try {
                 const response = await fetch(
                     '/api/analyze-ending',
                     {
                         method: 'POST',
-
                         headers: {
-                            'Content-Type':
-                                'application/json'
+                            'Content-Type': 'application/json'
                         },
-
                         body: JSON.stringify(data)
                     }
                 );
 
                 const result = await response.json();
+
+                console.log('AI API RESULT:', result);
 
                 if (!response.ok) {
                     throw new Error(
@@ -519,15 +525,14 @@
                     );
                 }
 
-                aiElement.textContent =
-                    result.analysis ||
-                    'Không có kết quả phân tích.';
+                setAIAnalysis(result.analysis || 'Không có kết quả phân tích.');
 
             } catch (error) {
-                console.error(error);
+                console.error('AI ERROR:', error);
 
-                aiElement.textContent =
-                    'Không thể phân tích lối chơi lúc này. Vui lòng thử lại sau.';
+                setAIAnalysis(
+                    'Không thể phân tích lối chơi lúc này. Vui lòng thử lại sau.'
+                );
             }
         }
     </script>
