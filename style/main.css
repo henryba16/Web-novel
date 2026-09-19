@@ -19,17 +19,20 @@
 
 /* General Style */
 body {
-
+	background: #f7f6f6;
+	font-family: 'Open Sans', sans-serif;
 }
 
 /* Simple Button styles*/
 button {
-
+	outline: none;
+	background: #00acc1;
+	color: #fff;
 }
 
 /* Simple Button Style on Hover */
 button:hover {
-
+	background: #00bcd4;
 }
 
 /* General Styling for Menu Screens */
@@ -45,7 +48,10 @@ button:hover {
 
 /* Main Menu Styling */
 [data-screen="main"] {
-
+	background-image: url('../assets/icons/mainscreen.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 /* Main Menu Buttons Styling */
@@ -61,7 +67,8 @@ button:hover {
 
 /* Slots Style */
 [data-component="save-slot"] figure {
-
+	background: rgba(229, 57, 53, 0.8);
+	color: rgba(255, 255, 255, 0.8);
 }
 
 /* Slot's Image Style */
@@ -75,8 +82,11 @@ button:hover {
 }
 
 /* Slots Delete Button Style */
+[data-component="save-slot"] figure,
 [data-component="save-slot"] button {
-
+-webkit-transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),-webkit-transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16),0px 2px 5px 0px rgba(0, 0, 0, 0.23);
 }
 
 /**
@@ -112,13 +122,21 @@ button:hover {
 
 /* Character Images Styles */
 [data-screen="game"] [data-character] {
+    width: auto !important;
+    height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
 
+    transform: scale(var(--character-scale));
+    transform-origin: bottom center;
 }
 
 /* Other Images Styles */
-[data-screen="game"] [data-image] {
-
+[data-screen="game"] {
+    --character-scale: calc(100vh / 900px * 1.2);
 }
+
+
 
 /**
  * ===========================
@@ -130,7 +148,7 @@ button:hover {
 
 /* Quick Menu Style */
 [data-component="quick-menu"] {
-
+	color: #f7f6f6;
 }
 
 /* Quick Menu Buttons Style */
@@ -156,15 +174,15 @@ button:hover {
 
 /* Use the background property to set a color for these */
 input[type=range]:focus::-webkit-slider-runnable-track {
-
+	background: #ffd54f;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
-
+	background: #ffd54f;
 }
 
 input[type=range]:focus::-ms-fill-upper {
-
+	background: #ffd54f;
 }
 
 input[type=range]:focus::-ms-fill-lower {
@@ -172,18 +190,24 @@ input[type=range]:focus::-ms-fill-lower {
 }
 
 input[type=range]::-moz-range-track {
-
+	background: #ffd54f;
 }
 
 input[type=range]::-ms-fill-lower {
-
+	background: #ffd54f;
 }
 
 input[type=range]::-ms-fill-upper {
-
+	background: #ffd54f;
 }
 
 /** Medium Screens, Phablets (601px) **/
+@media screen and (max-width: 600px) {
+    [data-screen="game"] [data-character] {
+        height: 65vh !important;
+    }
+}
+
 @media screen and (min-width: 37.56255em) {
 	/* Styles for the desktop version of the Quick Menu */
 

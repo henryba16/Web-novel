@@ -14,17 +14,18 @@ const include = [
   "engine/LICENSE",
   "js",
   "style",
-  "favicon.ico",
   "manifest.json",
   "service-worker.js",
+  "index.html",
   "game.html",
+  "ending.html",
 ];
 
 for (const entry of include) {
   cpSync(entry, join(OUT_DIR, entry), { recursive: true });
 }
 
-// Copy index.html with debug script removed
+// Copy game.html with debug script removed
 const html = readFileSync("game.html", "utf-8");
 const cleanedHtml = html
   .replace(/\s*<!-- Debug Library\..*?-->\s*\n/s, "\n")

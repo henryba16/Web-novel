@@ -52,14 +52,16 @@ for (const dir of WATCH_DIRS) {
 
 Bun.serve({
   port: PORT,
-  async fetch(req) {
+  async fetch(req, server) {
     const url = new URL(req.url);
-    let pathname = url.pathname === "/" ? "/index.html" : url.pathname;
+    let pathname = decodeURIComponent(
+      url.pathname === "/" ? "/index.html" : url.pathname
+    );
 
     // Upgrade WebSocket for live-reload
     if (pathname === "/__reload") {
-      if (req.headers.get("upgrade") === "websocket") {
-        return undefined; // Let the websocket handler deal with it
+      if (req.headers.get("upgrade") === "websocket" && server.upgrade(req)) {
+        return;
       }
       return new Response("WebSocket only", { status: 400 });
     }
