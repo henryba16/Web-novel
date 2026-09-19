@@ -45,6 +45,8 @@ Lựa chọn ${index + 1}:
 		const safe =
 			stats?.find(s => s.key === 'safe')?.value ?? 0;
 
+		// SYNC: guardrail block mirrors api/chat-ending.js — any guardrail
+		// edit must be mirrored in both files before the change is called done.
 		const prompt = `
 Bạn là AI phản hồi cho SchoolShield,
 một visual novel giáo dục về sự cô lập xã hội,
