@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vệt nắng cuối hành lang — Sức khỏe tinh thần học đường</title>
     <meta name="description" content="Visual novel tương tác giúp học sinh rèn nhận thức, đồng cảm và kỹ năng ứng phó lành mạnh.">
+    <meta name="author" content="Henry Trần">
     <meta name="application-name" content="SchoolShield">
     <meta name="apple-mobile-web-app-title" content="SchoolShield">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,7 +20,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Vệt nắng cuối hành lang — SchoolShield">
     <meta name="twitter:description" content="Công cụ giáo dục sức khỏe tinh thần học sinh dưới dạng visual novel tương tác.">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="assets/icons/icon.ico" type="image/png">
     <link rel="icon" sizes="192x192" href="assets/icons/icon_192x192.png">
     <link rel="apple-touch-icon" href="assets/icons/icon_180x180.png">
     <link rel="manifest" href="manifest.json">
@@ -1313,7 +1314,11 @@
 
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function () {
-                    navigator.serviceWorker.register('./service-worker.js').catch(function () {
+                    navigator.serviceWorker.register('./service-worker.js', {
+                        updateViaCache: 'none'
+                    }).then(function (registration) {
+                        registration.update();
+                    }).catch(function () {
                         showHelp('Không thể bật chế độ offline trong môi trường hiện tại. Hãy mở website bằng HTTPS hoặc localhost.');
                     });
                 });
