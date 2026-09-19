@@ -1,10 +1,10 @@
 'use strict';
 
-// The name of your game, no spaces or special characters.
-const name = 'Monogatari';
+// Cache name for this app. Keep it stable across releases.
+const name = 'SchoolShield';
 
 // The cache version.
-const version = '0.1.1';
+const version = '0.2.0';
 
 // Name of the Cache Storage bucket this worker owns.
 const cacheName = `${name}-v${version}`;
@@ -34,6 +34,8 @@ const files = [
 	'js/storage.js',
 	'js/script.js',
 	'js/main.js',
+	'js/analytics.js',
+	'js/speed-insights.js',
 
 	// App Images
 	'favicon.ico',
@@ -51,7 +53,9 @@ const files = [
 	'assets/icons/icon_192x192.png',
 	'assets/icons/icon_310x150.png',
 	'assets/icons/icon_310x310.png',
-	'assets/icons/icon_512x512.png'
+	'assets/icons/icon_512x512.png',
+	'assets/icons/logo.png',
+	'assets/scenes/BG-01A.png'
 ];
 
 // Offline fallback, only ever returned for navigations that can't be served
