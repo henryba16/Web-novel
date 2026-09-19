@@ -19,20 +19,21 @@
 
 /* General Style */
 body {
-	background: #f7f6f6;
-	font-family: 'Open Sans', sans-serif;
+	background: #f7f0e8;
+	color: #2d2d2d;
+	font-family: 'Noto Serif', 'Noto Serif JP', Georgia, 'Times New Roman', serif;
 }
 
 /* Simple Button styles*/
 button {
 	outline: none;
-	background: #00acc1;
-	color: #fff;
+	background: #596c58;
+	color: #fffaf3;
 }
 
 /* Simple Button Style on Hover */
 button:hover {
-	background: #00bcd4;
+	background: #7b604a;
 }
 
 /* General Styling for Menu Screens */
@@ -67,8 +68,8 @@ button:hover {
 
 /* Slots Style */
 [data-component="save-slot"] figure {
-	background: rgba(229, 57, 53, 0.8);
-	color: rgba(255, 255, 255, 0.8);
+	background: #eef1e8;
+	color: #2d2d2d;
 }
 
 /* Slot's Image Style */
@@ -97,22 +98,27 @@ button:hover {
 
 /* Choice Buttons style */
 [data-component="choice-container"] button {
-
+	background: rgba(45, 45, 45, 0.88);
+	color: #fffaf3;
+	border: 1px solid #909f8f;
 }
 
 /* Choice Button Style on Hover */
 [data-component="choice-container"] button:hover {
-
+	background: #596c58;
+	color: #fffaf3;
 }
 
 /* Text Box styling */
 [data-component="text-box"] {
-
+	background: rgba(45, 45, 45, 0.82);
+	color: #fffaf3;
+	border: 1px solid #d6baa1;
 }
 
 /* Character Name Style */
 [data-ui="who"] {
-
+	color: #596c58;
 }
 
 /* Style for Centered Text */
@@ -127,13 +133,19 @@ button:hover {
     max-width: none !important;
     max-height: none !important;
 
-    transform: scale(var(--character-scale));
+    /* `scale` property (NOT transform): entrance animations drive the
+       `transform` property, which would override scale(). Individual
+       transform properties compose, so the factor survives animations. */
+    scale: var(--character-scale);
     transform-origin: bottom center;
 }
 
 /* Other Images Styles */
 [data-screen="game"] {
-    --character-scale: calc(100vh / 900px * 1.2);
+    /* One uniform factor for every sprite: natural-size ratios between
+       sprites are preserved, and the whole cast scales with the smaller
+       screen dimension (1.2x at the 1600x900 reference, clamped). */
+    --character-scale: clamp(0, calc(min(100vh / 900px, 100vw / 1600px) * 1.2), 1.8);
 }
 
 
@@ -148,7 +160,7 @@ button:hover {
 
 /* Quick Menu Style */
 [data-component="quick-menu"] {
-	color: #f7f6f6;
+
 }
 
 /* Quick Menu Buttons Style */
@@ -174,15 +186,15 @@ button:hover {
 
 /* Use the background property to set a color for these */
 input[type=range]:focus::-webkit-slider-runnable-track {
-	background: #ffd54f;
+	background: #596c58;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
-	background: #ffd54f;
+	background: #d6baa1;
 }
 
 input[type=range]:focus::-ms-fill-upper {
-	background: #ffd54f;
+	background: #596c58;
 }
 
 input[type=range]:focus::-ms-fill-lower {
@@ -190,22 +202,22 @@ input[type=range]:focus::-ms-fill-lower {
 }
 
 input[type=range]::-moz-range-track {
-	background: #ffd54f;
+	background: #d6baa1;
 }
 
 input[type=range]::-ms-fill-lower {
-	background: #ffd54f;
+	background: #d6baa1;
 }
 
 input[type=range]::-ms-fill-upper {
-	background: #ffd54f;
+	background: #d6baa1;
 }
 
 /** Medium Screens, Phablets (601px) **/
 @media screen and (max-width: 600px) {
-    [data-screen="game"] [data-character] {
-        height: 65vh !important;
-    }
+    /* No fixed sprite height here: the uniform --character-scale above
+       already shrinks the whole cast on small screens while keeping
+       relative size differences between sprites. */
 }
 
 @media screen and (min-width: 37.56255em) {
