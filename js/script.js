@@ -453,6 +453,11 @@ monogatari.script ({
 		'show character qt nc2 at right with fadeIn',
 		'qt Nhóm tao đủ rồi, mày sang chỗ khác đi!',
 		'"Linh buồn bã nhìn về phía nhóm của bạn cùng lớp, nhưng chẳng có ai lên tiếng."',
+<<<<<<< HEAD
+		'mh Ừ đủ rồi cậu tìm chỗ khác đi!',
+		'tl Ừm... tớ sẽ tìm nhóm khác.',
+		'"Linh lủi thủi trở về chỗ ngồi của cô ấy."',
+=======
 		'hide character qt with fadeOut',
 		'show character mh tg at right with fadeIn',
 		'mh Ừ đủ rồi cậu tìm chỗ khác đi',
@@ -462,6 +467,7 @@ monogatari.script ({
 		'show character tl tti at left with slideInRight',
 		'"Linh lủi thủi trở về chỗ ngồi của cô ấy"',
 		'hide character tl with fadeOut',
+>>>>>>> origin/phuoc
 		'jump choice1',
 	],
 	'choice1': [{
