@@ -1,0 +1,9 @@
+.vibecode-backup*/
+.agents/
+.claude/
+.codex/
+process/
+CLAUDE.md
+AGENTS.md
+.vc-installed-files
+.vc-version

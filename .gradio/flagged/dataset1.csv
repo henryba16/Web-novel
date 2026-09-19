@@ -1,3 +1,0 @@
-Input,Models,Alpha matting,Foreground threshold,Background threshold,Erosion size,Only mask,Post process mask,Decontaminate edges,ViTMatte edge refinement,Arguments,Output,timestamp
-.gradio/flagged/Input/cc29bc06ed97c00bf0a9/favicon.png,bria-rmbg,true,240,10,40,false,true,false,false,,,2026-09-18 10:39:50.508568
-.gradio/flagged/Input/a3369aebbb9b2b1baac8/favicon.png,u2net,true,240,10,40,false,true,true,true,,.gradio/flagged/Output/f53c80f48dbbd170492e/image.webp,2026-09-18 11:07:43.763280
