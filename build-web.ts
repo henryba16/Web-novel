@@ -19,6 +19,7 @@ const include = [
   "index.html",
   "game.html",
   "ending.html",
+  "AI-ATTRIBUTION.html",
 ];
 
 for (const entry of include) {
