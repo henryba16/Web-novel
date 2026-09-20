@@ -4,7 +4,7 @@
 const name = 'SchoolShield';
 
 // The cache version.
-const version = '0.3.1';
+const version = '0.3.2';
 
 // Name of the Cache Storage bucket this worker owns.
 const cacheName = `${name}-v${version}`;
@@ -26,6 +26,7 @@ const files = [
 	'index.html',
 	'game.html',
 	'ending.html',
+	'AI-ATTRIBUTION.html',
 
 	// Style Sheets
 	'style/main.css',

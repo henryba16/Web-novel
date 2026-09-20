@@ -4,6 +4,8 @@ SchoolShield là công cụ mô phỏng tình huống học đường giúp họ
 
 Website: [https://web-novel-rosy.vercel.app](https://web-novel-rosy.vercel.app)
 
+Danh sách công cụ AI đã dùng: [https://web-novel-rosy.vercel.app/AI-ATTRIBUTION.html](https://web-novel-rosy.vercel.app/AI-ATTRIBUTION.html)
+
 ## Bối cảnh vấn đề
 
 Học sinh THCS-THPT có thể gặp lo âu, căng thẳng và suy giảm tự tin trong giai đoạn phát triển tâm sinh lý quan trọng. Tuy nhiên, nhiều em chưa được trang bị đầy đủ kỹ năng nhận diện cảm xúc của bản thân hoặc phản ứng phù hợp trước các tình huống xã hội gây tổn thương.
