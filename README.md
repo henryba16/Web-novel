@@ -52,6 +52,16 @@ Các chỉ số này dùng để phản ánh lựa chọn trong trải nghiệm 
 
 Khi người chơi hoặc bạn bè đang gặp tình huống tương tự ngoài đời, hãy tìm người lớn đáng tin cậy, phòng tư vấn tâm lý học đường hoặc cán bộ chuyên môn để được hỗ trợ. Tại Việt Nam, có thể liên hệ **Tổng đài Quốc gia Bảo vệ Trẻ em 111** khi cần tư vấn và hỗ trợ liên quan đến trẻ em.
 
+## Cơ sở nghiên cứu (tóm tắt)
+
+Diễn giải chi tiết nằm trong báo cáo dự án; dưới đây là các nguồn chính (mỗi nguồn một dòng) kèm loại nguồn:
+
+- [Staub & Vollhardt (2008), "Altruism born of suffering"](https://pubmed.ncbi.nlm.nih.gov/19123746/) — tạp chí khoa học (nổi tiếng, 100+ trích dẫn): trải nghiệm tổn thương có thể làm tăng sự quan tâm và hành vi giúp đỡ người khác.
+- [Greenberg et al. (2018), "Elevated empathy in adults following childhood trauma"](https://pmc.ncbi.nlm.nih.gov/articles/PMC6169872/) — tạp chí khoa học (nhóm Cambridge/Baron-Cohen, nổi tiếng): mức độ chấn thương thời thơ ấu tương quan thuận với đồng cảm ở tuổi trưởng thành.
+- [CDC: About Bullying](https://cdc.gov/youth-violence/about/about-bullying.html) — trang chính phủ Mỹ (CDC, nổi tiếng): bắt nạt gây hại cho cả nạn nhân, người gây hấn và người chứng kiến; phòng ngừa qua kỹ năng đồng cảm và quản lý xung đột.
+- [StopBullying.gov](https://www.stopbullying.gov/) — trang chính phủ liên bang Mỹ (Bộ Y tế HHS, nổi tiếng): hướng dẫn phòng ngừa bắt nạt và vai trò người chứng kiến tích cực (upstander).
+- [CDC: Adolescent Mental Health](https://www.cdc.gov/healthy-youth/mental-health/index.html) — trang chính phủ Mỹ (CDC): gắn kết với trường học, gia đình và bạn bè là yếu tố bảo vệ sức khỏe tinh thần thanh thiếu niên.
+
 ## Yêu cầu hệ thống
 
 - [Bun](https://bun.sh/) để chạy dev server và build web
