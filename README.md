@@ -80,6 +80,30 @@ Diễn giải chi tiết nằm trong báo cáo dự án; dưới đây là các 
 - [Sultan & Khan (2025), Frontiers in Psychology](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2025.1575249/pdf) — tạp chí khoa học (mở, miễn phí): đồng cảm bẩm sinh không tự phát triển — cần tương tác nuôi dưỡng (kể chuyện, nhập vai, hướng dẫn); thiếu điều này, trẻ lớn lên mà không ai sửa cách nghĩ.
 - [Kohlberg's stages of moral development](https://homepage.villanova.edu/richard.jacobs/MPA%208300/theories/kohlberg.html) — trang đại học Mỹ (không phải gov, nhưng là lý thuyết nổi tiếng nhất): trẻ nhỏ chỉ hiểu đúng sai qua thưởng/phạt và lợi ích bản thân; muốn lên mức cao hơn cần có người dẫn dắt suy nghĩ.
 
+### Game giáo dục và đồng cảm (gần SchoolShield nhất)
+
+- [JOINclusion — game di động thúc đẩy đồng cảm liên văn hóa trong trường học](https://dke.maastrichtuniversity.nl/JOINclusion/) — trang dự án (đại học châu Âu, nguồn gần nhất với SchoolShield): game kể chuyện + nhiều người chơi cho trẻ 8–12 tuổi, luyện nhận diện cảm xúc, đặt mình vào vị trí người khác và quyết định prosocial; nghiên cứu trên 286 trẻ ở 3 nước cho thấy perspective-taking tăng rõ sau khi chơi.
+- [Actions and digital empathy in serious games](https://www.tandfonline.com/doi/full/10.1080/10350330.2022.2128039) — tạp chí khoa học: phân tích That Dragon, Cancer, chỉ ra truyện tương tác tạo đồng cảm chính nhờ vai trò tham gia và lựa chọn của người chơi — lý do SchoolShield để người chơi tự chọn thay vì chỉ đọc.
+- [Emotiplay — game dạy nhận diện cảm xúc cho trẻ](https://pubmed.ncbi.nlm.nih.gov/28275895) — tạp chí khoa học (nhóm Cambridge/Harvard): thử nghiệm ở 3 nước cho thấy game cải thiện nhận diện cảm xúc qua mặt, giọng nói và ngôn ngữ cơ thể.
+- [REAL LIVES — game mô phỏng nuôi đồng cảm toàn cầu](https://eric.ed.gov/?id=EJ975882) — tạp chí khoa học (lưu trữ ERIC, cơ sở dữ liệu giáo dục của chính phủ Mỹ): học sinh hóa thân vào cuộc đời người khác cho thấy đồng cảm toàn cầu cao hơn nhóm đối chứng.
+- [vSchool — đo hành vi prosocial bằng game VR trong trường học](https://ies.ed.gov/use-work/awards/measuring-prosocial-behavior-schools-through-virtual-reality-game-vschool) — trang chính phủ Mỹ (Viện Khoa học Giáo dục IES): game đánh giá hành vi giúp đỡ, chia sẻ của học sinh lớp 4–6 để kiểm chứng chương trình SEL.
+
+### Serious game có ích cho giáo dục nói chung
+
+- [Lamb et al. (2018), meta-analysis 46 nghiên cứu](https://www.sciencedirect.com/science/article/abs/pii/S0747563217306143) — tạp chí khoa học: game giáo dục ảnh hưởng tích cực tới nhận thức (d ≈ 0.67) và cảm xúc (d ≈ 0.51).
+- [Wouters et al. (2013), meta-analysis](https://eric.ed.gov/?id=EJ1008015) — tạp chí khoa học (lưu trữ ERIC): serious game hiệu quả hơn dạy truyền thống về học tập và ghi nhớ, nhất khi kết hợp hướng dẫn thêm và chơi nhiều buổi.
+- [Clark et al. (2016), meta-analysis game và học tập K–16](https://pmc.ncbi.nlm.nih.gov/articles/PMC4748544) — tạp chí khoa học (mở, miễn phí): game số cải thiện kết quả nhận thức ở học sinh các cấp.
+- [Durlak et al. (2011), meta-analysis SEL trong trường học](https://pubmed.ncbi.nlm.nih.gov/21291449) — tạp chí khoa học (rất nổi tiếng, ~18.000 trích dẫn): 213 chương trình SEL với 270.000 học sinh cải thiện kỹ năng socio-emotional và điểm số.
+- [Granic et al. (2014), lợi ích của chơi game](https://pubmed.ncbi.nlm.nih.gov/24295515) — tạp chí khoa học (American Psychologist, rất nổi tiếng): game mang lại lợi ích nhận thức, động lực, cảm xúc và xã hội cho trẻ.
+- [David et al. (2020), meta-analysis thận trọng](https://link.springer.com/article/10.1007/s10566-020-09566-1) — tạp chí khoa học: bằng chứng game cải thiện sức khỏe tâm thần trẻ còn hạn chế, cần thêm nghiên cứu tốt — dùng khi cần trình bày cân bằng, không overclaim.
+
+### Nghiên cứu mới: điều tiết cảm xúc, y tế công cộng, empathy số
+
+- [Gómez-León (2025), game và điều tiết cảm xúc 6–18 tuổi](https://pmc.ncbi.nlm.nih.gov/articles/PMC11875820) — tạp chí khoa học (mở, miễn phí): tổng hợp 33 nghiên cứu trên 18 game — serious game khả thi và được chấp nhận để luyện điều tiết cảm xúc, game có biofeedback triển vọng nhất.
+- [Huang et al. (2026), game số trong giáo dục y tế công cộng](https://pmc.ncbi.nlm.nih.gov/articles/PMC13108840) — tạp chí khoa học (mở, miễn phí, rất mới): 40 thử nghiệm ngẫu nhiên, 8.764 người, 19 nước — game số cải thiện kiến thức và thái độ hơn giáo dục truyền thống; chơi nhiều buổi hiệu quả hơn một buổi.
+- [Scoping review: Digital Empathy Games trong đào tạo y tế (2025)](https://onlinelibrary.wiley.com/doi/10.1111/eje.70077) — tạp chí khoa học: game số có tiềm năng phát triển đồng cảm nhưng vẫn cần thêm nghiên cứu — câu an toàn khi thuyết trình.
+- [Tong et al. (2020), game VR "AS IF" cho đồng cảm với bệnh nhân đau mãn tính](https://games.jmir.org/2020/3/e17354) — tạp chí khoa học: sau trải nghiệm, ý muốn giúp đỡ tăng rõ rệt, dù điểm đồng cảm tổng chưa đạt ý nghĩa — ví dụ tốt rằng game tác động từng thành phần empathy chứ không phải toàn bộ.
+
 ## Yêu cầu hệ thống
 
 - [Bun](https://bun.sh/) để chạy dev server và build web
