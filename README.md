@@ -62,6 +62,24 @@ Diễn giải chi tiết nằm trong báo cáo dự án; dưới đây là các 
 - [StopBullying.gov](https://www.stopbullying.gov/) — trang chính phủ liên bang Mỹ (Bộ Y tế HHS, nổi tiếng): hướng dẫn phòng ngừa bắt nạt và vai trò người chứng kiến tích cực (upstander).
 - [CDC: Adolescent Mental Health](https://www.cdc.gov/healthy-youth/mental-health/index.html) — trang chính phủ Mỹ (CDC): gắn kết với trường học, gia đình và bạn bè là yếu tố bảo vệ sức khỏe tinh thần thanh thiếu niên.
 
+### Tổn thương dẫn đến hành vi (bắt nạt, khó quyết định, người chứng kiến)
+
+- [Hamstra et al. (2022), "Longitudinal Effects from Childhood Abuse to Bullying"](https://pmc.ncbi.nlm.nih.gov/articles/PMC9360357) — tạp chí khoa học: trẻ từng bị bạo hành dễ trở thành người bắt nạt ở tuổi vị thành niên (qua trầm cảm, lo âu, kỹ năng xã hội kém).
+- [Lereya et al. (2015), bully/victims cohort](https://pubmed.ncbi.nlm.nih.gov/25825225/) — tạp chí khoa học (nổi tiếng, ~300 trích dẫn): nhóm vừa bắt nạt vừa bị bắt nạt có nguy cơ vấn đề sức khỏe tâm thần cao nhất.
+- [Bauer et al. (2006), Pediatrics](https://pubmed.ncbi.nlm.nih.gov/16882768) — tạp chí khoa học (Pediatrics, nổi tiếng): 97% trẻ bắt nạt bạn cũng từng là nạn nhân.
+- [Decision-Making Deficits Among Maltreated Children](https://pmc.ncbi.nlm.nih.gov/articles/PMC3737421) — tạp chí khoa học: trẻ bị ngược đãi chậm phát triển hệ thần kinh nhận thức và điều tiết cảm xúc, ảnh hưởng khả năng ra quyết định.
+- [Childhood trauma and adult moral decision-making](https://pmc.ncbi.nlm.nih.gov/articles/PMC6287939) — tạp chí khoa học: chấn thương thời thơ ấu (đặc biệt là bị bỏ mặc) làm thay đổi kiểu ra quyết định đạo đức ở tuổi trưởng thành.
+- [Höfels (2026), umbrella review](https://www.sciencedirect.com/science/article/pii/S0149763426002757) — tạp chí khoa học (rất mới): chấn thương thời thơ ấu suy giảm chức năng điều hành, tăng bốc đồng và lo âu lặp đi lặp lại.
+- [StopBullying.gov: How to Prevent Bullying](https://www.stopbullying.gov/prevention/how-to-prevent-bullying) — trang chính phủ liên bang Mỹ (nổi tiếng): người chứng kiến có thể thành upstander — can thiệp an toàn thay vì đứng nhìn.
+
+### Đồng cảm hình thành từ nhỏ (và khi không ai dạy)
+
+- [Rakoczy (2022), Nature Reviews Psychology](https://www.nature.com/articles/s44159-022-00037-z) — tạp chí khoa học (Nature, rất nổi tiếng): khả năng hiểu suy nghĩ/cảm xúc người khác (theory of mind) hình thành dần từ 4–5 tuổi, là nền tảng của giao tiếp và hợp tác.
+- [ToM and moral development in early childhood](https://pmc.ncbi.nlm.nih.gov/articles/PMC3039679) — tạp chí khoa học: trẻ hiểu cảm xúc và suy nghĩ người khác càng tốt thì lập luận đạo đức càng vững — thiếu nền tảng này, trẻ khó phân biệt đúng sai.
+- [ToM, empathy and prosocial behavior: meta-analysis (2024)](https://link.springer.com/article/10.1007/s12144-024-05762-7) — tạp chí khoa học: tổng hợp 24 nghiên cứu (16.000+ trẻ 2–19 tuổi) cho thấy hiểu suy nghĩ người khác dự đoán hành vi giúp đỡ.
+- [Sultan & Khan (2025), Frontiers in Psychology](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2025.1575249/pdf) — tạp chí khoa học (mở, miễn phí): đồng cảm bẩm sinh không tự phát triển — cần tương tác nuôi dưỡng (kể chuyện, nhập vai, hướng dẫn); thiếu điều này, trẻ lớn lên mà không ai sửa cách nghĩ.
+- [Kohlberg's stages of moral development](https://homepage.villanova.edu/richard.jacobs/MPA%208300/theories/kohlberg.html) — trang đại học Mỹ (không phải gov, nhưng là lý thuyết nổi tiếng nhất): trẻ nhỏ chỉ hiểu đúng sai qua thưởng/phạt và lợi ích bản thân; muốn lên mức cao hơn cần có người dẫn dắt suy nghĩ.
+
 ## Yêu cầu hệ thống
 
 - [Bun](https://bun.sh/) để chạy dev server và build web
