@@ -1090,7 +1090,7 @@ monogatari.script ({
 	'delete':[
 		'pl Thôi được rồi, tớ sẽ xóa tin nhắn này đi.',
 		'"Bạn xóa tin nhắn và gục đầu xuống bàn ngủ"',
-		'Ma |Linh ơi cậu đi ăn trưa với tụi tớ nhé?|',
+		'ma |Linh ơi cậu đi ăn trưa với tụi tớ nhé?|',
 		'play sound noti2',
 		'tl |Tớ bận việc rồi! Tí tớ ăn sau!|',
 		'<h5>🗑️ Xóa tin nhắn</h5><br>Bạn đã chọn lan truyền hình ảnh đi<br>Dù cho bạn có thu hồi thì danh tiếng Trúc Linh cũng đã bị ảnh hưởng ít nhiều!',
