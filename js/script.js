@@ -937,7 +937,10 @@ monogatari.script ({
 	],
 	'telltuan':[
 		'show character pl nc at center with fadeIn',
-		'show character qt tg at right with fadeIn',
+		'hide character qt with fadeOut',
+		'show character qt tg at right with slideInLeft',
+		'hide character mh with fadeOut',
+		'show character mh ngb at left with slideInRight',
 		'pl Nào, hai người, tha cho Linh đi. Mấy cậu không thấy cậu ấy đang không thích à?',
 		'qt Ý! thằng bạn trai nhỏ mày đến rồi kia, mà có gì to tát đâu. Bọn tao chỉ đùa chút thôi mà {{player.name}}!',
 		'pl Mấy cậu có thể thấy điều đó vui. Nhưng nó không có nghĩa là Linh sẽ thấy vui!',

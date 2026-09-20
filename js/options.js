@@ -18,13 +18,13 @@ monogatari.settings({
 	'Name': 'My Visual Novel',
 
 	// The version of your game in semantic versioning (https://semver.org/).
-	'Version': '0.1.0',
+	'Version': '0.1.1',
 
 	// Initial Label *
 	'Label': 'Start',
 
 	// Number of AutoSave Slots
-	'Slots': 10,
+	'Slots': 1,
 
 	// Change to true for a MultiLanguage GameScreen.
 	'MultiLanguage': false,
@@ -46,7 +46,7 @@ monogatari.settings({
 	'ShowMainScreen': true,
 
 	// Turn image preloading on/off, Default: true
-	'Preload': false,
+	'Preload': true,
 
 	// Time interval between autosaves (In Minutes). Default: 0 (Off)
 	'AutoSave': 1,
@@ -69,7 +69,7 @@ monogatari.settings({
 	// Enables or disables instant text when moving the game forward.
 	// Enabled - Text will instantly appear when the player moves the text forward.
 	// Disabled - Text will appear at a rapid speed, ignoring pauses.
-	'InstantText': true,
+	'InstantText': false,
 
 	// Enables or disables the typing text animation in NVL dialogs for the
 	// whole game.

@@ -145,7 +145,7 @@ button:hover {
     /* One uniform factor for every sprite: natural-size ratios between
        sprites are preserved, and the whole cast scales with the smaller
        screen dimension (1.2x at the 1600x900 reference, clamped). */
-    --character-scale: clamp(0, calc(min(100vh / 900px, 100vw / 1600px) * 1.2), 1.8);
+    --character-scale: clamp(0, calc(min(100vh / 900px, 100vw / 1600px) * 1.2), 1000000000);
 }
 
 
