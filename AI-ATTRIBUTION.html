@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Phụ lục: Công cụ AI và nguồn lực sử dụng trong SchoolShield</title>
+<style>
+body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 900px; margin: 2rem auto; padding: 0 1rem; color: #222; }
+h1 { font-size: 1.4rem; }
+h2 { font-size: 1.15rem; margin-top: 2rem; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.92rem; }
+th, td { border: 1px solid #999; padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+th { background: #f0f0f0; }
+.note { background: #fff8e1; border-left: 4px solid #e6a700; padding: 0.8rem 1rem; margin: 1rem 0; }
+.fill { color: #b00020; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h1>Phụ lục: Công cụ AI và nguồn lực sử dụng trong SchoolShield</h1>
+
+<div class="note">
+Mọi thông tin dưới đây là báo cáo trung thực về quá trình sử dụng AI,
+API, thư viện và mã nguồn mở trong dự án.
+</div>
+
+<h2>1. Công cụ AI tham gia phát triển</h2>
+<table>
+<tr><th>Công cụ</th><th>Nhà cung cấp</th><th>Dùng cho</th><th>Ghi chú kiểm chứng</th></tr>
+<tr><td>OpenCode agent (Muse Spark)</td><td>OpenCode / Meta</td><td>Thiết lập harness, redesign landing page, chatbot ending, làm mới game shell, kiểm tra sprite, tài liệu README</td><td>Lịch sử làm việc trong phiên phát triển; các commit sau <code>18d068c</code></td></tr>
+<tr><td>ChatGPT</td><td>OpenAI</td><td>Công cụ chính: phác thảo storyboard, gợi ý thoại và nhánh lựa chọn, debug code, giải thích tài liệu kỹ thuật</td><td>Dùng luân phiên với các AI dưới đây tùy thời điểm</td></tr>
+<tr><td>Claude</td><td>Anthropic</td><td>Rà soát code, kiểm tra logic game (storage, API ending), hỗ trợ viết tài liệu</td><td>Đối chiếu commit <code>bedb1b6</code> trở đi</td></tr>
+<tr><td>Gemini</td><td>Google</td><td>Dự phòng khi Grok quá tải: cùng storyboard, kiểm tra logic nhánh truyện, tài liệu</td><td>Chuỗi dự phòng: ChatGPT → Grok → Gemini</td></tr>
+<tr><td>Grok</td><td>xAI</td><td>Dự phòng khi ChatGPT quá tải: tiếp tục cùng storyboard, debug, hỏi đáp kỹ thuật</td><td>Chuỗi dự phòng: ChatGPT → Grok → Gemini</td></tr>
+<tr><td>Dreamina</td><td>CapCut / ByteDance</td><td>Tạo 1 ảnh tổng hợp chứa toàn bộ sprite của mỗi nhân vật</td><td>File gốc trong <code>assets/</code> trước khi cắt</td></tr>
+<tr><td>Gemini Nano Banana</td><td>Google</td><td>Nâng chất lượng (enhance) từng sprite sau khi cắt</td><td>Chạy trên ảnh sprite đơn</td></tr>
+<tr><td>GIMP</td><td>GNU (miễn phí)</td><td>Chỉnh sửa, căn cắt sprite thủ công sau enhance</td><td>File PNG cuối trong <code>assets/characters/</code></td></tr>
+</table>
+<p>Quy tắc ghi công trung thực: storyboard và phần lớn code do bạn tự viết — các AI trên dùng luân phiên cho cùng các khâu (kịch bản, hình ảnh, code, testing) tùy công cụ nào khả dụng lúc đó; AI chỉ hỗ trợ, quyết định cuối cùng là của bạn.</p>
+
+<h2>2. API AI trong sản phẩm (runtime)</h2>
+<table>
+<tr><th>API</th><th>Nhà cung cấp</th><th>Dùng cho</th><th>Key</th></tr>
+<tr><td>OpenRouter (<code>openrouter/free</code>)</td><td>OpenRouter</td><td><code>api/analyze-ending.js</code>: phân tích ending; <code>api/chat-ending.js</code>: chatbot follow-up</td><td><code>OPENROUTER_API_KEY</code> (server-side, Vercel env, không commit)</td></tr>
+</table>
+
+<h2>3. Thư viện và framework</h2>
+<table>
+<tr><th>Thư viện</th><th>Phiên bản</th><th>Dùng cho</th></tr>
+<tr><td>Monogatari (vendored, <code>engine/</code>)</td><td>Bundled (không qua npm)</td><td>Visual novel engine</td></tr>
+<tr><td>Electron</td><td>^42.4.0</td><td>Vỏ desktop (<code>engine/electron/</code>)</td></tr>
+<tr><td>electron-builder</td><td>^26.15.3</td><td>Đóng gói Win/Mac/Linux</td></tr>
+<tr><td>@electron/notarize</td><td>^3.1.1</td><td>Notarize bản macOS</td></tr>
+<tr><td>Electrobun</td><td>^1.18.1</td><td>Vỏ desktop thay thế</td></tr>
+<tr><td>@vercel/analytics</td><td>^2.0.1</td><td>Phân tích lượt dùng web</td></tr>
+<tr><td>@vercel/speed-insights</td><td>^2.0.0</td><td>Đo hiệu năng web</td></tr>
+<tr><td>dotenv (dev)</td><td>^16.4.5</td><td>Biến môi trường dev</td></tr>
+<tr><td>Bun / Vercel</td><td>(môi trường)</td><td>Dev server, build web, deploy + serverless <code>api/</code></td></tr>
+</table>
+
+<h2>4. Dữ liệu</h2>
+<ul>
+<li>Kịch bản, thoại, nhánh lựa chọn: nhóm tự viết trong <code>js/script.js</code>, có sự hỗ trợ luân phiên của ChatGPT/Grok/Gemini/Claude ở khâu phác thảo, gợi ý thoại và debug.</li>
+<li>Asset hình/âm (<code>assets/</code>): vẽ tay kết hợp AI theo quy trình — Dreamina tạo 1 ảnh tổng hợp toàn bộ sprite của mỗi nhân vật, cắt thành từng sprite đơn, enhance bằng Gemini Nano Banana, chỉnh sửa cuối trong GIMP. <span class="fill">Quyền sử dụng từng asset trước khi phát hành công khai (cần bạn điền)</span>.</li>
+<li>Không dùng dataset huấn luyện hay dữ liệu người dùng thật; chỉ số game chỉ phản ánh lựa chọn mô phỏng.</li>
+</ul>
+
+<h2>5. Mã nguồn</h2>
+<ul>
+<li>Repo dự án: https://github.com/henryba16/Web-novel.git</li>
+<li>Engine Monogatari: mã nguồn mở, giấy phép MIT, bản quyền Diana Islas Ocampo (xem <code>engine/LICENSE</code>); <code>engine/core/</code> và <code>engine/debug/</code> giữ nguyên.</li>
+<li>Giấy phép dự án: MIT (khai báo trong <code>package.json</code>).</li>
+</ul>
+
+</body>
+</html>
