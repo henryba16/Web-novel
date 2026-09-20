@@ -4,7 +4,7 @@
 const name = 'SchoolShield';
 
 // The cache version.
-const version = '0.3.0';
+const version = '0.3.1';
 
 // Name of the Cache Storage bucket this worker owns.
 const cacheName = `${name}-v${version}`;
