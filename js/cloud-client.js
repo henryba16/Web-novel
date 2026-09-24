@@ -121,10 +121,18 @@
 		);
 	}
 
-	async function readError(res) {		var message = 'Request failed (HTTP ' + res.status + ').';
+	async function readError(res) {
+		var fallback = 'Request failed (HTTP ' + res.status + ').';
+		var message = fallback;
 		var code = 'http_' + res.status;
+		var raw = '';
 		try {
-			var body = await res.json();
+			raw = await res.text();
+		} catch (e) {
+			raw = '';
+		}
+		try {
+			var body = raw ? JSON.parse(raw) : null;
 			if (body) {
 				if (typeof body.msg === 'string' && body.msg) {
 					message = body.msg;
@@ -142,7 +150,10 @@
 				}
 			}
 		} catch (e) {
-			/* non-JSON error body: keep default message */
+			/* non-JSON body: fall through to raw snippet below */
+		}
+		if (message === fallback && raw) {
+			message += ' ' + raw.slice(0, 200);
 		}
 		return new CloudError(code, message, res.status === 0);
 	}
