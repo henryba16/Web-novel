@@ -115,11 +115,17 @@
                 setStatus(suStatus, '', 'Đang tạo tài khoản…');
                 try {
                     var res = await window.CloudAuth.signUp(email, password, role, displayName);
+                    suBtn.disabled = true;
                     if (res.needsConfirmation) {
-                        setStatus(suStatus, 'ok', 'Tài khoản đã tạo — kiểm tra email để xác nhận, sau đó đăng nhập.');
+                        setStatus(suStatus, 'ok', 'Đăng ký thành công! Kiểm tra email để xác nhận tài khoản, đang chuyển sang trang đăng nhập…');
+                        setTimeout(function () {
+                            window.location.href = 'login.html';
+                        }, 1800);
                     } else {
-                        setStatus(suStatus, 'ok', 'Đăng ký thành công. Đang chuyển hướng…');
-                        window.CloudAuth.goToLanding(res.profile && res.profile.role);
+                        setStatus(suStatus, 'ok', 'Đăng ký thành công! Đang chuyển hướng…');
+                        setTimeout(function () {
+                            window.CloudAuth.goToLanding(res.profile && res.profile.role);
+                        }, 1200);
                     }
                 } catch (err) {
                     setStatus(suStatus, 'err', 'Đăng ký thất bại: ' + ((err && err.message) || 'lỗi không rõ'));

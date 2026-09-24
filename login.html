@@ -115,8 +115,11 @@
                 setStatus(liStatus, '', 'Đang đăng nhập…');
                 try {
                     var res = await window.CloudAuth.signIn(email, password);
-                    setStatus(liStatus, 'ok', 'Đăng nhập thành công. Đang chuyển hướng…');
-                    window.CloudAuth.goToLanding(res.profile && res.profile.role);
+                    setStatus(liStatus, 'ok', 'Đăng nhập thành công! Đang chuyển hướng…');
+                    liBtn.disabled = true;
+                    setTimeout(function () {
+                        window.CloudAuth.goToLanding(res.profile && res.profile.role);
+                    }, 1200);
                 } catch (err) {
                     setStatus(liStatus, 'err', 'Đăng nhập thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
                 } finally {

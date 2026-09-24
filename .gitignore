@@ -10,3 +10,9 @@ AGENTS.md
 build/web
 # Phase 2 PoC: local Supabase dev config (untracked; Vercel env is the source of truth)
 js/supabase-config.local.js
+
+# OS junk
+Desktop.ini
+desktop.ini
+Thumbs.db
+.DS_Store
