@@ -29,17 +29,4 @@
 
 	window.SUPABASE_CONFIG = cfg;
 
-	/* DEBUG (safe: host only, never key material): shows in DevTools console
-	 * whether this build carries injected config or is guest-only. */
-	try {
-		var hostMatch = String(cfg.SUPABASE_URL || '').match(/^https?:\/\/([^/]+)/);
-		console.log(
-			'[Cloud] config:',
-			cfg.CLOUD_DISABLED
-				? 'DISABLED — placeholders unreplaced (build env missing?)'
-				: 'enabled, host=' + (hostMatch ? hostMatch[1] : '(bad URL)')
-		);
-	} catch (e) {
-		/* logging must never break boot */
-	}
 })();
