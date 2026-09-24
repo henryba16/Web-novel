@@ -98,10 +98,12 @@
                     return false;
                 }
                 var s = window.CloudClient.getSession();
+                var host = (typeof window.CloudClient.configHost === 'function' && window.CloudClient.configHost()) || '';
                 setStatus(
                     cloudState,
                     s ? 'ok' : '',
-                    s && s.user ? 'Đang đăng nhập: ' + s.user.email : 'Chưa đăng nhập. Chế độ đám mây sẵn sàng.'
+                    (s && s.user ? 'Đang đăng nhập: ' + s.user.email : 'Chưa đăng nhập. Chế độ đám mây sẵn sàng.') +
+                    (host ? ' (máy chủ: ' + host + ')' : '')
                 );
                 return true;
             }

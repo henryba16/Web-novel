@@ -89,8 +89,39 @@
 		return h;
 	}
 
-	async function readError(res) {
-		var message = 'Request failed (HTTP ' + res.status + ').';
+	/* fetch with a hard timeout so a stalled request becomes a visible
+	 * error instead of a forever-disabled button. 20s is generous for
+	 * Supabase Auth/PostgREST over normal networks. */
+	var REQUEST_TIMEOUT_MS = 20000;
+
+	function fetchWithTimeout(url, init) {
+		if (typeof AbortController === 'undefined') {
+			return fetch(url, init);
+		}
+		var ctrl = new AbortController();
+		var timer = setTimeout(function () {
+			try {
+				ctrl.abort();
+			} catch (e) {
+				/* ignore */
+			}
+		}, REQUEST_TIMEOUT_MS);
+		return fetch(url, init).then(
+			function (res) {
+				clearTimeout(timer);
+				return res;
+			},
+			function (err) {
+				clearTimeout(timer);
+				if (err && err.name === 'AbortError') {
+					throw new CloudError('timeout', 'Hết thời gian chờ (20 giây). Kiểm tra mạng rồi thử lại.', false);
+				}
+				throw err;
+			}
+		);
+	}
+
+	async function readError(res) {		var message = 'Request failed (HTTP ' + res.status + ').';
 		var code = 'http_' + res.status;
 		try {
 			var body = await res.json();
@@ -122,7 +153,7 @@
 		var url = baseUrl() + '/auth/v1/' + path;
 		var res;
 		try {
-			res = await fetch(url, {
+			res = await fetchWithTimeout(url, {
 				method: options.method || 'GET',
 				headers: authHeaders(options.token),
 				body: options.body ? JSON.stringify(options.body) : undefined
@@ -264,7 +295,7 @@
 		}
 		var res;
 		try {
-			res = await fetch(url, {
+			res = await fetchWithTimeout(url, {
 				method: options.method || 'GET',
 				headers: headers,
 				body: options.body !== undefined ? JSON.stringify(options.body) : undefined
@@ -287,6 +318,17 @@
 		return s && s.access_token ? s.access_token : null;
 	}
 
+	/* Configured Supabase host (no key material) for diagnostics. */
+	function configHost() {
+		try {
+			var u = baseUrl();
+			var m = String(u).match(/^https?:\/\/([^/]+)/);
+			return m ? m[1] : '';
+		} catch (e) {
+			return '';
+		}
+	}
+
 	window.CloudError = CloudError;
 	window.CloudClient = {
 		SESSION_KEY: SESSION_KEY,
@@ -301,6 +343,7 @@
 		sendPasswordReset: sendPasswordReset,
 		updatePassword: updatePassword,
 		rest: rest,
-		accessToken: accessToken
+		accessToken: accessToken,
+		configHost: configHost
 	};
 })();
