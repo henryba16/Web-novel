@@ -393,6 +393,24 @@
             color: var(--sage-dark);
         }
 
+        .topbar-account {
+            flex: 0 0 auto;
+            color: var(--paper);
+            background: var(--ink);
+            border-radius: 999px;
+            padding: 0.55rem 1.4rem;
+            font-size: 0.84rem;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            letter-spacing: 0.02em;
+        }
+
+        .topbar-account:hover {
+            background: var(--sage-dark);
+            color: var(--paper);
+        }
+
         .home-main {
             padding-top: 0;
         }
@@ -846,6 +864,7 @@
                 <a href="#project">Dự án</a>
                 <a href="#faq">Câu hỏi thường gặp</a>
             </div>
+            <a href="login.html" id="account-link" class="topbar-account">Đăng nhập</a>
         </nav>
 
         <header>
@@ -869,7 +888,7 @@
                 </p>
 
                 <div class="hero-actions">
-                    <a href="game.html" class="btn-start">
+                    <a href="login.html" class="btn-start">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="5 3 19 12 5 21 5 3"/>
                         </svg>
@@ -1085,6 +1104,36 @@
         </footer>
     </div>
     <script src="js/analytics.js"></script>
+    <script>
+        // Phase 2 PoC: login link + sign-out affordance. Reads the saved
+        // session directly from localStorage — no cloud scripts are loaded
+        // by index.html (isolation rule). Guest experience unchanged.
+        (function () {
+            var link = document.getElementById('account-link');
+            if (!link) return;
+            var session = null;
+            try {
+                var raw = localStorage.getItem('schoolshield-session');
+                session = raw ? JSON.parse(raw) : null;
+            } catch (e) {
+                session = null;
+            }
+            if (session && session.access_token) {
+                var email = (session.user && session.user.email) || '';
+                link.textContent = 'Đăng xuất' + (email ? ' (' + email + ')' : '');
+                link.href = '#';
+                link.addEventListener('click', function (ev) {
+                    ev.preventDefault();
+                    try {
+                        localStorage.removeItem('schoolshield-session');
+                    } catch (e) {
+                        /* ignore */
+                    }
+                    window.location.reload();
+                });
+            }
+        }());
+    </script>
     <script>
         (function () {
             var installButton = document.getElementById('pwa-install');

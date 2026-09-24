@@ -4,7 +4,7 @@
 const name = 'SchoolShield';
 
 // The cache version.
-const version = '0.3.2.1';
+const version = '0.3.5.0';
 
 // Name of the Cache Storage bucket this worker owns.
 const cacheName = `${name}-v${version}`;
@@ -26,10 +26,16 @@ const files = [
 	'index.html',
 	'game.html',
 	'ending.html',
+	'login.html',
+	'signup.html',
+	'reset.html',
+	'dashboard.html',
+	'report.html',
 	'AI-ATTRIBUTION.html',
 
 	// Style Sheets
 	'style/main.css',
+	'style/cloud.css',
 
 	// JavaScript Files
 	'js/options.js',
@@ -38,6 +44,15 @@ const files = [
 	'js/main.js',
 	'js/analytics.js',
 	'js/speed-insights.js',
+	'js/supabase-config.js',
+	'js/cloud-client.js',
+	'js/cloud-run.js',
+	'js/cloud-sync.js',
+	'js/cloud-auth.js',
+	'js/cloud-classes.js',
+	'js/cloud-dashboard.js',
+	'js/cloud-export.js',
+	'js/cloud-hook.js',
 
 	// App Images
 	'assets/icons/icon_48x48.png',

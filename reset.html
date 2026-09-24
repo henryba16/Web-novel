@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt lại mật khẩu | SchoolShield</title>
+    <meta name="description" content="Đặt lại mật khẩu SchoolShield qua email khôi phục mặc định của hệ thống.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self'; connect-src 'self' https://*.supabase.co">
+    <link rel="icon" href="assets/icons/icon.ico" type="image/png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <style>
+        :root {
+            --paper: #fffaf3; --ink: #2d2d2d; --muted: #706d63;
+            --line: #d6baa1; --sage-dark: #596c58;
+            --serif: Georgia, "Times New Roman", serif;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
+        .wrap { max-width: 560px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+        .topnav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .topnav a { color: var(--sage-dark); font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+        .card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 1.75rem; margin-bottom: 1.25rem; }
+        h1 { font-size: 1.5rem; margin: 0 0 0.25rem; }
+        h2 { font-size: 1.15rem; margin: 0 0 1rem; }
+        .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1rem; }
+        label { display: block; font-size: 0.85rem; font-weight: 700; margin: 0.75rem 0 0.25rem; }
+        input { width: 100%; padding: 0.7rem 0.8rem; font-size: 1rem; font-family: inherit; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+        button { display: inline-block; margin-top: 1rem; padding: 0.8rem 1.6rem; font-size: 0.95rem; font-weight: 700; font-family: inherit; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; cursor: pointer; }
+        button:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
+        button[disabled] { opacity: 0.55; cursor: wait; }
+        .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
+        .status.ok { color: var(--sage-dark); }
+        .status.err { color: #9c3b2e; }
+        hr.sep { border: none; border-top: 1px solid var(--line); margin: 1.25rem 0; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <nav class="topnav">
+            <a href="login.html">← Đăng nhập</a>
+            <a href="index.html">Trang chủ</a>
+        </nav>
+
+        <div class="card">
+            <h1>Đặt lại mật khẩu</h1>
+            <p class="sub">Dùng email khôi phục mặc định của hệ thống (không mẫu tuỳ chỉnh ở PoC).</p>
+        </div>
+
+        <section class="card" aria-labelledby="req-h">
+            <h2 id="req-h">Bước 1 — Gửi email khôi phục</h2>
+            <form id="req-form">
+                <label for="req-email">Email tài khoản</label>
+                <input id="req-email" type="email" autocomplete="email" required>
+                <button type="submit" id="req-btn">Gửi email</button>
+            </form>
+            <p class="status" id="req-status" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="card" aria-labelledby="set-h">
+            <h2 id="set-h">Bước 2 — Đặt mật khẩu mới</h2>
+            <p class="sub">Mở liên kết trong email — trang này sẽ nhận phiên khôi phục rồi cho đặt mật khẩu mới.</p>
+            <form id="set-form">
+                <label for="set-pass">Mật khẩu mới</label>
+                <input id="set-pass" type="password" autocomplete="new-password" required minlength="6" placeholder="Ít nhất 6 ký tự">
+                <button type="submit" id="set-btn">Đặt mật khẩu mới</button>
+            </form>
+            <p class="status" id="set-status" role="status" aria-live="polite"></p>
+        </section>
+    </div>
+
+    <script src="./js/supabase-config.js"></script>
+    <script src="./js/cloud-client.js"></script>
+    <script src="./js/cloud-auth.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            var reqForm = document.getElementById('req-form');
+            var reqStatus = document.getElementById('req-status');
+            var reqBtn = document.getElementById('req-btn');
+            var setForm = document.getElementById('set-form');
+            var setStatus = document.getElementById('set-status');
+            var setBtn = document.getElementById('set-btn');
+
+            function set(node, kind, text) {
+                node.className = 'status' + (kind ? ' ' + kind : '');
+                node.textContent = text || '';
+            }
+
+            function cloudReady() {
+                return !!(window.CloudClient && window.CloudClient.isEnabled());
+            }
+
+            /* Supabase recovery links land with tokens in the URL hash
+             * (#access_token=...&type=recovery) or ?code=... — stash the
+             * access token so updatePassword() can use it. */
+            function stashRecoveryToken() {
+                try {
+                    var hash = window.location.hash || '';
+                    var m = hash.match(/access_token=([^&]+)/);
+                    if (m) {
+                        var session = window.CloudClient.getSession() || {};
+                        session.access_token = decodeURIComponent(m[1]);
+                        var rt = hash.match(/refresh_token=([^&]+)/);
+                        if (rt) {
+                            session.refresh_token = decodeURIComponent(rt[1]);
+                        }
+                        try {
+                            localStorage.setItem(
+                                window.CloudClient.SESSION_KEY,
+                                JSON.stringify(session)
+                            );
+                        } catch (e) {
+                            /* ignore */
+                        }
+                        set(setStatus, 'ok', 'Đã nhận liên kết khôi phục — đặt mật khẩu mới bên dưới.');
+                        return true;
+                    }
+                } catch (e) {
+                    /* ignore */
+                }
+                return false;
+            }
+
+            reqForm.addEventListener('submit', async function (ev) {
+                ev.preventDefault();
+                if (!cloudReady()) {
+                    set(reqStatus, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này.');
+                    return;
+                }
+                var email = document.getElementById('req-email').value.trim();
+                reqBtn.disabled = true;
+                set(reqStatus, '', 'Đang gửi email…');
+                try {
+                    var redirectTo = window.location.origin + window.location.pathname;
+                    await window.CloudAuth.sendPasswordReset(email, redirectTo);
+                    set(reqStatus, 'ok', 'Đã gửi — kiểm tra hộp thư (kể cả thư rác), rồi mở liên kết để đặt mật khẩu mới.');
+                } catch (err) {
+                    set(reqStatus, 'err', 'Gửi thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                } finally {
+                    reqBtn.disabled = false;
+                }
+            });
+
+            setForm.addEventListener('submit', async function (ev) {
+                ev.preventDefault();
+                if (!cloudReady()) {
+                    set(setStatus, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này.');
+                    return;
+                }
+                var password = document.getElementById('set-pass').value;
+                setBtn.disabled = true;
+                set(setStatus, '', 'Đang cập nhật mật khẩu…');
+                try {
+                    await window.CloudAuth.updatePassword(password, null);
+                    set(setStatus, 'ok', 'Mật khẩu đã đổi. Về trang đăng nhập để đăng nhập lại.');
+                } catch (err) {
+                    set(setStatus, 'err', 'Cập nhật thất bại: ' + ((err && err.message) || 'lỗi không rõ') + ' — hãy mở liên kết từ email trước.');
+                } finally {
+                    setBtn.disabled = false;
+                }
+            });
+
+            if (!stashRecoveryToken() && !cloudReady()) {
+                set(reqStatus, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này.');
+            }
+        }());
+    </script>
+</body>
+</html>
