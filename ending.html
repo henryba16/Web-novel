@@ -298,6 +298,19 @@
         align-self: flex-start;
     }
 
+    .chat-assistant strong,
+    #ai-analysis-content strong {
+        color: var(--ink);
+    }
+
+    .chat-assistant code,
+    #ai-analysis-content code {
+        background: rgba(0, 0, 0, 0.07);
+        border-radius: 6px;
+        padding: 0.1em 0.35em;
+        font-size: 0.85em;
+    }
+
     .chat-user {
         background: var(--paper);
         border-color: var(--sage-dark);
@@ -618,15 +631,55 @@
         analyzeWithAI(endingData);
 
         /* ============================================================
+           ĐỊNH DẠNG NHẸ CHO TIN NHẮN AI (**đậm**, *nghiêng*, `code`)
+           - Luôn escape HTML trước rồi mới gắn thẻ — AI không bao giờ
+             chèn được HTML/JS thật (chống XSS).
+           - Chỉ dùng cho tin AI. Tin của người chơi giữ textContent.
+           ============================================================ */
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function renderMarkdown(text) {
+            var tokens = String(text).split(/(`[^`\n]+`)/g);
+            var out = "";
+            for (var i = 0; i < tokens.length; i++) {
+                var t = tokens[i];
+                if (t.charAt(0) === "`" && t.length > 1) {
+                    out += "<code>" + escapeHtml(t.slice(1, -1)) + "</code>";
+                } else {
+                    out += escapeHtml(t)
+                        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+                        .replace(/(^|[^*\w])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+                }
+            }
+            return out;
+        }
+
+        function stripMarkdown(text) {
+            return String(text)
+                .replace(/`([^`\n]+)`/g, "$1")
+                .replace(/\*\*([^*]+)\*\*/g, "$1")
+                .replace(/(^|[^*\w])\*([^*\n]+)\*/g, "$1$2");
+        }
+
+        /* ============================================================
            GÕ CHỮ TỪNG KÝ TỰ (dùng cho nhận xét đầu + mọi câu trả lời)
            - Array.from để không vỡ chữ tiếng Việt có dấu
            - bấm vào dòng đang gõ để hiện luôn toàn bộ
-           - chỉ ghi bằng textContent, không dùng innerHTML cho AI
+           - options.format=true: khi gõ hiện chữ sạch (đã lột dấu **),
+             gõ xong mới render định dạng (đã escape, an toàn)
            ============================================================ */
         function typewriter(el, text, options) {
             options = options || {};
+            var formatted = options.format === true;
 
-            var chars = Array.from(text);
+            var chars = Array.from(formatted ? stripMarkdown(text) : text);
             var index = 0;
             var finished = false;
             var timer = null;
@@ -635,7 +688,11 @@
                 if (finished) return;
                 finished = true;
                 if (timer) clearInterval(timer);
-                el.textContent = text;
+                if (formatted) {
+                    el.innerHTML = renderMarkdown(text);
+                } else {
+                    el.textContent = text;
+                }
                 el.style.cursor = "";
                 el.onclick = null;
                 if (typeof options.onDone === "function") options.onDone();
@@ -675,7 +732,11 @@
             var bubble = document.createElement("div");
             bubble.className = "chat-msg " +
                 (role === "user" ? "chat-user" : "chat-assistant");
-            bubble.textContent = text;
+            if (role === "user") {
+                bubble.textContent = text;
+            } else {
+                bubble.innerHTML = renderMarkdown(text);
+            }
             list.appendChild(bubble);
             return bubble;
         }
@@ -745,6 +806,7 @@
                 waiting.textContent = "";
 
                 typewriter(waiting, reply, {
+                    format: true,
                     onDone: function () {
                         chatHistory.push({ role: "assistant", content: reply });
                         if (chatHistory.length > 11) {
@@ -826,6 +888,7 @@
                 aiElement.style.display = "block";
 
                 typewriter(aiElement, reflection, {
+                    format: true,
                     onDone: function () {
                         openChat(reflection);
                     }

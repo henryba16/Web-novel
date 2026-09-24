@@ -69,7 +69,7 @@ monogatari.settings({
 	// Enables or disables instant text when moving the game forward.
 	// Enabled - Text will instantly appear when the player moves the text forward.
 	// Disabled - Text will appear at a rapid speed, ignoring pauses.
-	'InstantText': false,
+	'InstantText': true,
 
 	// Enables or disables the typing text animation in NVL dialogs for the
 	// whole game.

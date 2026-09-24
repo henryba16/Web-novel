@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo lớp | SchoolShield</title>
+    <meta name="description" content="Báo cáo in được của lớp học SchoolShield (PoC): tổng hợp cả lớp + từng học sinh. Dùng Chức năng In → Lưu thành PDF của trình duyệt.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co">
+    <link rel="icon" href="assets/icons/icon.ico" type="image/png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <link rel="stylesheet" href="style/cloud.css">
+    <style>
+        :root {
+            --paper: #fffaf3; --ink: #2d2d2d; --muted: #706d63;
+            --line: #d6baa1; --sage-dark: #596c58; --sage-light: #eef1e8;
+            --serif: Georgia, "Times New Roman", serif;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
+        .wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+        .topnav { display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .topnav a, .topnav button.linklike { color: var(--sage-dark); font-weight: 700; text-decoration: none; font-size: 0.9rem; background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
+        h1 { font-size: 1.6rem; margin: 0 0 0.25rem; }
+        h2 { font-size: 1.15rem; margin: 0 0 1rem; }
+        h3 { font-size: 1.05rem; margin: 0 0 0.5rem; }
+        .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1rem; }
+        button.action { display: inline-block; margin-top: 0.5rem; padding: 0.7rem 1.4rem; font-size: 0.9rem; font-weight: 700; font-family: inherit; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; cursor: pointer; }
+        button.action:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
+        button.action[disabled] { opacity: 0.55; cursor: wait; }
+        .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
+        .status.ok { color: var(--sage-dark); }
+        .status.err { color: #9c3b2e; }
+        .empty { border: 1px dashed var(--line); border-radius: 12px; padding: 1.5rem; text-align: center; color: var(--muted); margin-top: 1rem; background: var(--paper); }
+        .legend { font-size: 0.82rem; color: var(--muted); margin: 0.5rem 0 0; }
+        .legend .tick { display: inline-block; width: 3px; height: 1em; background: rgba(45,45,45,0.65); border-radius: 2px; vertical-align: -0.15em; margin: 0 0.3em; }
+    </style>
+</head>
+<body class="cloud-report">
+    <div class="wrap">
+        <nav class="topnav cloud-no-print">
+            <a href="index.html">← Trang chủ</a>
+            <a href="dashboard.html">Bảng điều khiển</a>
+            <button type="button" class="linklike" id="print-btn">In / Lưu PDF</button>
+        </nav>
+
+        <div class="card">
+            <h1 id="report-title">Báo cáo lớp</h1>
+            <p class="sub" id="report-sub">Đang tải dữ liệu…</p>
+            <p class="status cloud-no-print" id="page-status" role="status" aria-live="polite"></p>
+        </div>
+
+        <section class="card" id="agg-card" hidden aria-labelledby="agg-h">
+            <h2 id="agg-h">Tổng hợp cả lớp</h2>
+            <div id="agg-bars"></div>
+            <p class="legend">Vạch <span class="tick"></span> trên mỗi thanh là điểm trung bình cả lớp.</p>
+            <h3 style="margin-top:1.25rem">Phân bố kết thúc</h3>
+            <ul class="dist-list" id="agg-endings"></ul>
+            <h3 style="margin-top:1.25rem">Lựa chọn theo tình huống</h3>
+            <ul class="split-list" id="agg-splits"></ul>
+        </section>
+
+        <div id="students"></div>
+    </div>
+
+    <script src="./js/supabase-config.js"></script>
+    <script src="./js/cloud-client.js"></script>
+    <script src="./js/cloud-auth.js"></script>
+    <script src="./js/cloud-classes.js"></script>
+    <script src="./js/cloud-export.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            var METRICS = [
+                { key: 'empathy', label: 'Đồng cảm' },
+                { key: 'awareness', label: 'Nhận thức' },
+                { key: 'safe', label: 'An toàn' }
+            ];
+            var pageStatus = document.getElementById('page-status');
+
+            function set(kind, text) {
+                pageStatus.className = 'status cloud-no-print' + (kind ? ' ' + kind : '');
+                pageStatus.textContent = text || '';
+            }
+
+            function classIdFromQuery() {
+                try {
+                    return new URLSearchParams(window.location.search).get('class') || '';
+                } catch (e) {
+                    return '';
+                }
+            }
+
+            function clamp(v) {
+                var n = Number(v);
+                if (!Number.isFinite(n)) { return 0; }
+                return Math.max(0, Math.min(100, n));
+            }
+
+            /* One ending-style bar row. meanValue (0-100) draws the overlay
+             * tick; pass null for class-average rows (no marker). */
+            function barRow(label, value, meanValue) {
+                var row = document.createElement('div');
+                row.className = 'stat-row';
+                var top = document.createElement('div');
+                top.className = 'stat-top';
+                var name = document.createElement('span');
+                name.className = 'stat-name';
+                name.textContent = label;
+                var tag = document.createElement('span');
+                tag.className = 'stat-tag';
+                tag.textContent = window.CloudExport.statTag(clamp(value));
+                var val = document.createElement('span');
+                val.className = 'stat-value';
+                val.textContent = clamp(value) + '/100';
+                top.appendChild(name);
+                top.appendChild(tag);
+                top.appendChild(val);
+                var track = document.createElement('div');
+                track.className = 'stat-track';
+                var fill = document.createElement('div');
+                fill.className = 'stat-fill';
+                fill.style.width = clamp(value) + '%';
+                track.appendChild(fill);
+                if (meanValue !== null && meanValue !== undefined) {
+                    var mean = document.createElement('div');
+                    mean.className = 'stat-mean';
+                    mean.style.left = clamp(meanValue) + '%';
+                    mean.title = 'Trung bình lớp: ' + meanValue;
+                    track.appendChild(mean);
+                }
+                row.appendChild(top);
+                row.appendChild(track);
+                return row;
+            }
+
+            function shortName(profile, studentId) {
+                if (profile && profile.display_name) { return profile.display_name; }
+                if (profile && profile.email) { return profile.email; }
+                return 'Học sinh #' + String(studentId || '').slice(-4);
+            }
+
+            async function init() {
+                document.getElementById('print-btn').addEventListener('click', function () {
+                    window.print();
+                });
+                if (!window.CloudClient || !window.CloudClient.isEnabled()) {
+                    document.getElementById('report-sub').textContent = 'Chế độ đám mây chưa được cấu hình trên bản dựng này.';
+                    set('err', 'Bản dựng này chưa cấu hình Supabase (CLOUD_DISABLED).');
+                    return;
+                }
+                var session = window.CloudClient.getSession();
+                if (!session || !session.access_token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                var classId = classIdFromQuery();
+                if (!classId) {
+                    document.getElementById('report-sub').textContent = 'Thiếu mã lớp — mở báo cáo từ Bảng điều khiển.';
+                    return;
+                }
+                try {
+                    var payload = await window.CloudExport.fetchFinishedRuns(classId);
+                    render(payload);
+                    set('', '');
+                } catch (err) {
+                    document.getElementById('report-sub').textContent = 'Không tải được báo cáo.';
+                    set('err', 'Không tải được báo cáo: ' + ((err && err.message) || 'lỗi không rõ'));
+                }
+            }
+
+            function render(payload) {
+                var klass = payload.classRow;
+                var runs = payload.runs;
+                var profilesById = payload.profilesById;
+                document.getElementById('report-title').textContent = 'Báo cáo lớp: ' + (klass.name || klass.code || '');
+                document.getElementById('report-sub').textContent =
+                    'Mã lớp: ' + (klass.code || '—') + ' · ' + runs.length + ' lượt chơi đã hoàn thành.';
+
+                var agg = window.CloudExport.computeAggregates(runs);
+                var aggCard = document.getElementById('agg-card');
+                var aggBars = document.getElementById('agg-bars');
+                aggBars.innerHTML = '';
+                if (!agg.count) {
+                    var empty = document.createElement('div');
+                    empty.className = 'empty';
+                    empty.textContent = 'Lớp chưa có lượt chơi hoàn thành nào — chưa có dữ liệu để báo cáo.';
+                    aggBars.appendChild(empty);
+                } else {
+                    METRICS.forEach(function (m) {
+                        aggBars.appendChild(barRow(m.label + ' (trung bình lớp)', agg.means[m.key], null));
+                    });
+                }
+                aggCard.hidden = false;
+
+                var endings = document.getElementById('agg-endings');
+                endings.innerHTML = '';
+                var names = Object.keys(agg.endings);
+                if (!names.length) {
+                    var li0 = document.createElement('li');
+                    li0.textContent = 'Chưa có kết thúc nào được ghi nhận.';
+                    endings.appendChild(li0);
+                }
+                names.forEach(function (n) {
+                    var li = document.createElement('li');
+                    li.textContent = n + ': ' + agg.endings[n] + ' lượt';
+                    endings.appendChild(li);
+                });
+
+                var splits = document.getElementById('agg-splits');
+                splits.innerHTML = '';
+                var scenes = Object.keys(agg.choiceSplits);
+                if (!scenes.length) {
+                    var li1 = document.createElement('li');
+                    li1.textContent = 'Chưa có lựa chọn nào được ghi nhận.';
+                    splits.appendChild(li1);
+                }
+                scenes.forEach(function (scene) {
+                    var li = document.createElement('li');
+                    var parts = Object.keys(agg.choiceSplits[scene]).map(function (pick) {
+                        return pick + ' (' + agg.choiceSplits[scene][pick] + ')';
+                    });
+                    li.textContent = scene + ': ' + parts.join(' · ');
+                    splits.appendChild(li);
+                });
+
+                /* Per-student sections: latest finished run bars (with class-mean
+                 * ticks) + run history + endings reached. */
+                var mount = document.getElementById('students');
+                mount.innerHTML = '';
+                var byStudent = {};
+                runs.forEach(function (r) {
+                    if (!r) { return; }
+                    (byStudent[r.student_id] = byStudent[r.student_id] || []).push(r);
+                });
+                var ids = Object.keys(byStudent);
+                if (!ids.length) { return; }
+                ids.forEach(function (sid) {
+                    var profile = profilesById[sid] || null;
+                    var list = byStudent[sid].slice().sort(function (a, b) {
+                        return String(b.finished_at || b.started_at || '') < String(a.finished_at || a.started_at || '') ? -1 : 1;
+                    });
+                    var latest = list[0];
+                    var card = document.createElement('section');
+                    card.className = 'card';
+                    var h = document.createElement('h2');
+                    h.textContent = shortName(profile, sid);
+                    card.appendChild(h);
+                    var meta = document.createElement('p');
+                    meta.className = 'run-meta';
+                    var seen = {};
+                    list.forEach(function (r) { if (r.ending_name) { seen[r.ending_name] = true; } });
+                    meta.textContent = list.length + ' lượt hoàn thành · kết thúc: ' +
+                        (Object.keys(seen).join(', ') || '—');
+                    card.appendChild(meta);
+                    METRICS.forEach(function (m) {
+                        card.appendChild(barRow(m.label, latest[m.key], agg.means[m.key]));
+                    });
+                    var hist = document.createElement('p');
+                    hist.className = 'run-meta';
+                    hist.textContent = 'Lịch sử: ' + list.map(function (r) {
+                        return (r.finished_at || r.started_at || '?').slice(0, 10) + ' — ' + (r.ending_name || '—');
+                    }).join(' · ');
+                    card.appendChild(hist);
+                    mount.appendChild(card);
+                });
+            }
+
+            init();
+        }());
+    </script>
+</body>
+</html>

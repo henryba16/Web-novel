@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập | SchoolShield</title>
+    <meta name="description" content="Đăng nhập SchoolShield để lưu tiến trình đám mây và tham gia lớp học.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co">
+    <link rel="icon" href="assets/icons/icon.ico" type="image/png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <style>
+        :root {
+            --paper: #fffaf3; --ink: #2d2d2d; --muted: #706d63;
+            --line: #d6baa1; --sage-dark: #596c58; --sage-light: #eef1e8;
+            --serif: Georgia, "Times New Roman", serif;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
+        .wrap { max-width: 560px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+        .topnav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .topnav a { color: var(--sage-dark); font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+        .card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 1.75rem; margin-bottom: 1.25rem; }
+        h1 { font-size: 1.6rem; margin: 0 0 0.25rem; }
+        h2 { font-size: 1.15rem; margin: 0 0 1rem; }
+        .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1rem; }
+        label { display: block; font-size: 0.85rem; font-weight: 700; margin: 0.75rem 0 0.25rem; }
+        input, select { width: 100%; padding: 0.7rem 0.8rem; font-size: 1rem; font-family: inherit; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+        button { display: inline-block; margin-top: 1rem; padding: 0.8rem 1.6rem; font-size: 0.95rem; font-weight: 700; font-family: inherit; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; cursor: pointer; }
+        button:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
+        button[disabled] { opacity: 0.55; cursor: wait; }
+        .ghost { background: transparent; color: var(--sage-dark); border-color: var(--sage-dark); }
+        .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
+        .status.ok { color: var(--sage-dark); }
+        .status.err { color: #9c3b2e; }
+        .row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+        .fine { font-size: 0.82rem; color: var(--muted); margin-top: 0.75rem; }
+        .fine a { color: var(--sage-dark); }
+        .pass-wrap { position: relative; }
+        .pass-wrap input { width: 100%; padding-right: 4.2rem; }
+        .pass-toggle {
+            position: absolute; right: 0.4rem; top: 50%; transform: translateY(-50%);
+            margin: 0; padding: 0.3rem 0.6rem; font-size: 0.8rem;
+            background: transparent; color: var(--sage-dark);
+            border: 1px solid var(--line); border-radius: 999px; cursor: pointer;
+            font-family: inherit; font-weight: 700;
+        }
+        .pass-toggle:hover { background: var(--sage-light); border-color: var(--sage-dark); }
+        hr.sep { border: none; border-top: 1px solid var(--line); margin: 1.25rem 0; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <nav class="topnav">
+            <a href="index.html">← Trang chủ</a>
+            <a href="game.html">Chơi ngay (khách)</a>
+        </nav>
+
+        <div class="card">
+            <h1>SchoolShield</h1>
+            <p class="sub">Đăng nhập để lưu tiến trình đám mây và tham gia lớp học. Chơi khách không cần tài khoản — <a href="game.html">vào game ngay</a>.</p>
+            <p class="status" id="cloud-state" role="status" aria-live="polite"></p>
+        </div>
+
+        <section class="card" aria-labelledby="login-h">
+            <h2 id="login-h">Đăng nhập</h2>
+            <form id="login-form">
+                <label for="li-email">Email</label>
+                <input id="li-email" name="email" type="email" autocomplete="email" required>
+                <label for="li-pass">Mật khẩu</label>
+                <div class="pass-wrap">
+                    <input id="li-pass" name="password" type="password" autocomplete="current-password" required>
+                    <button type="button" class="pass-toggle" id="li-pass-toggle" aria-label="Hiện mật khẩu">Hiện</button>
+                </div>
+                <div class="row">
+                    <button type="submit" id="li-btn">Đăng nhập</button>
+                </div>
+            </form>
+            <p class="status" id="li-status" role="status" aria-live="polite"></p>
+            <p class="fine">Chưa có tài khoản? <a href="signup.html">Đăng ký</a>.</p>
+            <hr class="sep">
+            <p class="fine">Quên mật khẩu? <a href="reset.html">Đặt lại mật khẩu qua email</a>.</p>
+        </section>
+    </div>
+
+    <script src="./js/supabase-config.js"></script>
+    <script src="./js/cloud-client.js"></script>
+    <script src="./js/cloud-run.js"></script>
+    <script src="./js/cloud-sync.js"></script>
+    <script src="./js/cloud-auth.js"></script>
+    <script src="./js/cloud-classes.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            var cloudState = document.getElementById('cloud-state');
+            var liForm = document.getElementById('login-form');
+            var liStatus = document.getElementById('li-status');
+            var liBtn = document.getElementById('li-btn');
+            var passInput = document.getElementById('li-pass');
+            var passToggle = document.getElementById('li-pass-toggle');
+
+            function setStatus(node, kind, text) {
+                node.className = 'status' + (kind ? ' ' + kind : '');
+                node.textContent = text || '';
+            }
+
+            function cloudReady() {
+                if (!window.CloudClient || !window.CloudClient.isEnabled()) {
+                    setStatus(cloudState, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này — bạn vẫn có thể chơi khách.');
+                    liBtn.disabled = true;
+                    return false;
+                }
+                var s = window.CloudClient.getSession();
+                var host = (typeof window.CloudClient.configHost === 'function' && window.CloudClient.configHost()) || '';
+                setStatus(
+                    cloudState,
+                    s ? 'ok' : '',
+                    (s && s.user ? 'Đang đăng nhập: ' + s.user.email : 'Chưa đăng nhập. Chế độ đám mây sẵn sàng.') +
+                    (host ? ' (máy chủ: ' + host + ')' : '')
+                );
+                return true;
+            }
+
+            passToggle.addEventListener('click', function () {
+                var show = passInput.type === 'password';
+                passInput.type = show ? 'text' : 'password';
+                passToggle.textContent = show ? 'Ẩn' : 'Hiện';
+                passToggle.setAttribute('aria-label', show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+            });
+
+            liForm.addEventListener('submit', async function (ev) {
+                ev.preventDefault();
+                if (!cloudReady()) return;
+                var email = document.getElementById('li-email').value.trim();
+                var password = document.getElementById('li-pass').value;
+                liBtn.disabled = true;
+                setStatus(liStatus, '', 'Đang đăng nhập…');
+                try {
+                    var res = await window.CloudAuth.signIn(email, password);
+                    setStatus(liStatus, 'ok', 'Đăng nhập thành công! Đang chuyển hướng…');
+                    liBtn.disabled = true;
+                    setTimeout(function () {
+                        window.CloudAuth.goToLanding(res.profile && res.profile.role);
+                    }, 1200);
+                } catch (err) {
+                    setStatus(liStatus, 'err', 'Đăng nhập thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                } finally {
+                    liBtn.disabled = false;
+                }
+            });
+
+            cloudReady();
+        }());
+    </script>
+</body>
+</html>

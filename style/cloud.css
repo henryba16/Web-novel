@@ -1,0 +1,111 @@
+/* SchoolShield Phase 2 PoC — shared cloud bar styles + print stylesheet.
+ *
+ * Single shared bar-style source for dashboard + report (plan Phase 2).
+ * Bar visuals copied from ending.html (.stat-row/.stat-top/.stat-track/
+ * .stat-fill) for AC19 visual parity — ending.html itself is NOT refactored.
+ * Adds: .stat-mean marker (class-mean overlay on each row) and the
+ * print stylesheet (@media print hides nav/buttons; forces bar colours
+ * to print via print-color-adjust).
+ */
+
+/* ---- Ending-style horizontal bars (parity copy from ending.html) ---- */
+.stat-row { margin-bottom: 1.1rem; }
+.stat-row:last-child { margin-bottom: 0; }
+
+.stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.88rem;
+}
+
+.stat-name { font-weight: 700; color: #2d2d2d; }
+.stat-tag { color: #596c58; font-size: 0.78rem; }
+.stat-value { color: #706d63; font-size: 0.82rem; margin-left: auto; }
+
+.stat-track {
+    position: relative;
+    height: 10px;
+    border-radius: 999px;
+    background: #eef1e8;
+    border: 1px solid #d6baa1;
+    overflow: visible;
+}
+
+.stat-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #909f8f, #596c58);
+}
+
+/* Class-mean overlay marker: thin vertical tick positioned by left:%. */
+.stat-mean {
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    width: 3px;
+    margin-left: -1px;
+    border-radius: 2px;
+    background: rgba(45, 45, 45, 0.65);
+}
+
+/* ---- Report layout helpers (screen) ---- */
+.cloud-report .card {
+    background: #fffaf3;
+    border: 1px solid #d6baa1;
+    border-radius: 18px;
+    padding: 1.6rem 1.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.cloud-report .run-meta {
+    color: #706d63;
+    font-size: 0.85rem;
+    margin: 0.25rem 0 0;
+}
+
+.cloud-report .dist-list,
+.cloud-report .split-list {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    font-size: 0.9rem;
+}
+
+.cloud-report .dist-list li,
+.cloud-report .split-list li {
+    padding: 0.4rem 0;
+    border-bottom: 1px dashed #d6baa1;
+}
+
+.cloud-report .dist-list li:last-child,
+.cloud-report .split-list li:last-child { border-bottom: none; }
+
+/* ---- Print stylesheet ---- */
+@media print {
+    /* Hide navigation, buttons, and screen-only status text. */
+    .cloud-no-print,
+    .topnav,
+    nav,
+    button,
+    .actions,
+    .status { display: none !important; }
+
+    body { background: #fff !important; }
+
+    .cloud-report .card {
+        box-shadow: none !important;
+        break-inside: avoid;
+    }
+
+    /* Force bar colours onto paper (browsers omit backgrounds by default). */
+    .stat-track,
+    .stat-fill,
+    .stat-mean {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

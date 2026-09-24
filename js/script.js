@@ -1431,3 +1431,86 @@ monogatari.script ({
 		function(){finishChapter();}
 	],
 });
+
+/* ===== Phase 2 PoC cloud instrumentation (APPEND-ONLY — story code above untouched) =====
+ * 1. Choice timestamps: wraps monogatari.storage() so every route.push()
+ *    (every onChosen handler above) also records {scene, context, choice, at}
+ *    via CloudRun.logChoice. Re-arms automatically if the engine replaces the
+ *    route array on save/load. Never throws into game code.
+ * 2. Chapter finish: finishChapter() is wrapped (original saved first) so the
+ *    existing sessionStorage handoff lines run unchanged, with CloudRun
+ *    snapshotting finished_at + ending + final stats around it.
+ * Metric helpers (addempathy/addawareness/addsafe), trust fields, storage
+ * defaults and the handoff shape are NOT modified here.
+ */
+(function () {
+	'use strict';
+	if (typeof monogatari === 'undefined') {
+		return;
+	}
+
+	var wrappedRoutes = (typeof WeakSet !== 'undefined') ? new WeakSet() : null;
+	var seenFallback = [];
+
+	function armRoute(route) {
+		if (!route || typeof route.push !== 'function') {
+			return;
+		}
+		if (wrappedRoutes ? wrappedRoutes.has(route) : seenFallback.indexOf(route) >= 0) {
+			return;
+		}
+		if (wrappedRoutes) {
+			wrappedRoutes.add(route);
+		} else {
+			seenFallback.push(route);
+		}
+		var origPush = route.push.bind(route);
+		route.push = function (entry) {
+			try {
+				if (typeof window !== 'undefined' && window.CloudRun &&
+					typeof window.CloudRun.logChoice === 'function') {
+					window.CloudRun.logChoice(entry);
+				}
+			} catch (ignore) {
+				/* instrumentation must never break a choice commit */
+			}
+			return origPush(entry);
+		};
+	}
+
+	try {
+		var origStorage = monogatari.storage.bind(monogatari);
+		monogatari.storage = function () {
+			var store = origStorage.apply(null, arguments);
+			try {
+				if (store && Array.isArray(store.route)) {
+					armRoute(store.route);
+				}
+			} catch (ignore) {
+				/* ignore */
+			}
+			return store;
+		};
+		/* Arm the live route array immediately (engine already initialized). */
+		armRoute(origStorage().route);
+	} catch (ignore) {
+		/* engine not ready: cloud-hook.js ensureRun still mints the run id */
+	}
+
+	try {
+		var origFinish = finishChapter;
+		finishChapter = function () {
+			try {
+				if (typeof window !== 'undefined' && window.CloudRun &&
+					typeof window.CloudRun.finishRun === 'function') {
+					window.CloudRun.finishRun(monogatari.storage());
+				}
+			} catch (ignore) {
+				/* fall through to the original handoff regardless */
+			}
+			return origFinish.apply(this, arguments);
+		};
+	} catch (ignore) {
+		/* original finishChapter stays authoritative */
+	}
+})();
