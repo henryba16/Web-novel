@@ -36,6 +36,16 @@
         .row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
         .fine { font-size: 0.82rem; color: var(--muted); margin-top: 0.75rem; }
         .fine a { color: var(--sage-dark); }
+        .pass-wrap { position: relative; }
+        .pass-wrap input { width: 100%; padding-right: 4.2rem; }
+        .pass-toggle {
+            position: absolute; right: 0.4rem; top: 50%; transform: translateY(-50%);
+            margin: 0; padding: 0.3rem 0.6rem; font-size: 0.8rem;
+            background: transparent; color: var(--sage-dark);
+            border: 1px solid var(--line); border-radius: 999px; cursor: pointer;
+            font-family: inherit; font-weight: 700;
+        }
+        .pass-toggle:hover { background: var(--sage-light); border-color: var(--sage-dark); }
         hr.sep { border: none; border-top: 1px solid var(--line); margin: 1.25rem 0; }
     </style>
 </head>
@@ -58,10 +68,12 @@
                 <label for="li-email">Email</label>
                 <input id="li-email" name="email" type="email" autocomplete="email" required>
                 <label for="li-pass">Mật khẩu</label>
-                <input id="li-pass" name="password" type="password" autocomplete="current-password" required>
+                <div class="pass-wrap">
+                    <input id="li-pass" name="password" type="password" autocomplete="current-password" required>
+                    <button type="button" class="pass-toggle" id="li-pass-toggle" aria-label="Hiện mật khẩu">Hiện</button>
+                </div>
                 <div class="row">
                     <button type="submit" id="li-btn">Đăng nhập</button>
-                    <button type="button" class="ghost" id="logout-btn">Đăng xuất</button>
                 </div>
             </form>
             <p class="status" id="li-status" role="status" aria-live="polite"></p>
@@ -84,7 +96,8 @@
             var liForm = document.getElementById('login-form');
             var liStatus = document.getElementById('li-status');
             var liBtn = document.getElementById('li-btn');
-            var logoutBtn = document.getElementById('logout-btn');
+            var passInput = document.getElementById('li-pass');
+            var passToggle = document.getElementById('li-pass-toggle');
 
             function setStatus(node, kind, text) {
                 node.className = 'status' + (kind ? ' ' + kind : '');
@@ -108,6 +121,13 @@
                 return true;
             }
 
+            passToggle.addEventListener('click', function () {
+                var show = passInput.type === 'password';
+                passInput.type = show ? 'text' : 'password';
+                passToggle.textContent = show ? 'Ẩn' : 'Hiện';
+                passToggle.setAttribute('aria-label', show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+            });
+
             liForm.addEventListener('submit', async function (ev) {
                 ev.preventDefault();
                 if (!cloudReady()) return;
@@ -126,15 +146,6 @@
                     setStatus(liStatus, 'err', 'Đăng nhập thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
                 } finally {
                     liBtn.disabled = false;
-                }
-            });
-
-            logoutBtn.addEventListener('click', async function () {
-                setStatus(liStatus, '', 'Đang đăng xuất…');
-                try {
-                    await window.CloudAuth.signOut();
-                } catch (err) {
-                    window.CloudAuth.signOutLocal();
                 }
             });
 
