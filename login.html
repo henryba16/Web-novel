@@ -105,6 +105,22 @@
             }
 
             function cloudReady() {
+                var enabled = !!(window.CloudClient && window.CloudClient.isEnabled());
+                var sess = null;
+                try {
+                    sess = window.CloudClient && window.CloudClient.getSession();
+                } catch (e) {
+                    sess = null;
+                }
+                /* DEBUG: states only — email, never tokens. */
+                try {
+                    console.log(
+                        '[Cloud] cloudReady: enabled=' + enabled +
+                        ', session=' + (sess && sess.user ? sess.user.email : 'none')
+                    );
+                } catch (e) {
+                    /* logging must never break boot */
+                }
                 if (!window.CloudClient || !window.CloudClient.isEnabled()) {
                     setStatus(cloudState, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này — bạn vẫn có thể chơi khách.');
                     liBtn.disabled = true;
@@ -136,13 +152,16 @@
                 liBtn.disabled = true;
                 setStatus(liStatus, '', 'Đang đăng nhập…');
                 try {
+                    console.log('[Cloud] signin attempt for ' + email);
                     var res = await window.CloudAuth.signIn(email, password);
+                    console.log('[Cloud] signin OK, role=' + (res.profile && res.profile.role));
                     setStatus(liStatus, 'ok', 'Đăng nhập thành công! Đang chuyển hướng…');
                     liBtn.disabled = true;
                     setTimeout(function () {
                         window.CloudAuth.goToLanding(res.profile && res.profile.role);
                     }, 1200);
                 } catch (err) {
+                    console.log('[Cloud] signin FAIL: ' + ((err && err.message) || err));
                     setStatus(liStatus, 'err', 'Đăng nhập thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
                 } finally {
                     liBtn.disabled = false;
