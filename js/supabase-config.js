@@ -1,21 +1,18 @@
 /* global window */
 /* SchoolShield Phase 2 PoC — Supabase client config.
  *
- * Build-time placeholders (the SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY
- * tokens below) are replaced by build-web.ts from Vercel env. When
- * unreplaced (local dev without env),
- * CLOUD_DISABLED is true and the game runs guest-only — guest play must
- * NEVER break when unconfigured.
- *
- * Only the publishable key lives here BY DESIGN (public key, RLS enforces
- * isolation — owner-accepted G4). Server-side-only keys are
- * forbidden in this file and everywhere under js/ and *.html.
+ * Publishable URL + key are hardcoded BY DESIGN (public values; RLS
+ * enforces isolation — owner-accepted G4 + confirmed 24-09-26). No build
+ * step needed. Rotate the key in the Supabase dashboard if ever exposed
+ * somewhere unintended.
+ * Server-side-only keys are forbidden in this file and everywhere
+ * under js/ and *.html.
  */
 'use strict';
 (function () {
 	var cfg = {
-		SUPABASE_URL: '__SUPABASE_URL__',
-		SUPABASE_PUBLISHABLE_KEY: '__SUPABASE_PUBLISHABLE_KEY__',
+		SUPABASE_URL: 'https://zaroxemvvegegubnhsfj.supabase.co',
+		SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_djc-n8o4meNJKPmlkf3M9A_kkkH3V0E',
 		CLOUD_DISABLED: false
 	};
 
