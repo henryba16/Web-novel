@@ -84,25 +84,18 @@
 		<script defer src="./js/analytics.js"></script>
 		<script defer src="./js/speed-insights.js"></script>
 		<!-- Phase 2 PoC cloud hook (same-origin; game CSP meta untouched) -->
+		<script defer src="./js/supabase-config.js"></script>
+		<script defer src="./js/cloud-client.js"></script>
+		<script defer src="./js/cloud-run.js"></script>
+		<script defer src="./js/cloud-sync.js"></script>
+		<script defer src="./js/cloud-auth.js"></script>
 		<script defer src="./js/cloud-hook.js"></script>
 		<style>
-			#cloud-nudge {
-				position: fixed; left: 0; right: 0; bottom: 0; z-index: 1200;
-				display: flex; gap: 0.75rem; align-items: center; justify-content: center;
-				flex-wrap: wrap; padding: 0.6rem 1rem;
-				background: rgba(26, 26, 46, 0.92); color: #fffaf3;
-				font-family: Georgia, serif; font-size: 0.85rem;
-			}
-			#cloud-nudge[hidden] { display: none; }
-			#cloud-nudge a, #cloud-nudge button {
-				color: #1a1a2e; background: #fffaf3; border: none; border-radius: 999px;
-				padding: 0.35rem 1rem; font-size: 0.82rem; font-weight: 700;
-				text-decoration: none; cursor: pointer; font-family: inherit;
-			}
-			#cloud-nudge .cloud-nudge-home { background: transparent; color: #fffaf3; border: 1px solid #fffaf3; }
+			.cloud-menu-entry { display: flex; justify-content: center; margin-top: 0.9rem; }
 			.cloud-save-sync {
 				display: flex; gap: 0.6rem; align-items: center; justify-content: center;
-				flex-wrap: wrap; padding: 0.8rem 0.5rem; font-family: Georgia, serif;
+				flex-wrap: wrap; padding: 0.8rem 0.5rem; font-family: Georgia, "Palatino Linotype", "Book Antiqua", "DejaVu Serif", serif;
+				border-top: 1px dashed rgba(255, 250, 243, 0.4); margin-top: 0.8rem;
 			}
 			.cloud-save-sync a, .cloud-save-sync button {
 			 color: #1a1a2e; background: #fffaf3; border: none; border-radius: 999px;
@@ -123,8 +116,6 @@
 			</div>
 		</noscript>
 
-		<!-- Phase 2 PoC: login-nudge + sync + home affordances (rendered by js/cloud-hook.js; hidden when cloud disabled) -->
-		<div id="cloud-nudge" hidden></div>
 		<div id="monogatari">
 			<visual-novel>
 				<language-selection-screen></language-selection-screen>

@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng ký | SchoolShield</title>
     <meta name="description" content="Tạo tài khoản SchoolShield để lưu tiến trình đám mây và tham gia lớp học.">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co">
     <link rel="icon" href="assets/icons/icon.ico" type="image/png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1a1a2e">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --paper: #fffaf3; --ink: #2d2d2d; --muted: #706d63;
             --line: #d6baa1; --sage-dark: #596c58; --sage-light: #eef1e8;
-            --serif: Georgia, "Times New Roman", serif;
+            --serif: "Noto Serif", "Noto Serif JP", Georgia, "Palatino Linotype", "Book Antiqua", "DejaVu Serif", "Times New Roman", serif;
         }
         * { box-sizing: border-box; }
         body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
@@ -26,12 +29,36 @@
         .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1rem; }
         label { display: block; font-size: 0.85rem; font-weight: 700; margin: 0.75rem 0 0.25rem; }
         input, select { width: 100%; padding: 0.7rem 0.8rem; font-size: 1rem; font-family: inherit; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+        .pass-wrap { position: relative; }
+        .pass-wrap input { width: 100%; padding-right: 4.2rem; }
+        .pass-toggle {
+            position: absolute; right: 0.4rem; top: 50%; transform: translateY(-50%);
+            margin: 0; padding: 0.3rem 0.6rem; font-size: 0.8rem;
+            background: transparent; color: var(--sage-dark);
+            border: 1px solid var(--line); border-radius: 999px; cursor: pointer;
+            font-family: inherit; font-weight: 700; width: auto;
+        }
+        .pass-toggle:hover { background: var(--sage-light); border-color: var(--sage-dark); }
         button { display: inline-block; margin-top: 1rem; padding: 0.8rem 1.6rem; font-size: 0.95rem; font-weight: 700; font-family: inherit; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; cursor: pointer; }
         button:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
         button[disabled] { opacity: 0.55; cursor: wait; }
         .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
         .status.ok { color: var(--sage-dark); }
         .status.err { color: #9c3b2e; }
+
+        /* Global a11y one-liners: visible focus, press feedback, stable numerals. */
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
+            outline: 3px solid #596c58;
+            outline-offset: 2px;
+            border-radius: 6px;
+        }
+        button:active { transform: translateY(1px) scale(0.99); }
+        .stat-value, .code, .roster-meta, td, th {
+            font-variant-numeric: tabular-nums;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .stat-fill, .skeleton { transition: none !important; animation: none !important; }
+        }
         .fine { font-size: 0.82rem; color: var(--muted); margin-top: 0.75rem; }
         .fine a { color: var(--sage-dark); }
     </style>
@@ -40,6 +67,7 @@
     <div class="wrap">
         <nav class="topnav">
             <a href="index.html">← Trang chủ</a>
+            <a href="game.html">Chơi ngay (khách)</a>
             <a href="login.html">Đã có tài khoản? Đăng nhập</a>
         </nav>
 
@@ -57,12 +85,19 @@
                 <label for="su-email">Email</label>
                 <input id="su-email" name="email" type="email" autocomplete="email" required placeholder="ban@vidu.vn">
                 <label for="su-pass">Mật khẩu</label>
-                <input id="su-pass" name="password" type="password" autocomplete="new-password" required placeholder="Mật khẩu (máy chủ sẽ báo nếu quá yếu)">
+                <!-- Không dùng minlength: mật khẩu yếu phải gửi tới máy chủ
+                     để nhận thông báo lỗi rõ ràng, thay vì bị trình duyệt chặn lặng lẽ. -->
+                <div class="pass-wrap">
+                    <input id="su-pass" name="password" type="password" autocomplete="new-password" required placeholder="Mật khẩu">
+                    <button type="button" class="pass-toggle" id="su-pass-toggle" aria-label="Hiện mật khẩu">Hiện</button>
+                </div>
+                <p class="fine">Ít nhất 6 ký tự. Nên có chữ và số.</p>
                 <label for="su-role">Vai trò</label>
                 <select id="su-role" name="role">
                     <option value="student">Học sinh</option>
                     <option value="teacher">Giáo viên</option>
                 </select>
+                <p class="fine">Học sinh: chơi và xem tiến trình. Giáo viên: tạo lớp và xem tổng hợp.</p>
                 <button type="submit" id="su-btn">Đăng ký</button>
             </form>
             <p class="status" id="su-status" role="status" aria-live="polite"></p>
@@ -83,6 +118,8 @@
             var suForm = document.getElementById('signup-form');
             var suStatus = document.getElementById('su-status');
             var suBtn = document.getElementById('su-btn');
+            var passInput = document.getElementById('su-pass');
+            var passToggle = document.getElementById('su-pass-toggle');
 
             function setStatus(node, kind, text) {
                 node.className = 'status' + (kind ? ' ' + kind : '');
@@ -91,20 +128,25 @@
 
             function cloudReady() {
                 if (!window.CloudClient || !window.CloudClient.isEnabled()) {
-                    setStatus(cloudState, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này — bạn vẫn có thể chơi khách.');
+                    setStatus(cloudState, 'err', 'Chưa bật lưu trực tuyến trên bản này — bạn vẫn chơi khách bình thường — bạn vẫn có thể chơi khách.');
                     suBtn.disabled = true;
                     return false;
                 }
                 var s = window.CloudClient.getSession();
-                var host = (typeof window.CloudClient.configHost === 'function' && window.CloudClient.configHost()) || '';
                 setStatus(
                     cloudState,
                     s ? 'ok' : '',
-                    (s && s.user ? 'Đang đăng nhập: ' + s.user.email : 'Chưa đăng nhập. Chế độ đám mây sẵn sàng.') +
-                    (host ? ' (máy chủ: ' + host + ')' : '')
+                    s && s.user ? 'Đang đăng nhập: ' + s.user.email : 'Chưa đăng nhập. Chế độ đám mây sẵn sàng.'
                 );
                 return true;
             }
+
+            passToggle.addEventListener('click', function () {
+                var show = passInput.type === 'password';
+                passInput.type = show ? 'text' : 'password';
+                passToggle.textContent = show ? 'Ẩn' : 'Hiện';
+                passToggle.setAttribute('aria-label', show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+            });
 
             suForm.addEventListener('submit', async function (ev) {
                 ev.preventDefault();
@@ -130,7 +172,7 @@
                         }, 1200);
                     }
                 } catch (err) {
-                    setStatus(suStatus, 'err', 'Đăng ký thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                    setStatus(suStatus, 'err', 'Đăng ký thất bại: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                 } finally {
                     suBtn.disabled = false;
                 }

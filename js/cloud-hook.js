@@ -1,16 +1,15 @@
 /* global window, document, localStorage */
-/* SchoolShield Phase 2 PoC — game-flow hook (the ONE cloud script game.html
- * loads). Renders the dismissible login-nudge bar + home + sync affordances
- * into #cloud-nudge, and starts the instrumented run for Chapter 1.
+/* SchoolShield Phase 2 PoC — game-flow hook. Injects sync-or-signin
+ * buttons into the engine save/load screens plus a role-aware dashboard
+ * entry in the main menu, and starts the instrumented run for Chapter 1.
+ * No bottom bar: entry points live only where the player already acts.
  *
  * Guest-first: when cloud is unconfigured (CLOUD_DISABLED) or any cloud
- * module is missing, the hook hides the nudge and does nothing else — guest
- * play continues exactly as today. Never throws into game code.
+ * module is missing, the hook does nothing — guest play continues exactly
+ * as today. Never throws into game code.
  */
 'use strict';
 (function () {
-	var NUDGE_KEY = 'schoolshield-nudge-dismissed';
-
 	function enabled() {
 		try {
 			return !!(
@@ -26,23 +25,6 @@
 	function hasSession() {
 		try {
 			return !!(window.CloudClient && window.CloudClient.getSession());
-		} catch (e) {
-			return false;
-		}
-	}
-
-	function sessionEmail() {
-		try {
-			var s = window.CloudClient.getSession();
-			return (s && s.user && s.user.email) || '';
-		} catch (e) {
-			return '';
-		}
-	}
-
-	function dismissed() {
-		try {
-			return localStorage.getItem(NUDGE_KEY) === '1';
 		} catch (e) {
 			return false;
 		}
@@ -69,68 +51,6 @@
 		}
 	}
 
-	function render() {
-		var bar = document.getElementById('cloud-nudge');
-		if (!bar) {
-			return;
-		}
-		bar.innerHTML = '';
-		if (!enabled() || dismissed()) {
-			bar.hidden = true;
-			return;
-		}
-		bar.hidden = false;
-
-		var home = el('a', 'cloud-nudge-home', '⌂ Trang chủ');
-		home.href = 'index.html';
-
-		if (!hasSession()) {
-			var msg = el('span', 'cloud-nudge-msg', 'Chơi khách — đăng nhập để lưu tiến trình đám mây và tham gia lớp học.');
-			var login = el('a', 'cloud-nudge-login', 'Đăng nhập');
-			login.href = 'login.html';
-			var hide = el('button', 'cloud-nudge-hide', 'Để sau');
-			hide.type = 'button';
-			hide.addEventListener('click', function () {
-				try {
-					localStorage.setItem(NUDGE_KEY, '1');
-				} catch (e) {
-					/* ignore */
-				}
-				bar.hidden = true;
-			});
-			bar.appendChild(home);
-			bar.appendChild(msg);
-			bar.appendChild(login);
-			bar.appendChild(hide);
-			return;
-		}
-
-		var who = el('span', 'cloud-nudge-msg', 'Đã đăng nhập' + (sessionEmail() ? ' · ' + sessionEmail() : ''));
-		var sync = el('button', 'cloud-nudge-login', 'Đồng bộ' + (pendingCount() ? ' (' + pendingCount() + ')' : ''));
-		sync.type = 'button';
-		var note = el('span', 'cloud-nudge-msg', '');
-		sync.addEventListener('click', async function () {
-			note.textContent = 'Đang đồng bộ…';
-			try {
-				var res = await window.CloudSync.syncNow(null);
-				if (res.offline) {
-					note.textContent = 'Ngoại tuyến — sẽ thử lại khi có mạng.';
-				} else if (res.stillPending > 0) {
-					note.textContent = 'Còn ' + res.stillPending + ' lượt chờ. Thử lại sau.';
-				} else {
-					note.textContent = 'Đã đồng bộ (' + res.uploaded + ' lượt chơi).';
-				}
-			} catch (e) {
-				note.textContent = 'Đồng bộ thất bại: ' + ((e && e.message) || 'lỗi không rõ');
-			}
-			sync.textContent = 'Đồng bộ' + (pendingCount() ? ' (' + pendingCount() + ')' : '');
-		});
-		bar.appendChild(home);
-		bar.appendChild(who);
-		bar.appendChild(sync);
-		bar.appendChild(note);
-	}
-
 	function init() {
 		try {
 			/* Chapter-start instrumentation for the Chapter-1-only PoC. */
@@ -141,12 +61,8 @@
 			/* ignore */
 		}
 		try {
-			render();
-		} catch (e) {
-			/* never break the game shell */
-		}
-		try {
 			renderSaveButtons();
+			renderMenuEntry();
 			startScreenObserver();
 		} catch (e) {
 			/* never break the game shell */
@@ -199,7 +115,7 @@
 				note.textContent = 'Đã đồng bộ (' + res.uploaded + ' lượt chơi).';
 			}
 		}).catch(function (e) {
-			note.textContent = 'Đồng bộ thất bại: ' + ((e && e.message) || 'lỗi không rõ');
+			note.textContent = 'Đồng bộ thất bại: ' + ((e && e.message) || 'lỗi không xác định, thử lại sau');
 		}).then(function () {
 			syncBtn.textContent = 'Đồng bộ' + (pendingCount() ? ' (' + pendingCount() + ')' : '');
 		});
@@ -231,18 +147,90 @@
 			if (!hasSession()) {
 				var login = el('a', '', 'Đăng nhập để đồng bộ');
 				login.href = 'login.html';
+				login.target = '_blank';
+				login.rel = 'noopener';
+				login.title = 'Mở trong tab mới — tiến trình máy này được giữ';
 				slot.appendChild(login);
 				return;
 			}
 			var syncBtn = el('button', '', 'Đồng bộ' + (pendingCount() ? ' (' + pendingCount() + ')' : ''));
 			syncBtn.type = 'button';
 			var note = el('span', 'cloud-save-note', '');
+				note.setAttribute('role', 'status');
+				note.setAttribute('aria-live', 'polite');
 			syncBtn.addEventListener('click', function () {
 				doSync(note, syncBtn);
 			});
 			slot.appendChild(syncBtn);
 			slot.appendChild(note);
 		});
+	}
+
+	function renderMenuEntry() {
+		if (!enabled()) {
+			return;
+		}
+		var menu = null;
+		try {
+			menu = document.querySelector('main-menu');
+		} catch (e) {
+			return;
+		}
+		if (!menu) {
+			return;
+		}
+		var slot = null;
+		try {
+			slot = menu.querySelector(':scope > .cloud-menu-entry');
+		} catch (e) {
+			return;
+		}
+		if (!isShown(menu)) {
+			if (slot) {
+				slot.remove();
+			}
+			return;
+		}
+		var logged = hasSession();
+		var role = null;
+		try {
+			role = localStorage.getItem('schoolshield-role');
+		} catch (e) {
+			/* ignore */
+		}
+		var label, href;
+		if (!logged) {
+			label = '\u0110\u0103ng nh\u1eadp'; href = 'login.html';
+		} else if (role === 'teacher') {
+			label = 'B\u1ea3ng \u0111i\u1ec1u khi\u1ec3n'; href = 'dashboard.html';
+		} else {
+			label = 'Ti\u1eben tr\u00ecnh'; href = 'student-dashboard.html';
+		}
+		var stamp = label + '/' + href;
+		if (slot && slot.getAttribute('data-rendered-for') === stamp) {
+			return;
+		}
+		if (!slot) {
+			slot = el('div', 'cloud-menu-entry');
+			menu.appendChild(slot);
+		}
+		slot.setAttribute('data-rendered-for', stamp);
+		slot.innerHTML = '';
+		var btn = document.createElement('button');
+		btn.type = 'button';
+		try {
+			var model = menu.querySelector('button');
+			if (model && model.className) {
+				btn.className = model.className;
+			}
+		} catch (e) {
+			/* ignore */
+		}
+		btn.textContent = label;
+		btn.addEventListener('click', function () {
+			window.location.href = href;
+		});
+		slot.appendChild(btn);
 	}
 
 	var observerStarted = false;
@@ -256,6 +244,11 @@
 		var obs = new MutationObserver(function () {
 			try {
 				renderSaveButtons();
+			} catch (e) {
+				/* never break the game shell */
+			}
+			try {
+				renderMenuEntry();
 			} catch (e) {
 				/* never break the game shell */
 			}
@@ -274,5 +267,5 @@
 		init();
 	}
 
-	window.CloudHook = { render: render, renderSaveButtons: renderSaveButtons };
+	window.CloudHook = { renderSaveButtons: renderSaveButtons, renderMenuEntry: renderMenuEntry };
 })();

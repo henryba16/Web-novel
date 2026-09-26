@@ -41,7 +41,7 @@
             --sage-light: #eef1e8;
             --brown: #7b604a;
             --shadow: rgba(45, 30, 25, 0.14);
-            --serif: "Noto Serif", "Noto Serif JP", Georgia, "Times New Roman", serif;
+            --serif: "Noto Serif", "Noto Serif JP", Georgia, "Palatino Linotype", "Book Antiqua", "DejaVu Serif", "Times New Roman", serif;
         }
 
         * {
@@ -395,6 +395,9 @@
 
         .topbar-account {
             flex: 0 0 auto;
+            max-width: 12rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
             color: var(--paper);
             background: var(--ink);
             border-radius: 999px;
@@ -475,6 +478,29 @@
         .btn-ghost:hover {
             color: var(--paper);
             background: var(--sage-dark);
+        }
+
+        .hero-signin {
+            width: 100%;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin: 0.25rem 0 0;
+        }
+
+        .hero-signin a {
+            color: var(--sage-dark);
+            font-weight: 700;
+        }
+
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+            outline: 3px solid #596c58;
+            outline-offset: 2px;
+            border-radius: 6px;
+        }
+
+        .btn-start:active, .btn-ghost:active {
+            transform: translateY(1px) scale(0.99);
         }
 
         .pwa-help {
@@ -857,12 +883,9 @@
             </a>
             <div class="topbar-links">
                 <a class="active" href="#preview">Xem trước</a>
-                <a href="#context">Bối cảnh</a>
                 <a href="#chapters">Nội dung</a>
                 <a href="#teachers">Dành cho giáo viên</a>
-                <a href="#classroom">Tiết học mẫu</a>
-                <a href="#project">Dự án</a>
-                <a href="#faq">Câu hỏi thường gặp</a>
+                <a href="#faq">Hỏi &amp; đáp</a>
             </div>
             <a href="login.html" id="account-link" class="topbar-account">Đăng nhập</a>
         </nav>
@@ -888,11 +911,11 @@
                 </p>
 
                 <div class="hero-actions">
-                    <a href="login.html" class="btn-start">
+                    <a href="game.html" class="btn-start">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="5 3 19 12 5 21 5 3"/>
                         </svg>
-                        Bắt đầu trải nghiệm
+                        Chơi ngay — không cần tài khoản
                     </a>
                     <a href="#teachers" class="btn-ghost">
                         Dành cho giáo viên
@@ -900,6 +923,7 @@
                     <button type="button" class="btn-ghost pwa-install" id="pwa-install" hidden>
                         Cài SchoolShield
                     </button>
+                    <p class="hero-signin">Đã có tài khoản? <a href="login.html">Đăng nhập để lưu đám mây</a> · <a href="student-dashboard.html">Xem tiến trình</a></p>
                 </div>
                 <p class="pwa-help" id="pwa-help" role="status" aria-live="polite"></p>
             </section>
@@ -1097,6 +1121,11 @@
         <footer>
             <div class="footer-links">
                 <a href="#faq">Câu hỏi thường gặp</a>
+                <a href="#context">Bối cảnh</a>
+                <a href="#classroom">Tiết học mẫu</a>
+                <a href="#project">Dự án</a>
+                <a href="student-dashboard.html">Tiến trình học sinh</a>
+                <a href="dashboard.html">Bảng điều khiển giáo viên</a>
                 <a href="https://monogatari.io" target="_blank" rel="noopener">Monogatari Engine</a>
                 <a href="https://github.com/henryba16/Web-novel.git" target="_blank" rel="noopener">GitHub</a>
             </div>
@@ -1110,17 +1139,28 @@
         // by index.html (isolation rule). Guest experience unchanged.
         (function () {
             var link = document.getElementById('account-link');
-            if (!link) return;
+            var heroBtn = document.querySelector('.hero-actions .btn-start');
             var session = null;
+            var role = null;
             try {
                 var raw = localStorage.getItem('schoolshield-session');
                 session = raw ? JSON.parse(raw) : null;
+                role = localStorage.getItem('schoolshield-role');
             } catch (e) {
                 session = null;
             }
+            /* Hero goes straight to the game for guests; only logged-in
+             * sessions get rewritten (teacher → dashboard). */
+            if (heroBtn && session && session.access_token) {
+                heroBtn.href = role === 'teacher' ? 'dashboard.html' : 'game.html';
+            }
+            if (!link) return;
             if (session && session.access_token) {
                 var email = (session.user && session.user.email) || '';
-                link.textContent = 'Đăng xuất' + (email ? ' (' + email + ')' : '');
+                link.textContent = 'Đăng xuất';
+                if (email) {
+                    link.setAttribute('title', email);
+                }
                 link.href = '#';
                 link.addEventListener('click', function (ev) {
                     ev.preventDefault();

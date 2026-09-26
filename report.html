@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Báo cáo lớp | SchoolShield</title>
     <meta name="description" content="Báo cáo in được của lớp học SchoolShield (PoC): tổng hợp cả lớp + từng học sinh. Dùng Chức năng In → Lưu thành PDF của trình duyệt.">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co">
     <link rel="icon" href="assets/icons/icon.ico" type="image/png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1a1a2e">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style/cloud.css">
     <style>
         :root {
             --paper: #fffaf3; --ink: #2d2d2d; --muted: #706d63;
             --line: #d6baa1; --sage-dark: #596c58; --sage-light: #eef1e8;
-            --serif: Georgia, "Times New Roman", serif;
+            --serif: "Noto Serif", "Noto Serif JP", Georgia, "Palatino Linotype", "Book Antiqua", "DejaVu Serif", "Times New Roman", serif;
         }
         * { box-sizing: border-box; }
         body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
@@ -31,16 +34,42 @@
         .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
         .status.ok { color: var(--sage-dark); }
         .status.err { color: #9c3b2e; }
+
+        /* Global a11y one-liners: visible focus, press feedback, stable numerals. */
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
+            outline: 3px solid #596c58;
+            outline-offset: 2px;
+            border-radius: 6px;
+        }
+        button:active { transform: translateY(1px) scale(0.99); }
+        .stat-value, .code, .roster-meta, td, th {
+            font-variant-numeric: tabular-nums;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .stat-fill, .skeleton { transition: none !important; animation: none !important; }
+        }
         .empty { border: 1px dashed var(--line); border-radius: 12px; padding: 1.5rem; text-align: center; color: var(--muted); margin-top: 1rem; background: var(--paper); }
         .legend { font-size: 0.82rem; color: var(--muted); margin: 0.5rem 0 0; }
         .legend .tick { display: inline-block; width: 3px; height: 1em; background: rgba(45,45,45,0.65); border-radius: 2px; vertical-align: -0.15em; margin: 0 0.3em; }
+        details.student { margin-top: 0.5rem; }
+        details.student > summary { cursor: pointer; font-weight: 700; font-size: 0.95rem; }
+        ul.run-hist { list-style: none; margin: 0.75rem 0 0; padding: 0; font-size: 0.85rem; color: var(--muted); }
+        ul.run-hist li { padding: 0.25rem 0; border-top: 1px dashed var(--line); }
+        @media print {
+            .cloud-no-print { display: none !important; }
+            body { background: #fff; }
+            .card { break-inside: avoid; box-shadow: none; }
+            details.student > summary { list-style: none; }
+            details.student > summary::-webkit-details-marker { display: none; }
+            details.student:not([open]) > :not(summary) { display: block !important; }
+        }
     </style>
 </head>
 <body class="cloud-report">
     <div class="wrap">
         <nav class="topnav cloud-no-print">
             <a href="index.html">← Trang chủ</a>
-            <a href="dashboard.html">Bảng điều khiển</a>
+            <a href="dashboard.html#dash-box">Bảng điều khiển</a>
             <button type="button" class="linklike" id="print-btn">In / Lưu PDF</button>
         </nav>
 
@@ -145,7 +174,7 @@
                     window.print();
                 });
                 if (!window.CloudClient || !window.CloudClient.isEnabled()) {
-                    document.getElementById('report-sub').textContent = 'Chế độ đám mây chưa được cấu hình trên bản dựng này.';
+                    document.getElementById('report-sub').textContent = 'Chưa bật lưu trực tuyến trên bản này — bạn vẫn chơi khách bình thường.';
                     set('err', 'Bản dựng này chưa cấu hình Supabase (CLOUD_DISABLED).');
                     return;
                 }
@@ -165,7 +194,7 @@
                     set('', '');
                 } catch (err) {
                     document.getElementById('report-sub').textContent = 'Không tải được báo cáo.';
-                    set('err', 'Không tải được báo cáo: ' + ((err && err.message) || 'lỗi không rõ'));
+                    set('err', 'Không tải được báo cáo: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                 }
             }
 
@@ -243,25 +272,36 @@
                     var latest = list[0];
                     var card = document.createElement('section');
                     card.className = 'card';
+                    var det = document.createElement('details');
+                    det.className = 'student';
+                    det.open = true;
+                    var sum = document.createElement('summary');
+                    sum.textContent = shortName(profile, sid) + ' · ' + list.length + ' lượt';
                     var h = document.createElement('h2');
                     h.textContent = shortName(profile, sid);
-                    card.appendChild(h);
+                    det.appendChild(sum);
+                    det.appendChild(h);
                     var meta = document.createElement('p');
                     meta.className = 'run-meta';
                     var seen = {};
                     list.forEach(function (r) { if (r.ending_name) { seen[r.ending_name] = true; } });
                     meta.textContent = list.length + ' lượt hoàn thành · kết thúc: ' +
                         (Object.keys(seen).join(', ') || '—');
-                    card.appendChild(meta);
+                    card.appendChild(det);
+                    det.appendChild(meta);
                     METRICS.forEach(function (m) {
-                        card.appendChild(barRow(m.label, latest[m.key], agg.means[m.key]));
+                        det.appendChild(barRow(m.label, latest[m.key], agg.means[m.key]));
                     });
-                    var hist = document.createElement('p');
-                    hist.className = 'run-meta';
-                    hist.textContent = 'Lịch sử: ' + list.map(function (r) {
-                        return (r.finished_at || r.started_at || '?').slice(0, 10) + ' — ' + (r.ending_name || '—');
-                    }).join(' · ');
-                    card.appendChild(hist);
+                    var hist = document.createElement('ul');
+                    hist.className = 'run-meta run-hist';
+                    list.forEach(function (r) {
+                        var li = document.createElement('li');
+                        li.textContent = (r.finished_at || r.started_at || '?').slice(0, 10) +
+                            ' — ' + (r.ending_name || '—');
+                        hist.appendChild(li);
+                    });
+                    det.appendChild(hist);
+                    card.appendChild(det);
                     mount.appendChild(card);
                 });
             }

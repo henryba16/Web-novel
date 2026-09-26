@@ -30,6 +30,7 @@ const files = [
 	'signup.html',
 	'reset.html',
 	'dashboard.html',
+	'student-dashboard.html',
 	'report.html',
 	'AI-ATTRIBUTION.html',
 

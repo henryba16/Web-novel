@@ -1514,3 +1514,102 @@ monogatari.script ({
 		/* original finishChapter stays authoritative */
 	}
 })();
+/* ===== Phase 2 PoC cloud upload on engine saves (APPEND-ONLY) =====
+ * SPEC amendment 26-09-26 (owner sign-off): autosaves upload throttled
+ * (60s) when logged in + online. Manual saves upload on every commit when
+ * logged in. Guests: early return, local behavior byte-identical.
+ * Upload-only scope: run-state rows (stats/choices/ending), NOT slot blobs —
+ * cloud saves do not restore scenes (dashboard shows runs).
+ * Never throws into game code; original promise/return preserved.
+ */
+(function () {
+	'use strict';
+	if (typeof monogatari === 'undefined' || typeof monogatari.saveTo !== 'function') {
+		return;
+	}
+	var AUTO_MS = 60000;
+	var lastAuto = 0;
+
+	function sessionOn() {
+		try {
+			return !!(window.CloudClient && window.CloudClient.isEnabled() && window.CloudClient.getSession());
+		} catch (ignore) {
+			return false;
+		}
+	}
+
+	function onlineNow() {
+		try {
+			return typeof navigator === 'undefined' ? true : navigator.onLine !== false;
+		} catch (ignore) {
+			return true;
+		}
+	}
+
+	function pushRun() {
+		try {
+			if (!window.CloudRun || typeof window.CloudRun.snapshotFromStorage !== 'function') {
+				return;
+			}
+			var snap = window.CloudRun.snapshotFromStorage(monogatari.storage());
+			if (!snap || !snap.id) {
+				return;
+			}
+			if (window.CloudSync && typeof window.CloudSync.queueRun === 'function') {
+				window.CloudSync.queueRun(snap);
+				if (typeof window.CloudSync.syncNow === 'function') {
+					try {
+						var r = window.CloudSync.syncNow(null);
+						if (r && typeof r.catch === 'function') {
+							r.catch(function () { /* queued; sync button covers */ });
+						}
+					} catch (ignore) {
+						/* queued; sync button covers */
+					}
+				}
+			}
+		} catch (ignore) {
+			/* never break saves */
+		}
+	}
+
+	var origSaveTo;
+	try {
+		origSaveTo = monogatari.saveTo.bind(monogatari);
+	} catch (ignore) {
+		return;
+	}
+
+	monogatari.saveTo = function () {
+		var args = arguments;
+		var label = args.length ? String(args[0] || '') : '';
+		var p = origSaveTo.apply(monogatari, args);
+		try {
+			if (!sessionOn() || !onlineNow()) {
+				return p;
+			}
+			if (label.toLowerCase().indexOf('auto') >= 0) {
+				var now = Date.now();
+				if (now - lastAuto < AUTO_MS) {
+					return p;
+				}
+				lastAuto = now;
+			}
+			var done = function () {
+				try {
+					pushRun();
+				} catch (ignore) {
+					/* ignore */
+				}
+			};
+			if (p && typeof p.then === 'function') {
+				p.then(done, function () { /* local save failed: upload nothing */ });
+			} else {
+				done();
+			}
+		} catch (ignore) {
+			/* ignore */
+		}
+		return p;
+	};
+})();

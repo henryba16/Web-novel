@@ -115,18 +115,38 @@
 	}
 
 	/* Path B: student enters code -> active self-membership (no partial join:
-	 * the single insert either succeeds or throws wrong_code/duplicate). */
+	 * single RPC does lookup + insert atomically. Direct class lookup by
+	 * code is impossible under RLS (classes_student_read needs an existing
+	 * membership), hence the SECURITY DEFINER join_class_by_code function.
+	 * Wrong code -> inline error, no partial join. */
 	async function joinByCode(code, profile) {
 		if (!profile || !profile.id) {
 			throw new Error('Login required to join a class.');
 		}
-		var klass = await getClassByCode(code);
-		var created = await window.CloudClient.rest('memberships', {
-			method: 'POST',
-			body: { class_id: klass.id, student_id: profile.id, status: 'active' },
-			token: token()
-		});
-		return { class: klass, membership: created && created.length ? created[0] : created };
+		var clean = String(code || '').trim().toUpperCase();
+		if (!clean) {
+			throw new Error('Class code is required.');
+		}
+		var res;
+		try {
+			res = await window.CloudClient.rest('rpc/join_class_by_code', {
+				method: 'POST',
+				body: { _code: clean },
+				token: token()
+			});
+		} catch (e) {
+			var msg = String((e && e.message) || '');
+			if (/wrong_code/i.test(msg)) {
+				var err = new Error('Wrong code — no class uses this code. Check and retry.');
+				err.code = 'wrong_code';
+				throw err;
+			}
+			throw e;
+		}
+		if (!res || !res.id) {
+			throw new Error('Wrong code — no class uses this code. Check and retry.');
+		}
+		return { class: res, membership: null };
 	}
 
 	async function myMemberships(profile) {

@@ -65,6 +65,15 @@
 
 	async function afterLogin(user, profile) {
 		memoryUser = user;
+		/* Persist role for session-aware entry points (index hero, nudge)
+		 * without loading cloud scripts there. Cleared on sign-out. */
+		try {
+			if (profile && profile.role) {
+				localStorage.setItem('schoolshield-role', profile.role);
+			}
+		} catch (e) {
+			/* ignore */
+		}
 		/* Path-A invite claim: pending rows addressed to this email activate. */
 		try {
 			if (window.CloudClasses && typeof window.CloudClasses.claimPendingInvites === 'function') {
@@ -118,6 +127,11 @@
 		await window.CloudClient.signOut();
 		memoryUser = null;
 		try {
+			localStorage.removeItem('schoolshield-role');
+		} catch (e) {
+			/* ignore */
+		}
+		try {
 			if (window.CloudRun && typeof window.CloudRun.clearRun === 'function') {
 				window.CloudRun.clearRun();
 			}
@@ -129,6 +143,11 @@
 
 	/* Local-only sign out (no network): clears session + cache, goes home. */
 	function signOutLocal() {
+		try {
+			localStorage.removeItem('schoolshield-role');
+		} catch (e) {
+			/* ignore */
+		}
 		try {
 			window.CloudClient.clearSession();
 		} catch (e) {
