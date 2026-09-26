@@ -260,6 +260,18 @@
                     setStatus(pageStatus, 'err', 'Không tải được lượt chơi: ' + ((e && e.message) || 'lỗi không xác định, thử lại sau'));
                 }
 
+                /* Flush anything still pending (e.g. upload aborted by the
+                 * finish navigation). Silent; next visit shows the rows. */
+                try {
+                    if (window.CloudSync && typeof window.CloudSync.syncNow === 'function') {
+                        window.CloudSync.syncNow(profile).catch(function () {
+                            /* stays queued */
+                        });
+                    }
+                } catch (e) {
+                    /* ignore */
+                }
+
                 /* Classes. */
                 renderClasses(profile, token);
             }

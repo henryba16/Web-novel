@@ -931,8 +931,32 @@
         } catch (e) {
             /* guest default stands */
         }
+
+        /* Flush any runs left pending by the game page (the finish
+         * navigation usually aborts the in-flight upload). Silent:
+         * runs after deferred cloud modules load. */
+        window.addEventListener('DOMContentLoaded', function () {
+            try {
+                if (!window.CloudSync || !window.CloudClient || !window.CloudClient.isEnabled()) {
+                    return;
+                }
+                var s = window.CloudClient.getSession();
+                if (!s || !s.access_token) {
+                    return;
+                }
+                window.CloudSync.syncNow(null).catch(function () {
+                    /* stays queued; sync button + next login cover it */
+                });
+            } catch (e) {
+                /* never break the ending page */
+            }
+        });
     </script>
     <script src="./js/analytics.js"></script>
     <script src="./js/speed-insights.js"></script>
+    <script src="./js/supabase-config.js"></script>
+    <script src="./js/cloud-client.js"></script>
+    <script src="./js/cloud-sync.js"></script>
+    <script src="./js/cloud-auth.js"></script>
 </body>
 </html>
