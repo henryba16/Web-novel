@@ -30,9 +30,25 @@
         button.action:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
         button.action[disabled] { opacity: 0.55; cursor: wait; }
         button.mini { margin: 0.25rem 0.5rem 0.25rem 0; padding: 0.35rem 0.9rem; font-size: 0.8rem; }
+        a.action.mini { display: inline-block; margin-top: 0.75rem; padding: 0.35rem 0.9rem; font-size: 0.8rem; font-weight: 700; font-family: inherit; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; text-decoration: none; }
+        a.action.mini:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
         .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
         .status.ok { color: var(--sage-dark); }
         .status.err { color: #9c3b2e; }
+
+        /* Global a11y one-liners: visible focus, press feedback, stable numerals. */
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
+            outline: 3px solid #596c58;
+            outline-offset: 2px;
+            border-radius: 6px;
+        }
+        button:active { transform: translateY(1px) scale(0.99); }
+        .stat-value, .code, .roster-meta, td, th {
+            font-variant-numeric: tabular-nums;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .stat-fill, .skeleton { transition: none !important; animation: none !important; }
+        }
         .empty { border: 1px dashed var(--line); border-radius: 12px; padding: 1.5rem; text-align: center; color: var(--muted); margin-top: 1rem; }
         .run { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; background: var(--sage-light); }
         .run h3 { margin: 0 0 0.25rem; font-size: 1rem; }
@@ -49,12 +65,31 @@
         .code { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.15em; }
         .fine { font-size: 0.82rem; color: var(--muted); margin-top: 0.75rem; }
         .fine a { color: var(--sage-dark); }
+        .nav-primary {
+            background: var(--ink); color: var(--paper) !important;
+            border-radius: 999px; padding: 0.4rem 1.1rem;
+        }
+        .nav-primary:hover { background: var(--sage-dark); }
+        .skeleton {
+            border: 1px solid var(--line); border-radius: 12px;
+            padding: 1rem 1.25rem; margin-top: 1rem; color: transparent;
+            background: linear-gradient(90deg, var(--sage-light) 25%, #f6efe4 50%, var(--sage-light) 75%);
+            background-size: 200% 100%; user-select: none;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+            .skeleton { animation: sk-pulse 1.4s ease-in-out infinite; }
+            @keyframes sk-pulse {
+                0% { background-position: 200% 0; }
+                100% { background-position: -200% 0; }
+            }
+        }
+        #join-code { text-transform: uppercase; letter-spacing: 0.12em; }
     </style>
 </head>
 <body>
     <div class="wrap">
         <nav class="topnav">
-            <a href="game.html">Vào game</a>
+            <a href="game.html" class="nav-primary">Vào game →</a>
             <a href="index.html">Trang chủ</a>
             <button type="button" class="linklike" id="signout-btn">Đăng xuất</button>
         </nav>
@@ -76,6 +111,7 @@
             <form id="join-form">
                 <label for="join-code">Nhập mã lớp để tham gia</label>
                 <input id="join-code" name="code" type="text" maxlength="12" placeholder="VD: KQ7M2P" autocomplete="off">
+                <p class="fine">Mã gồm chữ và số, không phân biệt hoa thường.</p>
                 <button type="submit" class="action" id="join-btn">Tham gia lớp</button>
             </form>
             <p class="status" id="join-status" role="status" aria-live="polite"></p>
@@ -145,7 +181,7 @@
                 var pageStatus = document.getElementById('page-status');
                 var whoLine = document.getElementById('who-line');
                 if (!window.CloudClient || !window.CloudClient.isEnabled()) {
-                    setStatus(pageStatus, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này.');
+                    setStatus(pageStatus, 'err', 'Chưa bật lưu trực tuyến trên bản này — bạn vẫn chơi khách bình thường.');
                     return;
                 }
                 var session = window.CloudClient.getSession();
@@ -168,6 +204,14 @@
                 /* Runs (own rows only, RLS enforced). */
                 var runsList = document.getElementById('runs-list');
                 runsList.innerHTML = '';
+                var sk1 = document.createElement('div');
+                sk1.className = 'skeleton';
+                sk1.textContent = '…';
+                var sk2 = document.createElement('div');
+                sk2.className = 'skeleton';
+                sk2.textContent = '…';
+                runsList.appendChild(sk1);
+                runsList.appendChild(sk2);
                 try {
                     var runs = await window.CloudClient.rest('runs', {
                         params: {
@@ -178,22 +222,29 @@
                         token: token
                     });
                     if (!runs || !runs.length) {
+                        runsList.innerHTML = '';
                         var empty = document.createElement('div');
                         empty.className = 'empty';
-                        empty.textContent = 'Chưa có lượt chơi nào được lưu đám mây. Chơi xong một chương và bấm lưu, rồi quay lại đây xem tiến trình nhé!';
+                        empty.textContent = 'Chưa có lượt chơi nào được lưu đám mây. Chơi xong một chương và bấm lưu, rồi quay lại đây xem tiến trình nhé! ';
+                        var playNow = document.createElement('a');
+                        playNow.href = 'game.html';
+                        playNow.className = 'action mini';
+                        playNow.textContent = 'Chơi ngay';
+                        empty.appendChild(playNow);
                         runsList.appendChild(empty);
                     } else {
-                        runs.forEach(function (run, i) {
+                        runsList.innerHTML = '';
+                        runs.forEach(function (run) {
                             var card = document.createElement('div');
                             card.className = 'run';
                             var h = document.createElement('h3');
                             h.textContent = (run.status === 'finished' ? 'Đã hoàn thành' : 'Đang chơi dở') +
-                                (run.ending_name ? ' — ' + run.ending_name : '') +
-                                ' (lượt ' + (runs.length - i) + ')';
+                                (run.ending_name ? ' — ' + run.ending_name : '');
                             var meta = document.createElement('div');
                             meta.className = 'meta';
-                            meta.textContent = fmtDate(run.updated_at) +
-                                ' · ' + ((run.choices && run.choices.length) || 0) + ' lựa chọn';
+                            meta.textContent = 'Cập nhật ' + fmtDate(run.updated_at) +
+                                ' · ' + ((run.choices && run.choices.length) || 0) + ' lựa chọn' +
+                                (run.status !== 'finished' ? ' · Mở game để chơi tiếp nhé!' : '');
                             card.appendChild(h);
                             card.appendChild(meta);
                             metricRows(run).forEach(function (r) {
@@ -203,7 +254,7 @@
                         });
                     }
                 } catch (e) {
-                    setStatus(pageStatus, 'err', 'Không tải được lượt chơi: ' + ((e && e.message) || 'lỗi không rõ'));
+                    setStatus(pageStatus, 'err', 'Không tải được lượt chơi: ' + ((e && e.message) || 'lỗi không xác định, thử lại sau'));
                 }
 
                 /* Classes. */
@@ -245,7 +296,7 @@
                                 renderClasses(profile, token);
                             } catch (e) {
                                 setStatus(document.getElementById('join-status'), 'err',
-                                    'Rời lớp thất bại: ' + ((e && e.message) || 'lỗi không rõ'));
+                                    'Rời lớp thất bại: ' + ((e && e.message) || 'lỗi không xác định, thử lại sau'));
                                 leave.disabled = false;
                             }
                         });
@@ -256,7 +307,7 @@
                     });
                 } catch (e) {
                     setStatus(document.getElementById('page-status'), 'err',
-                        'Không tải được lớp học: ' + ((e && e.message) || 'lỗi không rõ'));
+                        'Không tải được lớp học: ' + ((e && e.message) || 'lỗi không xác định, thử lại sau'));
                 }
             }
 

@@ -158,6 +158,12 @@
         transition: width 1s ease 0.2s;
     }
 
+    .stat-value { font-variant-numeric: tabular-nums; }
+
+    @media (prefers-reduced-motion: reduce) {
+        .stat-fill { transition: none; }
+    }
+
     .choice-list {
         list-style: none;
         margin: 0;

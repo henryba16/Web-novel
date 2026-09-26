@@ -41,10 +41,21 @@
 	}
 
 	function dismissed() {
+		/* Snooze per visit (sessionStorage): the bar reappears next visit,
+		 * so dismissed guests keep a re-entry path to login/sync. */
 		try {
-			return localStorage.getItem(NUDGE_KEY) === '1';
+			return sessionStorage.getItem(NUDGE_KEY) === '1'
+				|| localStorage.getItem(NUDGE_KEY) === '1';
 		} catch (e) {
 			return false;
+		}
+	}
+
+	function snooze() {
+		try {
+			sessionStorage.setItem(NUDGE_KEY, '1');
+		} catch (e) {
+			/* ignore */
 		}
 	}
 
@@ -85,17 +96,13 @@
 		home.href = 'index.html';
 
 		if (!hasSession()) {
-			var msg = el('span', 'cloud-nudge-msg', 'Chơi khách — đăng nhập để lưu tiến trình đám mây và tham gia lớp học.');
+			var msg = el('span', 'cloud-nudge-msg', 'Chơi khách — tiến trình lưu trên máy này.');
 			var login = el('a', 'cloud-nudge-login', 'Đăng nhập');
 			login.href = 'login.html';
 			var hide = el('button', 'cloud-nudge-hide', 'Để sau');
 			hide.type = 'button';
 			hide.addEventListener('click', function () {
-				try {
-					localStorage.setItem(NUDGE_KEY, '1');
-				} catch (e) {
-					/* ignore */
-				}
+				snooze();
 				bar.hidden = true;
 			});
 			bar.appendChild(home);
@@ -109,6 +116,8 @@
 		var sync = el('button', 'cloud-nudge-login', 'Đồng bộ' + (pendingCount() ? ' (' + pendingCount() + ')' : ''));
 		sync.type = 'button';
 		var note = el('span', 'cloud-nudge-msg', '');
+			note.setAttribute('role', 'status');
+			note.setAttribute('aria-live', 'polite');
 		sync.addEventListener('click', async function () {
 			note.textContent = 'Đang đồng bộ…';
 			try {
@@ -121,7 +130,7 @@
 					note.textContent = 'Đã đồng bộ (' + res.uploaded + ' lượt chơi).';
 				}
 			} catch (e) {
-				note.textContent = 'Đồng bộ thất bại: ' + ((e && e.message) || 'lỗi không rõ');
+				note.textContent = 'Đồng bộ thất bại: ' + ((e && e.message) || 'lỗi không xác định, thử lại sau');
 			}
 			sync.textContent = 'Đồng bộ' + (pendingCount() ? ' (' + pendingCount() + ')' : '');
 		});
@@ -129,7 +138,11 @@
 		bar.appendChild(who);
 		try {
 			var myRole = localStorage.getItem('schoolshield-role');
-			if (myRole !== 'teacher') {
+			if (myRole === 'teacher') {
+				var dash = el('a', 'cloud-nudge-home', 'Bảng điều khiển');
+				dash.href = 'dashboard.html';
+				bar.appendChild(dash);
+			} else {
 				var progress = el('a', 'cloud-nudge-home', 'Tiến trình của bạn');
 				progress.href = 'student-dashboard.html';
 				bar.appendChild(progress);
@@ -209,7 +222,7 @@
 				note.textContent = 'Đã đồng bộ (' + res.uploaded + ' lượt chơi).';
 			}
 		}).catch(function (e) {
-			note.textContent = 'Đồng bộ thất bại: ' + ((e && e.message) || 'lỗi không rõ');
+			note.textContent = 'Đồng bộ thất bại: ' + ((e && e.message) || 'lỗi không xác định, thử lại sau');
 		}).then(function () {
 			syncBtn.textContent = 'Đồng bộ' + (pendingCount() ? ' (' + pendingCount() + ')' : '');
 		});
@@ -241,12 +254,17 @@
 			if (!hasSession()) {
 				var login = el('a', '', 'Đăng nhập để đồng bộ');
 				login.href = 'login.html';
+				login.target = '_blank';
+				login.rel = 'noopener';
+				login.title = 'Mở trong tab mới — tiến trình máy này được giữ';
 				slot.appendChild(login);
 				return;
 			}
 			var syncBtn = el('button', '', 'Đồng bộ' + (pendingCount() ? ' (' + pendingCount() + ')' : ''));
 			syncBtn.type = 'button';
 			var note = el('span', 'cloud-save-note', '');
+				note.setAttribute('role', 'status');
+				note.setAttribute('aria-live', 'polite');
 			syncBtn.addEventListener('click', function () {
 				doSync(note, syncBtn);
 			});

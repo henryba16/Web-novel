@@ -32,6 +32,20 @@
         .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
         .status.ok { color: var(--sage-dark); }
         .status.err { color: #9c3b2e; }
+
+        /* Global a11y one-liners: visible focus, press feedback, stable numerals. */
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
+            outline: 3px solid #596c58;
+            outline-offset: 2px;
+            border-radius: 6px;
+        }
+        button:active { transform: translateY(1px) scale(0.99); }
+        .stat-value, .code, .roster-meta, td, th {
+            font-variant-numeric: tabular-nums;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .stat-fill, .skeleton { transition: none !important; animation: none !important; }
+        }
         hr.sep { border: none; border-top: 1px solid var(--line); margin: 1.25rem 0; }
     </style>
 </head>
@@ -39,12 +53,13 @@
     <div class="wrap">
         <nav class="topnav">
             <a href="login.html">← Đăng nhập</a>
+            <a href="game.html">Chơi ngay (khách)</a>
             <a href="index.html">Trang chủ</a>
         </nav>
 
         <div class="card">
             <h1>Đặt lại mật khẩu</h1>
-            <p class="sub">Dùng email khôi phục mặc định của hệ thống (không mẫu tuỳ chỉnh ở PoC).</p>
+            <p class="sub">Nhập email tài khoản — hệ thống gửi liên kết đặt lại mật khẩu.</p>
         </div>
 
         <section class="card" aria-labelledby="req-h">
@@ -125,7 +140,7 @@
             reqForm.addEventListener('submit', async function (ev) {
                 ev.preventDefault();
                 if (!cloudReady()) {
-                    set(reqStatus, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này.');
+                    set(reqStatus, 'err', 'Chưa bật lưu trực tuyến trên bản này — bạn vẫn chơi khách bình thường.');
                     return;
                 }
                 var email = document.getElementById('req-email').value.trim();
@@ -136,7 +151,7 @@
                     await window.CloudAuth.sendPasswordReset(email, redirectTo);
                     set(reqStatus, 'ok', 'Đã gửi — kiểm tra hộp thư (kể cả thư rác), rồi mở liên kết để đặt mật khẩu mới.');
                 } catch (err) {
-                    set(reqStatus, 'err', 'Gửi thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                    set(reqStatus, 'err', 'Gửi thất bại: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                 } finally {
                     reqBtn.disabled = false;
                 }
@@ -145,7 +160,7 @@
             setForm.addEventListener('submit', async function (ev) {
                 ev.preventDefault();
                 if (!cloudReady()) {
-                    set(setStatus, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này.');
+                    set(setStatus, 'err', 'Chưa bật lưu trực tuyến trên bản này — bạn vẫn chơi khách bình thường.');
                     return;
                 }
                 var password = document.getElementById('set-pass').value;
@@ -153,16 +168,28 @@
                 set(setStatus, '', 'Đang cập nhật mật khẩu…');
                 try {
                     await window.CloudAuth.updatePassword(password, null);
-                    set(setStatus, 'ok', 'Mật khẩu đã đổi. Về trang đăng nhập để đăng nhập lại.');
+                    set(setStatus, 'ok', 'Mật khẩu đã đổi. ');
+                    var back = document.createElement('a');
+                    back.href = 'login.html';
+                    back.textContent = 'Về trang đăng nhập →';
+                    setStatus.appendChild(back);
                 } catch (err) {
-                    set(setStatus, 'err', 'Cập nhật thất bại: ' + ((err && err.message) || 'lỗi không rõ') + ' — hãy mở liên kết từ email trước.');
+                    set(setStatus, 'err', 'Cập nhật thất bại: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau') + ' — hãy mở liên kết từ email trước.');
                 } finally {
                     setBtn.disabled = false;
                 }
             });
 
             if (!stashRecoveryToken() && !cloudReady()) {
-                set(reqStatus, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này.');
+                set(reqStatus, 'err', 'Chưa bật lưu trực tuyến trên bản này — bạn vẫn chơi khách bình thường.');
+            }
+
+            /* Step 2 stays disabled until a recovery token arrives via the
+             * email link — submitting without one can only fail. */
+            if (!stashRecoveryToken()) {
+                document.getElementById('set-pass').disabled = true;
+                setBtn.disabled = true;
+                set(setStatus, '', 'Mở liên kết trong email trước, rồi đặt mật khẩu tại đây.');
             }
         }());
     </script>

@@ -29,10 +29,29 @@
         button.action { display: inline-block; margin-top: 1rem; padding: 0.7rem 1.4rem; font-size: 0.9rem; font-weight: 700; font-family: inherit; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; cursor: pointer; }
         button.action:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
         button.action[disabled] { opacity: 0.55; cursor: wait; }
-        button.mini { margin: 0.25rem 0.5rem 0.25rem 0; padding: 0.35rem 0.9rem; font-size: 0.8rem; }
+        button.mini, a.mini { margin: 0.25rem 0.5rem 0.25rem 0; padding: 0.35rem 0.9rem; font-size: 0.8rem; }
+        a.mini { text-decoration: none; display: inline-block; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; font-weight: 700; font-family: inherit; }
+        a.mini:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
+        .dash-mininav { position: sticky; top: 0; z-index: 50; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 0.4rem 1rem; margin-bottom: 1.25rem; display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; }
+        .dash-mininav a { color: var(--sage-dark); font-weight: 700; text-decoration: none; }
+        .table-scroll { overflow-x: auto; }
         .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
         .status.ok { color: var(--sage-dark); }
         .status.err { color: #9c3b2e; }
+
+        /* Global a11y one-liners: visible focus, press feedback, stable numerals. */
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
+            outline: 3px solid #596c58;
+            outline-offset: 2px;
+            border-radius: 6px;
+        }
+        button:active { transform: translateY(1px) scale(0.99); }
+        .stat-value, .code, .roster-meta, td, th {
+            font-variant-numeric: tabular-nums;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .stat-fill, .skeleton { transition: none !important; animation: none !important; }
+        }
         .classrow { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; background: var(--sage-light); }
         .classrow h3 { margin: 0 0 0.25rem; font-size: 1.05rem; }
         .code { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.2em; }
@@ -82,6 +101,12 @@
         </div>
 
         <!-- Teacher: classes (Phase 1). Full roster/aggregates land in Phase 3. -->
+        <nav class="dash-mininav" aria-label="Điều hướng bảng điều khiển">
+            <a href="#teacher-box">Lớp học</a>
+            <a href="#dash-box">Tổng quan</a>
+            <a href="#roster-list">Học sinh</a>
+            <a href="#sync-h">Báo cáo</a>
+        </nav>
         <section class="card" id="teacher-box" hidden aria-labelledby="t-h">
             <h2 id="t-h">Lớp học của tôi</h2>
             <form id="create-form">
@@ -135,6 +160,7 @@
             <div class="row">
                 <div style="flex: 0 0 auto;">
                     <button class="action" type="button" id="ai-class-btn">Tạo tóm tắt AI</button>
+                    <p class="sub" style="margin:0.5rem 0 0;">Mất vài giây, cần ít nhất 1 lượt chơi hoàn thành.</p>
                 </div>
             </div>
             <p class="status" id="ai-class-status" role="status" aria-live="polite"></p>
@@ -232,7 +258,7 @@
                                 codeStrong.textContent = esc((updated && updated.code) || '');
                                 set(pageStatus, 'ok', 'Đã đổi mã lớp (mã cũ hết hiệu lực).');
                             } catch (err) {
-                                set(pageStatus, 'err', 'Đổi mã thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                                set(pageStatus, 'err', 'Đổi mã thất bại: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                             }
                         });
                         box.appendChild(regen);
@@ -248,7 +274,7 @@
                                 var res = await window.CloudExport.downloadCsv(c.id);
                                 set(pageStatus, 'ok', 'Đã tải ' + res.filename + ' (' + res.count + ' lượt hoàn thành).');
                             } catch (err) {
-                                set(pageStatus, 'err', 'Tải CSV thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                                set(pageStatus, 'err', 'Tải CSV thất bại: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                             } finally {
                                 csvBtn.disabled = false;
                             }
@@ -259,7 +285,6 @@
                         reportLink.className = 'action mini';
                         reportLink.href = 'report.html?class=' + encodeURIComponent(c.id);
                         reportLink.textContent = 'Báo cáo in';
-                        reportLink.style.cssText = 'text-decoration:none;display:inline-block;margin:0.25rem 0.5rem 0.25rem 0;padding:0.35rem 0.9rem;font-size:0.8rem;font-weight:700;color:#fffaf3;background:#2d2d2d;border:1px solid #2d2d2d;border-radius:999px;';
                         box.appendChild(reportLink);
 
                         var inviteForm = document.createElement('form');
@@ -284,7 +309,7 @@
                                 set(pageStatus, 'ok', 'Đã thêm — học sinh sẽ vào danh sách khi đăng ký bằng email đó.');
                                 loadMembers(c.id, members);
                             } catch (err) {
-                                set(pageStatus, 'err', 'Thêm thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                                set(pageStatus, 'err', 'Thêm thất bại: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                             }
                         });
                         box.appendChild(inviteForm);
@@ -295,7 +320,7 @@
                         loadMembers(c.id, members);
                     });
                 } catch (err) {
-                    set(pageStatus, 'err', 'Không tải được lớp học: ' + ((err && err.message) || 'lỗi không rõ'));
+                    set(pageStatus, 'err', 'Không tải được lớp học: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                 }
             }
 
@@ -322,11 +347,14 @@
                         rm.type = 'button';
                         rm.textContent = 'Xoá';
                         rm.addEventListener('click', async function () {
+                            if (!window.confirm('Xoá học sinh này khỏi lớp?')) {
+                                return;
+                            }
                             try {
                                 await window.CloudClasses.removeMembership(m.id);
                                 loadMembers(classId, mount);
                             } catch (err) {
-                                set(pageStatus, 'err', 'Xoá thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                                set(pageStatus, 'err', 'Xoá thất bại: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                             }
                         });
                         line.appendChild(name);
@@ -336,7 +364,7 @@
                 } catch (err) {
                     var q = document.createElement('p');
                     q.className = 'sub';
-                    q.textContent = 'Không tải được danh sách: ' + ((err && err.message) || 'lỗi không rõ');
+                    q.textContent = 'Không tải được danh sách: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau');
                     mount.appendChild(q);
                 }
             }
@@ -371,7 +399,7 @@
                                 await window.CloudClasses.leaveClass(m.id, profile);
                                 loadStudent();
                             } catch (err) {
-                                set(pageStatus, 'err', 'Rời lớp thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                                set(pageStatus, 'err', 'Rời lớp thất bại: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                             }
                         });
                         box.appendChild(h);
@@ -380,7 +408,7 @@
                         mount.appendChild(box);
                     });
                 } catch (err) {
-                    set(pageStatus, 'err', 'Không tải được lớp học: ' + ((err && err.message) || 'lỗi không rõ'));
+                    set(pageStatus, 'err', 'Không tải được lớp học: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                 }
             }
 
@@ -672,7 +700,10 @@
                         tbody.appendChild(tr);
                     });
                     table.appendChild(tbody);
-                    mount.appendChild(table);
+                    var tableScroll = document.createElement('div');
+                    tableScroll.className = 'table-scroll';
+                    tableScroll.appendChild(table);
+                    mount.appendChild(tableScroll);
                     var chh = document.createElement('h3');
                     chh.textContent = 'Lựa chọn (lượt mới nhất)';
                     mount.appendChild(chh);
@@ -757,7 +788,7 @@
                     mount.appendChild(h);
                     var perr = document.createElement('p');
                     perr.className = 'sub';
-                    perr.textContent = 'Không tải được chi tiết: ' + ((err && err.message) || 'lỗi không rõ');
+                    perr.textContent = 'Không tải được chi tiết: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau');
                     mount.appendChild(perr);
                 }
             }
@@ -811,7 +842,7 @@
                     });
                     renderAggregates(currentAgg);
                 } catch (err) {
-                    set(dashStatus, 'err', 'Không tải được số liệu: ' + ((err && err.message) || 'lỗi không rõ'));
+                    set(dashStatus, 'err', 'Không tải được số liệu: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                 }
             }
 
@@ -860,7 +891,7 @@
             async function init() {
                 refreshPending();
                 if (!window.CloudClient || !window.CloudClient.isEnabled()) {
-                    whoLine.textContent = 'Chế độ đám mây chưa được cấu hình — chơi khách vẫn hoạt động.';
+                    whoLine.textContent = 'Chưa bật lưu trực tuyến trên bản này — bạn vẫn chơi khách bình thường.';
                     set(pageStatus, 'err', 'Bản dựng này chưa cấu hình Supabase (CLOUD_DISABLED).');
                     return;
                 }
@@ -880,8 +911,10 @@
                     return;
                 }
                 var s = window.CloudClient.getSession();
-                whoLine.textContent = 'Xin chào, ' + ((s && s.user && s.user.email) || '') +
+                var shownName = profile.display_name || ((s && s.user && s.user.email) || '');
+                whoLine.textContent = 'Xin chào, ' + shownName +
                     ' · vai trò: ' + (profile.role === 'teacher' ? 'Giáo viên' : 'Học sinh');
+                whoLine.setAttribute('title', (s && s.user && s.user.email) || '');
                 if (profile.role === 'teacher') {
                     teacherBox.hidden = false;
                     loadTeacher();
@@ -902,7 +935,7 @@
                     set(pageStatus, 'ok', 'Đã tạo lớp “' + (c.name || '') + '” — mã: ' + (c.code || ''));
                     loadTeacher();
                 } catch (err) {
-                    set(pageStatus, 'err', 'Tạo lớp thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                    set(pageStatus, 'err', 'Tạo lớp thất bại: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                 } finally {
                     btn.disabled = false;
                 }
@@ -941,7 +974,7 @@
                         set(syncStatus, 'ok', 'Đã đồng bộ (' + res.uploaded + ' lượt chơi).');
                     }
                 } catch (err) {
-                    set(syncStatus, 'err', 'Đồng bộ thất bại: ' + ((err && err.message) || 'lỗi không rõ'));
+                    set(syncStatus, 'err', 'Đồng bộ thất bại: ' + ((err && err.message) || 'lỗi không xác định, thử lại sau'));
                 }
             });
 
