@@ -460,7 +460,7 @@
 
         <div class="actions fade-in" style="animation-delay:0.25s">
             <a class="btn btn-primary" href="game.html">Chơi lại</a>
-            <a class="btn btn-ghost" href="index.html">Về trang chủ</a>
+            <a class="btn btn-ghost" href="index.html" id="home-link">Về trang chủ</a>
         </div>
 
         <footer>SchoolShield — Vệt nắng cuối hành lang</footer>
@@ -910,6 +910,26 @@
                 );
                 document.getElementById("ai-retry").classList.add("active");
             }
+        }
+
+        /* Role-aware home link: teacher → dashboard, student → progress,
+         * guest → index (unchanged). Reads the stored session only. */
+        try {
+            var homeLink = document.getElementById('home-link');
+            var raw = localStorage.getItem('schoolshield-session');
+            var sess = raw ? JSON.parse(raw) : null;
+            var role = null;
+            try {
+                role = localStorage.getItem('schoolshield-role');
+            } catch (e) {
+                role = null;
+            }
+            if (homeLink && sess && sess.access_token) {
+                homeLink.href = role === 'teacher' ? 'dashboard.html' : 'student-dashboard.html';
+                homeLink.textContent = 'Về bảng điều khiển';
+            }
+        } catch (e) {
+            /* guest default stands */
         }
     </script>
     <script src="./js/analytics.js"></script>
