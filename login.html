@@ -13,7 +13,7 @@
         :root {
             --paper: #fffaf3; --ink: #2d2d2d; --muted: #706d63;
             --line: #d6baa1; --sage-dark: #596c58; --sage-light: #eef1e8;
-            --serif: Georgia, "Times New Roman", serif;
+            --serif: "Noto Serif", "Noto Serif JP", Georgia, "Palatino Linotype", "Book Antiqua", "DejaVu Serif", "Times New Roman", serif;
         }
         * { box-sizing: border-box; }
         body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
@@ -111,12 +111,10 @@
                     return false;
                 }
                 var s = window.CloudClient.getSession();
-                var host = (typeof window.CloudClient.configHost === 'function' && window.CloudClient.configHost()) || '';
                 setStatus(
                     cloudState,
                     s ? 'ok' : '',
-                    (s && s.user ? 'Đang đăng nhập: ' + s.user.email : 'Chưa đăng nhập. Chế độ đám mây sẵn sàng.') +
-                    (host ? ' (máy chủ: ' + host + ')' : '')
+                    s && s.user ? 'Đang đăng nhập: ' + s.user.email : 'Chưa đăng nhập. Chế độ đám mây sẵn sàng.'
                 );
                 return true;
             }

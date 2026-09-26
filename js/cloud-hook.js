@@ -127,6 +127,16 @@
 		});
 		bar.appendChild(home);
 		bar.appendChild(who);
+		try {
+			var myRole = localStorage.getItem('schoolshield-role');
+			if (myRole !== 'teacher') {
+				var progress = el('a', 'cloud-nudge-home', 'Tiến trình của bạn');
+				progress.href = 'student-dashboard.html';
+				bar.appendChild(progress);
+			}
+		} catch (e) {
+			/* ignore */
+		}
 		bar.appendChild(sync);
 		bar.appendChild(note);
 	}

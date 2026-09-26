@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiến trình của bạn | SchoolShield</title>
+    <meta name="description" content="Theo dõi tiến trình chơi SchoolShield của bạn: lượt chơi, điểm số, kết thúc đã đạt và lớp học.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self' https://*.supabase.co">
+    <link rel="icon" href="assets/icons/icon.ico" type="image/png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <style>
+        :root {
+            --paper: #fffaf3; --ink: #2d2d2d; --muted: #706d63;
+            --line: #d6baa1; --sage: #909f8f; --sage-dark: #596c58; --sage-light: #eef1e8;
+            --serif: "Noto Serif", "Noto Serif JP", Georgia, "Palatino Linotype", "Book Antiqua", "DejaVu Serif", "Times New Roman", serif;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
+        .wrap { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+        .topnav { display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .topnav a, .topnav button.linklike { color: var(--sage-dark); font-weight: 700; text-decoration: none; font-size: 0.9rem; background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
+        .card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 1.75rem; margin-bottom: 1.25rem; }
+        h1 { font-size: 1.6rem; margin: 0 0 0.25rem; }
+        h2 { font-size: 1.15rem; margin: 0 0 1rem; }
+        .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1rem; }
+        label { display: block; font-size: 0.85rem; font-weight: 700; margin: 0.75rem 0 0.25rem; }
+        input { width: 100%; padding: 0.7rem 0.8rem; font-size: 1rem; font-family: inherit; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+        button.action { display: inline-block; margin-top: 1rem; padding: 0.7rem 1.4rem; font-size: 0.9rem; font-weight: 700; font-family: inherit; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; cursor: pointer; }
+        button.action:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
+        button.action[disabled] { opacity: 0.55; cursor: wait; }
+        button.mini { margin: 0.25rem 0.5rem 0.25rem 0; padding: 0.35rem 0.9rem; font-size: 0.8rem; }
+        .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
+        .status.ok { color: var(--sage-dark); }
+        .status.err { color: #9c3b2e; }
+        .empty { border: 1px dashed var(--line); border-radius: 12px; padding: 1.5rem; text-align: center; color: var(--muted); margin-top: 1rem; }
+        .run { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; background: var(--sage-light); }
+        .run h3 { margin: 0 0 0.25rem; font-size: 1rem; }
+        .run .meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.75rem; }
+        .stat-row { margin-bottom: 0.7rem; }
+        .stat-row:last-child { margin-bottom: 0; }
+        .stat-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.3rem; font-size: 0.85rem; }
+        .stat-name { font-weight: 700; color: var(--ink); }
+        .stat-value { color: var(--muted); font-size: 0.8rem; }
+        .stat-track { height: 10px; border-radius: 999px; background: var(--sage-light); border: 1px solid var(--line); overflow: hidden; }
+        .stat-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--sage), var(--sage-dark)); transition: width 1s ease 0.2s; }
+        .classrow { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; background: var(--sage-light); }
+        .classrow h3 { margin: 0 0 0.25rem; font-size: 1.05rem; }
+        .code { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.15em; }
+        .fine { font-size: 0.82rem; color: var(--muted); margin-top: 0.75rem; }
+        .fine a { color: var(--sage-dark); }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <nav class="topnav">
+            <a href="game.html">Vào game</a>
+            <a href="index.html">Trang chủ</a>
+            <button type="button" class="linklike" id="signout-btn">Đăng xuất</button>
+        </nav>
+
+        <div class="card">
+            <h1>Tiến trình của bạn</h1>
+            <p class="sub" id="who-line">Đang tải…</p>
+            <p class="status" id="page-status" role="status" aria-live="polite"></p>
+        </div>
+
+        <section class="card" aria-labelledby="runs-h">
+            <h2 id="runs-h">Các lượt chơi</h2>
+            <div id="runs-list"></div>
+        </section>
+
+        <section class="card" aria-labelledby="class-h">
+            <h2 id="class-h">Lớp học của bạn</h2>
+            <div id="class-list"></div>
+            <form id="join-form">
+                <label for="join-code">Nhập mã lớp để tham gia</label>
+                <input id="join-code" name="code" type="text" maxlength="12" placeholder="VD: KQ7M2P" autocomplete="off">
+                <button type="submit" class="action" id="join-btn">Tham gia lớp</button>
+            </form>
+            <p class="status" id="join-status" role="status" aria-live="polite"></p>
+        </section>
+    </div>
+
+    <script src="./js/supabase-config.js"></script>
+    <script src="./js/cloud-client.js"></script>
+    <script src="./js/cloud-run.js"></script>
+    <script src="./js/cloud-sync.js"></script>
+    <script src="./js/cloud-auth.js"></script>
+    <script src="./js/cloud-classes.js"></script>
+    <script>
+        (function () {
+            'use strict';
+            var METRICS = [
+                { key: 'empathy', label: 'Đồng cảm' },
+                { key: 'awareness', label: 'Nhận thức' },
+                { key: 'safe', label: 'An toàn' }
+            ];
+
+            function setStatus(node, kind, text) {
+                node.className = 'status' + (kind ? ' ' + kind : '');
+                node.textContent = text || '';
+            }
+
+            function esc(text) {
+                return String(text == null ? '' : text);
+            }
+
+            function metricRows(run) {
+                return METRICS.map(function (m) {
+                    var v = Math.max(0, Math.min(100, Number(run[m.key]) || 0));
+                    var row = document.createElement('div');
+                    row.className = 'stat-row';
+                    var top = document.createElement('div');
+                    top.className = 'stat-top';
+                    var name = document.createElement('span');
+                    name.className = 'stat-name';
+                    name.textContent = m.label;
+                    var val = document.createElement('span');
+                    val.className = 'stat-value';
+                    val.textContent = v + '/100';
+                    top.appendChild(name);
+                    top.appendChild(val);
+                    var track = document.createElement('div');
+                    track.className = 'stat-track';
+                    var fill = document.createElement('div');
+                    fill.className = 'stat-fill';
+                    fill.style.width = v + '%';
+                    track.appendChild(fill);
+                    row.appendChild(top);
+                    row.appendChild(track);
+                    return row;
+                });
+            }
+
+            function fmtDate(iso) {
+                try {
+                    return new Date(iso).toLocaleString('vi-VN');
+                } catch (e) {
+                    return '';
+                }
+            }
+
+            async function load() {
+                var pageStatus = document.getElementById('page-status');
+                var whoLine = document.getElementById('who-line');
+                if (!window.CloudClient || !window.CloudClient.isEnabled()) {
+                    setStatus(pageStatus, 'err', 'Chế độ đám mây chưa được cấu hình trên bản dựng này.');
+                    return;
+                }
+                var session = window.CloudClient.getSession();
+                if (!session || !session.access_token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                var profile = await window.CloudAuth.currentProfile();
+                if (!profile) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                if (profile.role === 'teacher') {
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+                whoLine.textContent = 'Xin chào, ' + (profile.display_name || profile.email || 'bạn') + '!';
+                var token = session.access_token;
+
+                /* Runs (own rows only, RLS enforced). */
+                var runsList = document.getElementById('runs-list');
+                runsList.innerHTML = '';
+                try {
+                    var runs = await window.CloudClient.rest('runs', {
+                        params: {
+                            student_id: 'eq.' + profile.id,
+                            select: '*',
+                            order: 'updated_at.desc'
+                        },
+                        token: token
+                    });
+                    if (!runs || !runs.length) {
+                        var empty = document.createElement('div');
+                        empty.className = 'empty';
+                        empty.textContent = 'Chưa có lượt chơi nào được lưu đám mây. Chơi xong một chương và bấm lưu, rồi quay lại đây xem tiến trình nhé!';
+                        runsList.appendChild(empty);
+                    } else {
+                        runs.forEach(function (run, i) {
+                            var card = document.createElement('div');
+                            card.className = 'run';
+                            var h = document.createElement('h3');
+                            h.textContent = (run.status === 'finished' ? 'Đã hoàn thành' : 'Đang chơi dở') +
+                                (run.ending_name ? ' — ' + run.ending_name : '') +
+                                ' (lượt ' + (runs.length - i) + ')';
+                            var meta = document.createElement('div');
+                            meta.className = 'meta';
+                            meta.textContent = fmtDate(run.updated_at) +
+                                ' · ' + ((run.choices && run.choices.length) || 0) + ' lựa chọn';
+                            card.appendChild(h);
+                            card.appendChild(meta);
+                            metricRows(run).forEach(function (r) {
+                                card.appendChild(r);
+                            });
+                            runsList.appendChild(card);
+                        });
+                    }
+                } catch (e) {
+                    setStatus(pageStatus, 'err', 'Không tải được lượt chơi: ' + ((e && e.message) || 'lỗi không rõ'));
+                }
+
+                /* Classes. */
+                renderClasses(profile, token);
+            }
+
+            async function renderClasses(profile, token) {
+                var list = document.getElementById('class-list');
+                list.innerHTML = '';
+                try {
+                    var memberships = await window.CloudClasses.myMemberships(profile);
+                    var actives = (memberships || []).filter(function (m) {
+                        return m.status === 'active';
+                    });
+                    if (!actives.length) {
+                        var empty = document.createElement('div');
+                        empty.className = 'empty';
+                        empty.textContent = 'Bạn chưa tham gia lớp nào. Nhập mã lớp bên dưới để tham gia nhé!';
+                        list.appendChild(empty);
+                        return;
+                    }
+                    actives.forEach(function (m) {
+                        var cls = m.classes || {};
+                        var row = document.createElement('div');
+                        row.className = 'classrow';
+                        var h = document.createElement('h3');
+                        h.textContent = cls.name || 'Lớp học';
+                        var code = document.createElement('div');
+                        code.className = 'code';
+                        code.textContent = cls.code || '';
+                        var leave = document.createElement('button');
+                        leave.type = 'button';
+                        leave.className = 'action mini';
+                        leave.textContent = 'Rời lớp';
+                        leave.addEventListener('click', async function () {
+                            leave.disabled = true;
+                            try {
+                                await window.CloudClasses.leaveClass(m.id, profile);
+                                renderClasses(profile, token);
+                            } catch (e) {
+                                setStatus(document.getElementById('join-status'), 'err',
+                                    'Rời lớp thất bại: ' + ((e && e.message) || 'lỗi không rõ'));
+                                leave.disabled = false;
+                            }
+                        });
+                        row.appendChild(h);
+                        row.appendChild(code);
+                        row.appendChild(leave);
+                        list.appendChild(row);
+                    });
+                } catch (e) {
+                    setStatus(document.getElementById('page-status'), 'err',
+                        'Không tải được lớp học: ' + ((e && e.message) || 'lỗi không rõ'));
+                }
+            }
+
+            document.getElementById('join-form').addEventListener('submit', async function (ev) {
+                ev.preventDefault();
+                var input = document.getElementById('join-code');
+                var btn = document.getElementById('join-btn');
+                var st = document.getElementById('join-status');
+                var code = input.value.trim();
+                if (!code) {
+                    setStatus(st, 'err', 'Nhập mã lớp trước nhé!');
+                    return;
+                }
+                btn.disabled = true;
+                setStatus(st, '', 'Đang tham gia lớp…');
+                try {
+                    var profile = await window.CloudAuth.currentProfile();
+                    var res = await window.CloudClasses.joinByCode(code, profile);
+                    setStatus(st, 'ok', 'Đã tham gia lớp ' + ((res.class && res.class.name) || '') + '!');
+                    input.value = '';
+                    var session = window.CloudClient.getSession();
+                    renderClasses(profile, session && session.access_token);
+                } catch (e) {
+                    setStatus(st, 'err', (e && e.message) || 'Tham gia thất bại.');
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+
+            document.getElementById('signout-btn').addEventListener('click', async function () {
+                try {
+                    await window.CloudAuth.signOut();
+                } catch (e) {
+                    window.CloudAuth.signOutLocal();
+                }
+            });
+
+            load();
+        }());
+    </script>
+</body>
+</html>

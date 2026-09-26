@@ -41,7 +41,7 @@
             --sage-light: #eef1e8;
             --brown: #7b604a;
             --shadow: rgba(45, 30, 25, 0.14);
-            --serif: "Noto Serif", "Noto Serif JP", Georgia, "Times New Roman", serif;
+            --serif: "Noto Serif", "Noto Serif JP", Georgia, "Palatino Linotype", "Book Antiqua", "DejaVu Serif", "Times New Roman", serif;
         }
 
         * {
@@ -1110,14 +1110,22 @@
         // by index.html (isolation rule). Guest experience unchanged.
         (function () {
             var link = document.getElementById('account-link');
-            if (!link) return;
+            var heroBtn = document.querySelector('.hero-actions .btn-start');
             var session = null;
+            var role = null;
             try {
                 var raw = localStorage.getItem('schoolshield-session');
                 session = raw ? JSON.parse(raw) : null;
+                role = localStorage.getItem('schoolshield-role');
             } catch (e) {
                 session = null;
             }
+            /* Hero goes straight to the game/dashboard when logged in,
+             * otherwise to sign-in (which offers guest play). */
+            if (heroBtn && session && session.access_token) {
+                heroBtn.href = role === 'teacher' ? 'dashboard.html' : 'game.html';
+            }
+            if (!link) return;
             if (session && session.access_token) {
                 var email = (session.user && session.user.email) || '';
                 link.textContent = 'Đăng xuất' + (email ? ' (' + email + ')' : '');
