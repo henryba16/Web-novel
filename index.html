@@ -55,8 +55,6 @@
             min-height: 100vh;
             line-height: 1.7;
             margin: 0;
-            overflow-x: hidden;
-            overflow-x: clip;
             background:
                 radial-gradient(circle at 65% 10%, rgba(234, 222, 198, 0.9), transparent 22%),
                 radial-gradient(circle at 32% 95%, rgba(180, 170, 143, 0.12), transparent 25%),
@@ -518,17 +516,11 @@
            is centered, so the centers coincide). body has overflow-x: clip
            so 100vw never causes horizontal scroll, incl. at 390px. */
         .hero-figure {
-            width: min(100vw, 1400px);
             margin: 0 0 1.75rem;
-            margin-left: 50%;
-            transform: translateX(-50%);
-            border-radius: 0;
+            border-radius: 18px;
             overflow: hidden;
-            border-top: 1px solid var(--line);
-            border-bottom: 1px solid var(--line);
-            border-left: none;
-            border-right: none;
-            box-shadow: none;
+            border: 1px solid var(--line);
+            box-shadow: 0 18px 40px var(--shadow);
             background: var(--sage-light);
         }
 
@@ -536,7 +528,7 @@
             width: 100%;
             height: auto;
             display: block;
-            aspect-ratio: 21 / 9;
+            aspect-ratio: 16 / 9;
             object-fit: cover;
         }
 
