@@ -63,9 +63,23 @@
 		try {
 			renderSaveButtons();
 			renderMenuEntry();
+			measureChoiceLines();
 			startScreenObserver();
 		} catch (e) {
 			/* never break the game shell */
+		}
+		if (document.fonts && typeof document.fonts.ready.then === 'function') {
+			document.fonts.ready.then(function () {
+				try {
+					var btns = document.querySelectorAll('[data-component="choice-container"] button[data-linew]');
+					for (var i = 0; i < btns.length; i++) {
+						btns[i].removeAttribute('data-linew');
+					}
+					measureChoiceLines();
+				} catch (e) {
+					/* ignore */
+				}
+			});
 		}
 	}
 
@@ -233,6 +247,35 @@
 		slot.appendChild(btn);
 	}
 
+	/* Choice underline sizing: measure each option's text width once it
+	 * renders, so the hover line spreads exactly text-wide while boxes
+	 * stay uniform. Guarded + idempotent; fonts.ready re-pass included. */
+	function measureChoiceLines() {
+		var buttons = null;
+		try {
+			buttons = document.querySelectorAll('[data-component="choice-container"] button');
+		} catch (e) {
+			return;
+		}
+		for (var i = 0; i < buttons.length; i++) {
+			var b = buttons[i];
+			try {
+				if (b.getAttribute('data-linew')) {
+					continue;
+				}
+				var range = document.createRange();
+				range.selectNodeContents(b);
+				var w = Math.ceil(range.getBoundingClientRect().width);
+				if (w > 0) {
+					b.style.setProperty('--line-w', w + 'px');
+					b.setAttribute('data-linew', '1');
+				}
+			} catch (e) {
+				/* ignore */
+			}
+		}
+	}
+
 	var observerStarted = false;
 
 	function startScreenObserver() {
@@ -249,6 +292,11 @@
 			}
 			try {
 				renderMenuEntry();
+			} catch (e) {
+				/* never break the game shell */
+			}
+			try {
+				measureChoiceLines();
 			} catch (e) {
 				/* never break the game shell */
 			}
