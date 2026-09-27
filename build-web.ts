@@ -39,19 +39,29 @@ const cleanedHtml = html
   .replace(/\s*<script src="\.\/engine\/debug\/debug\.js"><\/script>\s*\n/, "\n");
 writeFileSync(join(OUT_DIR, "game.html"), cleanedHtml);
 
-// Phase 2 PoC: inject Supabase config placeholders from env.
-// Missing env -> empty strings; js/supabase-config.js then sets
-// CLOUD_DISABLED so guest play still works (AC10).
+// Phase 2 PoC: Supabase config for the built bundle.
+// Priority: Vercel env vars win when present (so rotated keys take effect
+// without editing source); otherwise the hardcoded public values in
+// js/supabase-config.js ship as-is. Empty/missing everywhere ->
+// CLOUD_DISABLED guest mode (AC10). Secrets never appear here.
 const supabaseUrl = process.env.SUPABASE_URL ?? "";
 const supabasePublishableKey = process.env.SUPABASE_PUBLISHABLE_KEY ?? "";
 const configPath = join(OUT_DIR, "js", "supabase-config.js");
 try {
-  const configSrc = readFileSync(configPath, "utf-8")
+  let configSrc = readFileSync(configPath, "utf-8")
     .replaceAll("__SUPABASE_URL__", supabaseUrl)
     .replaceAll("__SUPABASE_PUBLISHABLE_KEY__", supabasePublishableKey);
+  if (supabaseUrl && supabasePublishableKey) {
+    configSrc = configSrc
+      .replace(/SUPABASE_URL:\s*'[^']*'/, `SUPABASE_URL: '${supabaseUrl}'`)
+      .replace(
+        /SUPABASE_PUBLISHABLE_KEY:\s*'[^']*'/,
+        `SUPABASE_PUBLISHABLE_KEY: '${supabasePublishableKey}'`
+      );
+  }
   writeFileSync(configPath, configSrc);
   console.log(
-    `Supabase config: ${supabaseUrl && supabasePublishableKey ? "injected" : "CLOUD_DISABLED (no env)"}`
+    `Supabase config: ${supabaseUrl && supabasePublishableKey ? "env override applied" : "source values kept"}`
   );
 } catch (error) {
   console.log(`Supabase config: skipped (${error})`);

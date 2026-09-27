@@ -734,6 +734,9 @@ monogatari.script ({
 		'show character ma brb at left with fadeIn end-fadeOut',
 		'"Mai Anh lặng lẽ nhìn Linh với vẻ mặt lo lắng, còn {{player.name}} thì vẫn tiếp tục cười theo Tuấn và Hạnh."',
 		'<h5>❓Giỡn quá đà?</h5><br>Khi một người không thoải mái với một trò đùa, việc tiếp tục cười theo có thể khiến họ cảm thấy mình không được tôn trọng.<br>Cho dù câu nói đó chỉ đơn giản là đùa vui đều vẫn có thể tạo ra tác động không tích cực.',
+		'hide character ma with fadeOut',
+		'hide character qt with fadeOut',
+		'hide character pl with fadeOut',
 		{
 			'Choice': {
 				'Dialog': 'Bạn có muốn thử lại?',
@@ -749,6 +752,8 @@ monogatari.script ({
 		}
 	],
 	'asklinh':[
+		'show character mh sn2b at center with fadeIn end-fadeOut',
+		'show character qt tg2b at left with fadeIn end-fadeOut',
 		'show character pl btb at right',
 		'hide character pl with fadeOutLeftBig',
 		'"{{player.name}} thấy vậy liền đi theo Linh. {{player.name}} cùng Mai Anh theo sau cô bé rời khỏi nơi đó."',
@@ -1566,6 +1571,17 @@ monogatari.script ({
 					} catch (ignore) {
 						/* queued; sync button covers */
 					}
+				}
+			}
+			/* Engine slot blobs ride along so other devices see real saves. */
+			if (window.CloudSlots && typeof window.CloudSlots.pushChanged === 'function') {
+				try {
+					var pr = window.CloudSlots.pushChanged(null);
+					if (pr && typeof pr.catch === 'function') {
+						pr.catch(function () { /* next save/sync covers */ });
+					}
+				} catch (ignore) {
+					/* ignore */
 				}
 			}
 		} catch (ignore) {

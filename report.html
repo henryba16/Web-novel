@@ -21,12 +21,20 @@
         }
         * { box-sizing: border-box; }
         body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
-        .wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
-        .topnav { display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+        .topnav { display: flex; gap: 0.5rem 1.25rem; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
         .topnav a, .topnav button.linklike { color: var(--sage-dark); font-weight: 700; text-decoration: none; font-size: 0.9rem; background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
-        h1 { font-size: 1.6rem; margin: 0 0 0.25rem; }
-        h2 { font-size: 1.15rem; margin: 0 0 1rem; }
-        h3 { font-size: 1.05rem; margin: 0 0 0.5rem; }
+        .topnav a:hover, .topnav button.linklike:hover { text-decoration: underline; text-underline-offset: 3px; }
+        /* Rhythm override for the shared cloud cards (screen only — the
+           print stylesheet below and in style/cloud.css is untouched). */
+        .cloud-report .card { padding: 2rem; margin-bottom: 2rem; }
+        h1 { font-size: 1.6rem; margin: 0 0 0.5rem; line-height: 1.4; text-wrap: balance; }
+        h2 { font-size: 1.15rem; margin: 0 0 1.25rem; line-height: 1.45; }
+        h3 { font-size: 1.05rem; margin: 2rem 0 0.75rem; line-height: 1.45; }
+        @media (max-width: 480px) {
+            .wrap { padding: 1.5rem 1rem 3rem; }
+            .cloud-report .card { padding: 1.5rem; }
+        }
         .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1rem; }
         button.action { display: inline-block; margin-top: 0.5rem; padding: 0.7rem 1.4rem; font-size: 0.9rem; font-weight: 700; font-family: inherit; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; cursor: pointer; }
         button.action:hover { background: var(--sage-dark); border-color: var(--sage-dark); }

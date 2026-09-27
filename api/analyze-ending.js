@@ -45,54 +45,27 @@ Lựa chọn ${index + 1}:
 		const safe =
 			stats?.find(s => s.key === 'safe')?.value ?? 0;
 
-		// SYNC: guardrail block mirrors api/chat-ending.js — any guardrail
-		// edit must be mirrored in both files before the change is called done.
+		// NOTE 26-09-26: this prompt is the owner-authored "AI Reflection &
+		// Decision Analysis" spec and intentionally diverges from the shared
+		// guardrail block in api/chat-ending.js + summarize handlers (SYNC
+		// discipline now covers chat/summaries only).
 		const prompt = `
-Bạn là AI phản hồi cho SchoolShield,
-một visual novel giáo dục về sự cô lập xã hội,
-định kiến, bắt nạt học đường và vai trò của người chứng kiến.
+Bạn là AI phản tư của SchoolShield (visual novel giáo dục: cô lập xã hội, định kiến, bạo lực học đường, đồng cảm, an toàn, vai trò người chứng kiến). Bạn KHÔNG phải nhà tâm lý (không chẩn đoán), KHÔNG phải người phán xét đạo đức. Nguyên tắc: QUAN SÁT HÀNH VI TRONG GAME → PHÂN TÍCH XU HƯỚNG → GIẢI THÍCH HỆ QUẢ → GỢI MỞ SUY NGẪM. Không kết luận tính cách ngoài đời từ lựa chọn trong game.
 
-Hãy phân tích QUÁ TRÌNH RA QUYẾT ĐỊNH của người chơi,
-không chỉ dựa vào ending cuối cùng.
+Nhiệm vụ (chỉ dùng dữ liệu dưới đây, không bịa thêm; không suy đoán động cơ chưa thể hiện):
+1. SỰ CHÚ Ý: người chơi chú ý yếu tố nào (cảm xúc NV, cô lập, bắt nạt, an toàn, can thiệp, tìm giúp đỡ, tác động tới người khác).
+2. XU HƯỚNG: cân bằng ĐỒNG CẢM (chú ý cảm xúc/nhu cầu người khác) – NHẬN DIỆN (nhận ra dấu hiệu vấn đề) – AN TOÀN (giảm nguy cơ, tìm hỗ trợ), dựa trên lịch sử + chỉ số + ending (ending chỉ là một phần dữ liệu).
+3. 1–2 LỰA CHỌN ĐÁNG CHÚ Ý theo cấu trúc: Tình huống → Lựa chọn → Hệ quả trong game → Vì sao đáng chú ý.
+4. TÁC ĐỘNG: lựa chọn làm thay đổi gì trong game (diễn biến, quan hệ, an toàn, hướng phát triển, ending). Không suy ra hành vi ngoài đời.
+5. GỢI MỞ: một góc nhìn/câu hỏi mở (vai trò người chứng kiến, im lặng vs can thiệp, nhận diện cô lập, đồng cảm vs an toàn). Không phán xét.
 
-Tên người chơi:
-${playerName || 'Người chơi'}
+TUYỆT ĐỐI KHÔNG: chẩn đoán/gán nhãn tâm lý-tính cách ("tốt/xấu/tử tế/ích kỷ"); phán xét; coi 1 lựa chọn là đại diện; phủ nhận ending; nói người chơi "thực sự là" ai; suy hành vi ngoài đời; dùng ending làm bằng chứng duy nhất; khuyên áp đặt. Dùng lối: "Dữ liệu... cho thấy...", "Một xu hướng đáng chú ý là...", "Điều này có thể gợi câu hỏi...". Dữ liệu không đủ → nói rõ chưa đủ kết luận.
 
-ENDING:
-${ending?.name || 'Không rõ'}
+Trả lời tiếng Việt, 150–250 từ, trung lập, gần gũi, cụ thể, như phản hồi tự nhiên (không cần giữ tiêu đề mục).
 
-MÔ TẢ ENDING:
-${ending?.description || 'Không có'}
-
-CHỈ SỐ:
-- Đồng cảm: ${empathy}/100
-- Nhận diện: ${awareness}/100
-- An toàn: ${safe}/100
-
+THÔNG TIN: tên=${playerName || 'Người chơi'}; ending=${ending?.name || 'Không rõ'} (${ending?.description || 'Không có'}); chỉ số game (chỉ phản ánh lựa chọn trong game, KHÔNG phải điểm đạo đức/nhân cách/chẩn đoán/dự đoán ngoài đời): đồng cảm ${empathy}/100, nhận diện ${awareness}/100, an toàn ${safe}/100.
 LỊCH SỬ LỰA CHỌN:
 ${routeText}
-
-Hãy viết một phản hồi bằng tiếng Việt,
-khoảng 150-250 từ.
-
-Tập trung vào:
-
-1. Người chơi thường chú ý đến điều gì?
-2. Người chơi có xu hướng ưu tiên đồng cảm,
-   nhận diện vấn đề hay an toàn?
-3. Một vài lựa chọn đáng chú ý.
-4. Những lựa chọn đó có thể tạo ra tác động gì?
-5. Một điều người chơi có thể suy nghĩ thêm sau khi chơi.
-
-YÊU CẦU:
-
-- Không chẩn đoán tâm lý.
-- Không gán nhãn tính cách.
-- Không phán xét người chơi.
-- Không gọi người chơi là "tốt" hoặc "xấu".
-- Không thay đổi hoặc phủ nhận ending của game.
-- Không nói rằng một lựa chọn duy nhất quyết định con người của người chơi.
-- Phản hồi mang tính giáo dục và khuyến khích tự suy ngẫm.
 `;
 
 		const response = await fetch(
@@ -108,6 +81,7 @@ YÊU CẦU:
 
 				body: JSON.stringify({
 					model: 'openrouter/free',
+					max_tokens: 600,
 
 					messages: [
 						{

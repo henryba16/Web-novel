@@ -20,12 +20,16 @@
         }
         * { box-sizing: border-box; }
         body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
-        .wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
-        .topnav { display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+        .topnav { display: flex; gap: 0.5rem 1.25rem; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
         .topnav a, .topnav button.linklike { color: var(--sage-dark); font-weight: 700; text-decoration: none; font-size: 0.9rem; background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
-        .card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 1.75rem; margin-bottom: 1.25rem; }
-        h1 { font-size: 1.6rem; margin: 0 0 0.25rem; }
-        h2 { font-size: 1.15rem; margin: 0 0 1rem; }
+        .card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 2rem; margin-bottom: 2rem; }
+        @media (max-width: 480px) {
+            .wrap { padding: 1.5rem 1rem 3rem; }
+            .card { padding: 1.5rem; }
+        }
+        h1 { font-size: 1.6rem; margin: 0 0 0.5rem; line-height: 1.4; text-wrap: balance; }
+        h2 { font-size: 1.15rem; margin: 0 0 1.25rem; line-height: 1.45; }
         .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1rem; }
         label { display: block; font-size: 0.85rem; font-weight: 700; margin: 0.75rem 0 0.25rem; }
         input, select { width: 100%; padding: 0.7rem 0.8rem; font-size: 1rem; font-family: inherit; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
@@ -35,9 +39,19 @@
         button.mini, a.mini { margin: 0.25rem 0.5rem 0.25rem 0; padding: 0.35rem 0.9rem; font-size: 0.8rem; }
         a.mini { text-decoration: none; display: inline-block; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; font-weight: 700; font-family: inherit; }
         a.mini:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
-        .dash-mininav { position: sticky; top: 0; z-index: 50; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 0.4rem 1rem; margin-bottom: 1.25rem; display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; }
+        /* Quiet anchor-row mininav (replaces the pill bar): plain anchors
+           on a hairline rule. All section ids unchanged. */
+        .dash-mininav { background: transparent; border: none; border-bottom: 1px solid var(--line); border-radius: 0; padding: 0.25rem 0 0.75rem; margin-bottom: 1rem; display: flex; gap: 0.5rem 1.5rem; flex-wrap: wrap; font-size: 0.85rem; }
         .dash-mininav a { color: var(--sage-dark); font-weight: 700; text-decoration: none; }
+        .dash-mininav a:hover { text-decoration: underline; text-underline-offset: 3px; }
         .table-scroll { overflow-x: auto; }
+        details.roster-collapse { margin-top: 1rem; }
+        details.roster-collapse > summary {
+            cursor: pointer; font-weight: 700; font-size: 1rem; color: var(--ink);
+        }
+        details.roster-collapse #roster-list {
+            max-height: 320px; overflow-y: auto; padding-right: 0.25rem;
+        }
         .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
         .status.ok { color: var(--sage-dark); }
         .status.err { color: #9c3b2e; }
@@ -63,7 +77,7 @@
         .student-box { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; }
         .row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: end; }
         .row > div { flex: 1 1 200px; }
-        h3 { font-size: 1rem; margin: 1.5rem 0 0.5rem; }
+        h3 { font-size: 1rem; margin: 2rem 0 0.75rem; line-height: 1.45; }
         /* Ending-style bars (visual parity with ending.html .stat-*):
            translucent track, sage fill, tag + value per row. No chart lib. */
         .stat-row { margin-bottom: 1.1rem; }
@@ -78,15 +92,17 @@
         .roster-row { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; padding: 0.6rem 0; border-top: 1px dashed var(--line); font-size: 0.88rem; flex-wrap: wrap; }
         .roster-name { font-weight: 700; }
         .roster-meta { color: var(--muted); font-size: 0.82rem; }
-        .pill { display: inline-block; font-size: 0.75rem; font-weight: 700; border: 1px solid var(--line); border-radius: 999px; padding: 0.1rem 0.7rem; background: var(--sage-light); color: var(--sage-dark); }
+        /* Direction A fold-in: square stamp pills — 4px radius,
+           uppercase, letterspaced. Class name unchanged. */
+        .pill { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 4px; padding: 0.15rem 0.6rem; background: var(--sage-light); color: var(--sage-dark); }
         .flag { border: 1px solid var(--line); border-left: 4px solid var(--sage-dark); border-radius: 10px; padding: 0.6rem 0.9rem; margin-top: 0.6rem; background: #fff; font-size: 0.88rem; }
         .choice-list { list-style: none; margin: 0; padding: 0; }
         .choice-list li { padding: 0.6rem 0; border-bottom: 1px solid var(--line); font-size: 0.86rem; }
         .choice-list li:last-child { border-bottom: none; padding-bottom: 0; }
         .choice-scene { color: var(--muted); font-size: 0.78rem; display: block; margin-bottom: 0.2rem; }
-        table.hist { width: 100%; border-collapse: collapse; font-size: 0.84rem; margin-top: 0.5rem; }
-        table.hist th, table.hist td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
-        table.hist th { font-size: 0.78rem; color: var(--muted); }
+        table.hist { width: 100%; border-collapse: collapse; font-size: 0.84rem; margin-top: 0.75rem; border-top: 1px solid var(--line); }
+        table.hist th, table.hist td { text-align: left; padding: 0.5rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+        table.hist th { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
     </style>
 </head>
 <body>
@@ -100,7 +116,7 @@
         <div class="card">
             <h1>Bảng điều khiển</h1>
             <p class="sub" id="who-line">Đang kiểm tra phiên đăng nhập…</p>
-            <p class="status" id="page-status" role="status" aria-live="polite"></p>
+            <p class="status" id="page-status" role="status" aria-live="polite" style="display:none"></p>
         </div>
 
         <!-- Teacher: classes (Phase 1). Full roster/aggregates land in Phase 3. -->
@@ -155,7 +171,10 @@
             <h3>Cần trò chuyện</h3>
             <div id="flags-list"><p class="sub">Chưa tải số liệu.</p></div>
             <h3>Danh sách học sinh</h3>
-            <div id="roster-list"><p class="sub">Chưa tải số liệu.</p></div>
+            <details class="roster-collapse" open>
+                <summary>Danh sách học sinh</summary>
+                <div id="roster-list"><p class="sub">Chưa tải số liệu.</p></div>
+            </details>
             <h3>Tổng hợp cả lớp</h3>
             <div id="agg-box"><p class="sub">Chưa tải số liệu.</p></div>
             <h3>Tóm tắt AI cả lớp</h3>
@@ -172,7 +191,7 @@
             <div id="student-detail"><p class="sub">Chọn một học sinh trong danh sách để xem chi tiết.</p></div>
         </section>
 
-        <section class="card" aria-labelledby="sync-h">
+        <section class="card" id="sync-box" aria-labelledby="sync-h">
             <h2 id="sync-h">Đồng bộ</h2>
             <p class="sub" id="pending-line">Lượt chơi chờ đồng bộ: —</p>
             <button class="action" type="button" id="sync-btn">Đồng bộ ngay</button>
@@ -206,8 +225,12 @@
             ];
 
             function set(node, kind, text) {
+                if (!node) {
+                    return;
+                }
                 node.className = 'status' + (kind ? ' ' + kind : '');
                 node.textContent = text || '';
+                node.style.display = text ? '' : 'none';
             }
 
             function esc(s) {
@@ -909,6 +932,18 @@
                 } catch (e) {
                     profile = null;
                 }
+                /* Expired-token retry: stored sessions outlive the 1h JWT.
+                 * Refresh once before bouncing a logged-in user to login. */
+                if (!profile) {
+                    try {
+                        if (window.CloudClient && typeof window.CloudClient.refreshSession === 'function') {
+                            await window.CloudClient.refreshSession();
+                        }
+                        profile = await window.CloudAuth.currentProfile();
+                    } catch (e) {
+                        profile = null;
+                    }
+                }
                 if (!profile) {
                     window.location.href = 'login.html';
                     return;
@@ -920,6 +955,9 @@
                 whoLine.setAttribute('title', (s && s.user && s.user.email) || '');
                 if (profile.role === 'teacher') {
                     teacherBox.hidden = false;
+                    /* Teachers never generate runs in this browser: the sync
+                     * card would always read 0 pending. Hide it. */
+                    document.getElementById('sync-box').hidden = true;
                     loadTeacher();
                 } else {
                     studentBox.hidden = false;

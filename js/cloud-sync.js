@@ -197,6 +197,16 @@
 		storeOutbox(remaining);
 		result.stillPending = remaining.length;
 		result.ok = remaining.length === 0;
+		/* Cross-device: pull cloud-newer engine slots so this device's load
+		 * screen shows saves made elsewhere. Best-effort, never throws. */
+		try {
+			if (window.CloudSlots && typeof window.CloudSlots.pullNewer === 'function') {
+				var pulled = await window.CloudSlots.pullNewer(who);
+				result.slotsDownloaded = (pulled && pulled.downloaded) || 0;
+			}
+		} catch (e) {
+			/* ignore */
+		}
 		return result;
 	}
 
