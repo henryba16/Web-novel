@@ -116,7 +116,7 @@
         <div class="card">
             <h1>Bảng điều khiển</h1>
             <p class="sub" id="who-line">Đang kiểm tra phiên đăng nhập…</p>
-            <p class="status" id="page-status" role="status" aria-live="polite"></p>
+            <p class="status" id="page-status" role="status" aria-live="polite" style="display:none"></p>
         </div>
 
         <!-- Teacher: classes (Phase 1). Full roster/aggregates land in Phase 3. -->
@@ -225,8 +225,12 @@
             ];
 
             function set(node, kind, text) {
+                if (!node) {
+                    return;
+                }
                 node.className = 'status' + (kind ? ' ' + kind : '');
                 node.textContent = text || '';
+                node.style.display = text ? '' : 'none';
             }
 
             function esc(s) {
