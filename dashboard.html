@@ -41,10 +41,17 @@
         a.mini:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
         /* Quiet anchor-row mininav (replaces the pill bar): plain anchors
            on a hairline rule. All section ids unchanged. */
-        .dash-mininav { background: transparent; border: none; border-bottom: 1px solid var(--line); border-radius: 0; padding: 0.25rem 0 0.75rem; margin-bottom: 2rem; display: flex; gap: 0.5rem 1.5rem; flex-wrap: wrap; font-size: 0.85rem; }
+        .dash-mininav { background: transparent; border: none; border-bottom: 1px solid var(--line); border-radius: 0; padding: 0.25rem 0 0.75rem; margin-bottom: 1rem; display: flex; gap: 0.5rem 1.5rem; flex-wrap: wrap; font-size: 0.85rem; }
         .dash-mininav a { color: var(--sage-dark); font-weight: 700; text-decoration: none; }
         .dash-mininav a:hover { text-decoration: underline; text-underline-offset: 3px; }
         .table-scroll { overflow-x: auto; }
+        details.roster-collapse { margin-top: 1rem; }
+        details.roster-collapse > summary {
+            cursor: pointer; font-weight: 700; font-size: 1rem; color: var(--ink);
+        }
+        details.roster-collapse #roster-list {
+            max-height: 320px; overflow-y: auto; padding-right: 0.25rem;
+        }
         .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
         .status.ok { color: var(--sage-dark); }
         .status.err { color: #9c3b2e; }
@@ -164,7 +171,10 @@
             <h3>Cần trò chuyện</h3>
             <div id="flags-list"><p class="sub">Chưa tải số liệu.</p></div>
             <h3>Danh sách học sinh</h3>
-            <div id="roster-list"><p class="sub">Chưa tải số liệu.</p></div>
+            <details class="roster-collapse" open>
+                <summary>Danh sách học sinh</summary>
+                <div id="roster-list"><p class="sub">Chưa tải số liệu.</p></div>
+            </details>
             <h3>Tổng hợp cả lớp</h3>
             <div id="agg-box"><p class="sub">Chưa tải số liệu.</p></div>
             <h3>Tóm tắt AI cả lớp</h3>
@@ -917,6 +927,18 @@
                     profile = await window.CloudAuth.currentProfile();
                 } catch (e) {
                     profile = null;
+                }
+                /* Expired-token retry: stored sessions outlive the 1h JWT.
+                 * Refresh once before bouncing a logged-in user to login. */
+                if (!profile) {
+                    try {
+                        if (window.CloudClient && typeof window.CloudClient.refreshSession === 'function') {
+                            await window.CloudClient.refreshSession();
+                        }
+                        profile = await window.CloudAuth.currentProfile();
+                    } catch (e) {
+                        profile = null;
+                    }
                 }
                 if (!profile) {
                     window.location.href = 'login.html';

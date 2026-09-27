@@ -93,7 +93,7 @@
                 100% { background-position: -200% 0; }
             }
         }
-        #join-code { text-transform: uppercase; letter-spacing: 0.12em; }
+        #join-code { letter-spacing: 0.12em; }
     </style>
 </head>
 <body>
@@ -200,6 +200,18 @@
                     return;
                 }
                 var profile = await window.CloudAuth.currentProfile();
+                if (!profile) {
+                    /* Expired-token retry before bouncing to login. */
+                    try {
+                        if (window.CloudClient && typeof window.CloudClient.refreshSession === 'function') {
+                            await window.CloudClient.refreshSession();
+                        }
+                        profile = await window.CloudAuth.currentProfile();
+                        session = window.CloudClient.getSession();
+                    } catch (e) {
+                        profile = null;
+                    }
+                }
                 if (!profile) {
                     window.location.href = 'login.html';
                     return;
