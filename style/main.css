@@ -114,21 +114,22 @@ button:hover {
    accent is an underline-slide (no fill swap). */
 [data-component="choice-container"] button {
 	background-color: rgba(45, 45, 45, 0.88);
-	background-image: linear-gradient(#fffaf3, #fffaf3);
-	background-size: 0% 2px;
-	background-repeat: no-repeat;
-	background-position: center bottom 10px;
 	color: #fffaf3;
 	border: 1px solid #909f8f;
 	min-height: 48px;
-	-webkit-transition: background-size 0.25s ease, background-color 0.2s ease, -webkit-transform 0.15s ease;
-	transition: background-size 0.25s ease, background-color 0.2s ease, transform 0.15s ease;
+	text-decoration-line: underline;
+	text-decoration-color: transparent;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 8px;
+	-webkit-transition: text-decoration-color 0.25s ease, text-underline-offset 0.25s ease, background-color 0.2s ease, -webkit-transform 0.15s ease;
+	transition: text-decoration-color 0.25s ease, text-underline-offset 0.25s ease, background-color 0.2s ease, transform 0.15s ease;
 }
 
 /* Choice Button Style on Hover */
 [data-component="choice-container"] button:hover {
 	background-color: rgba(45, 45, 45, 0.88);
-	background-size: 55% 2px;
+	text-decoration-color: #fffaf3;
+	text-underline-offset: 4px;
 	color: #fffaf3;
 }
 
@@ -136,7 +137,8 @@ button:hover {
 [data-component="choice-container"] button:focus-visible {
 	outline: 3px solid #d6baa1;
 	outline-offset: 2px;
-	background-size: 55% 2px;
+	text-decoration-color: #fffaf3;
+	text-underline-offset: 4px;
 }
 
 /* Choice Button press feedback. */

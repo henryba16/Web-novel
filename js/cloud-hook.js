@@ -200,11 +200,11 @@
 		}
 		var label, href;
 		if (!logged) {
-			label = '\u0110\u0103ng nh\u1eadp'; href = 'login.html';
+			label = 'Sign in'; href = 'login.html';
 		} else if (role === 'teacher') {
-			label = 'B\u1ea3ng \u0111i\u1ec1u khi\u1ec3n'; href = 'dashboard.html';
+			label = 'Dashboard'; href = 'dashboard.html';
 		} else {
-			label = 'Ti\u1eben tr\u00ecnh'; href = 'student-dashboard.html';
+			label = 'Progress'; href = 'student-dashboard.html';
 		}
 		var stamp = label + '/' + href;
 		if (slot && slot.getAttribute('data-rendered-for') === stamp) {
