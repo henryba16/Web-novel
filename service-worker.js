@@ -49,6 +49,7 @@ const files = [
 	'js/cloud-client.js',
 	'js/cloud-run.js',
 	'js/cloud-sync.js',
+	'js/cloud-slots.js',
 	'js/cloud-auth.js',
 	'js/cloud-classes.js',
 	'js/cloud-dashboard.js',

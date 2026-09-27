@@ -54,22 +54,12 @@
             color: var(--ink);
             min-height: 100vh;
             line-height: 1.7;
+            margin: 0;
+            overflow-x: clip;
             background:
                 radial-gradient(circle at 65% 10%, rgba(234, 222, 198, 0.9), transparent 22%),
                 radial-gradient(circle at 32% 95%, rgba(180, 170, 143, 0.12), transparent 25%),
                 linear-gradient(135deg, var(--page-bg), #efe7db);
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: -8%;
-            background-image: radial-gradient(var(--line) 0.7px, transparent 0.7px);
-            background-size: 42px 42px;
-            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 1), transparent 100%);
-            opacity: 0.12;
-            pointer-events: none;
-            transform: rotate(3deg);
         }
 
         .container {
@@ -125,11 +115,13 @@
         }
 
         h1 {
-            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-size: clamp(2.6rem, 6vw, 4.5rem);
             font-weight: 700;
             color: var(--ink);
             letter-spacing: -0.018em;
-            line-height: 1.25;
+            line-height: 1.35;
+            text-wrap: balance;
+            padding: 0.12em 0 0.08em;
             margin: 0;
         }
 
@@ -145,39 +137,21 @@
             text-align: center;
         }
 
+        /* Direction B: the hero card reads as an editorial opener and is
+           left-aligned inside its own scope. main{} stays centered so all
+           other sections are untouched. */
+        .home-main #preview {
+            text-align: left;
+            overflow: visible;
+        }
+
         .card {
             background: var(--paper);
             border: 1px solid var(--line);
             border-radius: 22px;
             padding: clamp(2.2rem, 4vw, 3.25rem);
-            box-shadow: 0 20px 70px var(--shadow);
+            box-shadow: none;
             position: relative;
-            overflow: hidden;
-        }
-
-        .card::before,
-        .card::after {
-            content: "";
-            position: absolute;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            border: 1px solid var(--line);
-            opacity: 0.9;
-            filter: blur(18px);
-            pointer-events: none;
-        }
-
-        .card::before {
-            left: -80px;
-            top: -50px;
-            background: rgba(246, 221, 196, 0.15);
-        }
-
-        .card::after {
-            right: -70px;
-            bottom: -90px;
-            background: rgba(144, 159, 143, 0.08);
         }
 
         .card h2 {
@@ -186,6 +160,8 @@
             color: var(--ink);
             margin-bottom: 1rem;
             letter-spacing: -0.015em;
+            line-height: 1.45;
+            text-wrap: balance;
         }
 
         .desc {
@@ -200,6 +176,11 @@
 
         .desc strong {
             color: var(--sage-dark);
+        }
+
+        .home-main #preview .desc {
+            margin-left: 0;
+            margin-right: auto;
         }
 
         .btn-start {
@@ -219,8 +200,8 @@
             text-decoration: none;
             transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
             box-shadow: 0 12px 20px var(--shadow);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
+            text-transform: none;
+            letter-spacing: 0.01em;
         }
 
         .btn-start:hover {
@@ -458,6 +439,10 @@
             justify-content: center;
         }
 
+        .home-main #preview .hero-actions {
+            justify-content: flex-start;
+        }
+
         .btn-ghost {
             display: inline-flex;
             align-items: center;
@@ -486,6 +471,10 @@
             font-size: 0.85rem;
             color: var(--muted);
             margin: 0.25rem 0 0;
+        }
+
+        .home-main #preview .hero-signin {
+            text-align: left;
         }
 
         .hero-signin a {
@@ -523,12 +512,22 @@
             color: var(--ink);
         }
 
+        /* Direction B: hero figure breaks the 960px container as a
+           full-bleed 21:9 band. Centered on the viewport (the card itself
+           is centered, so the centers coincide). body has overflow-x: clip
+           so 100vw never causes horizontal scroll, incl. at 390px. */
         .hero-figure {
+            width: min(100vw, 1400px);
             margin: 0 0 1.75rem;
-            border-radius: 18px;
+            margin-left: 50%;
+            transform: translateX(-50%);
+            border-radius: 0;
             overflow: hidden;
-            border: 1px solid var(--line);
-            box-shadow: 0 18px 40px var(--shadow);
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            border-left: none;
+            border-right: none;
+            box-shadow: none;
             background: var(--sage-light);
         }
 
@@ -536,7 +535,7 @@
             width: 100%;
             height: auto;
             display: block;
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 21 / 9;
             object-fit: cover;
         }
 
@@ -546,7 +545,7 @@
             border: 1px solid var(--line);
             border-radius: 22px;
             padding: 1.5rem;
-            box-shadow: 0 14px 36px var(--shadow);
+            box-shadow: none;
         }
 
         .section-head {
@@ -563,17 +562,29 @@
             font-size: clamp(1.6rem, 2.4vw, 2rem);
             color: var(--ink);
             font-weight: 700;
+            line-height: 1.4;
+            text-wrap: balance;
         }
 
         .band .features {
             grid-template-columns: repeat(3, minmax(160px, 1fr));
         }
 
+        /* Direction B: asymmetric weighting on the teacher-facing band. */
+        #teachers .features {
+            grid-template-columns: 3fr 2fr 2fr;
+        }
+
         .chapter-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(160px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem 1.25rem;
             margin-top: 1rem;
+        }
+
+        /* Direction B: 2-col zig-zag — even cards step down one offset. */
+        .chapter-card:nth-child(even) {
+            margin-top: 1.5rem;
         }
 
         .chapter-card {
@@ -673,7 +684,7 @@
 
         .check-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(220px, 1fr));
+            grid-template-columns: 3fr 2fr;
             gap: 0.9rem;
             margin-top: 0.9rem;
         }
@@ -705,11 +716,14 @@
             margin: 0;
         }
 
+        /* Direction B (phòng tư liệu): the scope note is an archival
+           aside — transparent ground with a brown file-rule instead of
+           the sage wash used by check-items. */
         .scope-note {
             margin-top: 1.5rem;
-            background: var(--sage-light);
-            border: 1px solid var(--line);
-            border-left: 4px solid var(--sage-dark);
+            background: transparent;
+            border: 1px solid var(--brown);
+            border-left: 4px solid var(--brown);
             border-radius: 14px;
             padding: 1.25rem 1.5rem;
         }
@@ -763,8 +777,8 @@
         }
 
         .faq-item summary::after {
-            content: "+";
-            font-size: 1.3rem;
+            content: "→";
+            font-size: 1.1rem;
             line-height: 1;
             color: var(--sage-dark);
             flex: 0 0 auto;
@@ -772,7 +786,7 @@
         }
 
         .faq-item[open] summary::after {
-            transform: rotate(45deg);
+            transform: rotate(90deg);
         }
 
         .faq-item p {
@@ -787,6 +801,10 @@
             .chapter-grid,
             .step-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .chapter-card:nth-child(even) {
+                margin-top: 0;
             }
 
             .topbar {
@@ -812,7 +830,8 @@
             }
 
             h1 {
-                font-size: clamp(1.8rem, 9vw, 2.45rem);
+                font-size: clamp(2rem, 10vw, 2.6rem);
+                line-height: 1.4;
             }
 
             .tagline {
@@ -915,7 +934,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                             <polygon points="5 3 19 12 5 21 5 3"/>
                         </svg>
-                        Chơi ngay — không cần tài khoản
+                        Chơi ngay, không cần tài khoản
                     </a>
                     <a href="#teachers" class="btn-ghost">
                         Dành cho giáo viên

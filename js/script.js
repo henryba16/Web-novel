@@ -1568,6 +1568,17 @@ monogatari.script ({
 					}
 				}
 			}
+			/* Engine slot blobs ride along so other devices see real saves. */
+			if (window.CloudSlots && typeof window.CloudSlots.pushChanged === 'function') {
+				try {
+					var pr = window.CloudSlots.pushChanged(null);
+					if (pr && typeof pr.catch === 'function') {
+						pr.catch(function () { /* next save/sync covers */ });
+					}
+				} catch (ignore) {
+					/* ignore */
+				}
+			}
 		} catch (ignore) {
 			/* never break saves */
 		}

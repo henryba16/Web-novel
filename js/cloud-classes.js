@@ -146,6 +146,11 @@
 		if (!res || !res.id) {
 			throw new Error('Wrong code — no class uses this code. Check and retry.');
 		}
+		try {
+			await claimFloatingRuns(res.id, profile);
+		} catch (e) {
+			/* backfill is best-effort; join already succeeded */
+		}
 		return { class: res, membership: null };
 	}
 
@@ -234,6 +239,28 @@
 		throw lastErr || new Error('Could not mint a unique class code. Please retry.');
 	}
 
+	/* Attribute this student's class-less ("floating") runs to a class they
+	 * just joined. Without this, plays made before joining are invisible to
+	 * class aggregates/CSV/AI while still showing in drill-down — the exact
+	 * roster/detail mismatch. RLS: own rows only. Failures are silent on
+	 * purpose (join itself already succeeded). */
+	async function claimFloatingRuns(classId, profile) {
+		if (!classId || !profile || !profile.id) {
+			return 0;
+		}
+		try {
+			var updated = await window.CloudClient.rest('runs', {
+				method: 'PATCH',
+				params: { student_id: 'eq.' + profile.id, class_id: 'is.null' },
+				body: { class_id: classId },
+				token: token()
+			});
+			return Array.isArray(updated) ? updated.length : 0;
+		} catch (e) {
+			return 0;
+		}
+	}
+
 	/* G3 claim: activate pending rows addressed to this login email.
 	 * The RLS policy allows the update only when the pending row's
 	 * invited_email matches the caller's own JWT email. */
@@ -264,6 +291,11 @@
 					token: t
 				});
 				claimed.push(updated && updated.length ? updated[0] : row);
+				try {
+					await claimFloatingRuns(row.class_id, { id: studentId });
+				} catch (e2) {
+					/* backfill is best-effort */
+				}
 			} catch (e) {
 				/* stranger-claim 403 or race: skip, teacher can re-invite */
 			}
@@ -284,6 +316,7 @@
 		leaveClass: leaveClass,
 		removeMembership: removeMembership,
 		regenerateCode: regenerateCode,
-		claimPendingInvites: claimPendingInvites
+		claimPendingInvites: claimPendingInvites,
+		claimFloatingRuns: claimFloatingRuns
 	};
 })();
