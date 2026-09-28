@@ -273,6 +273,10 @@ input[type=range]::-ms-fill-upper {
     /* No fixed sprite height here: the uniform --character-scale above
        already shrinks the whole cast on small screens while keeping
        relative size differences between sprites. */
+    /* Main menu art fills narrow screens instead of letterboxing. */
+    [data-screen="main"] {
+        background-size: cover;
+    }
 }
 
 @media screen and (min-width: 37.56255em) {

@@ -55,6 +55,7 @@ const files = [
 	'js/cloud-dashboard.js',
 	'js/cloud-export.js',
 	'js/cloud-hook.js',
+	'js/ai-format.js',
 
 	// App Images
 	'assets/icons/icon_48x48.png',

@@ -170,7 +170,6 @@
             <p class="status" id="dash-status" role="status" aria-live="polite"></p>
             <h3>Cần trò chuyện</h3>
             <div id="flags-list"><p class="sub">Chưa tải số liệu.</p></div>
-            <h3>Danh sách học sinh</h3>
             <details class="roster-collapse" open>
                 <summary>Danh sách học sinh</summary>
                 <div id="roster-list"><p class="sub">Chưa tải số liệu.</p></div>
@@ -207,6 +206,7 @@
     <script src="./js/cloud-classes.js"></script>
     <script src="./js/cloud-dashboard.js"></script>
     <script src="./js/cloud-export.js"></script>
+    <script src="./js/ai-format.js"></script>
     <script>
         (function () {
             'use strict';
@@ -663,6 +663,11 @@
                         runs.filter(function (r) { return r && r.status === 'finished'; })
                     ) || window.CloudDashboard.latestRun(runs);
                     var means = classAgg && classAgg.means ? classAgg.means : null;
+                    var ov = window.AIFormat.overallLevel(latest.empathy, latest.awareness, latest.safe);
+                    var ovLine = document.createElement('p');
+                    ovLine.className = 'sub';
+                    ovLine.textContent = 'Mức tổng quan: ' + ov.label;
+                    mount.appendChild(ovLine);
                     METRICS.forEach(function (m) {
                         mount.appendChild(barRow(
                             m.label,
@@ -797,7 +802,7 @@
                             var note = await window.CloudDashboard.summarizeStudent(sid, cid);
                             aiOut.innerHTML = '';
                             var np = document.createElement('p');
-                            np.textContent = note;
+                            np.innerHTML = window.AIFormat.renderMarkdown(note);
                             np.style.whiteSpace = 'pre-wrap';
                             aiOut.appendChild(np);
                             aiStatus.className = 'status ok';
@@ -901,9 +906,10 @@
                 try {
                     var summary = await window.CloudDashboard.summarizeClass(classId);
                     out.innerHTML = '';
-                    /* AI strings render as text only (never innerHTML). */
+                    /* AI strings render through the shared escaped formatter
+                     * (markdown + CJK filter), never raw textContent. */
                     var p = document.createElement('p');
-                    p.textContent = summary;
+                    p.innerHTML = window.AIFormat.renderMarkdown(summary);
                     p.style.whiteSpace = 'pre-wrap';
                     out.appendChild(p);
                     set(status, 'ok', 'Đã tạo tóm tắt.');

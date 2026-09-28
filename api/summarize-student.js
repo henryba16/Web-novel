@@ -265,7 +265,7 @@ YÊU CẦU:
 - Không thay đổi hoặc phủ nhận ending của game.
 - Không nói rằng một lựa chọn duy nhất quyết định con người của người chơi.
 - Phản hồi mang tính giáo dục và khuyến khích tự suy ngẫm.
-`;
+- Chỉ dùng chữ Latin (tiếng Việt có dấu); tuyệt đối không dùng ký tự Trung/Nhật/Hàn.`;
 
         const response = await fetch(
             'https://openrouter.ai/api/v1/chat/completions',

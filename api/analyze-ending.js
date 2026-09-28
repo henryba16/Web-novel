@@ -61,7 +61,7 @@ Nhiệm vụ (chỉ dùng dữ liệu dưới đây, không bịa thêm; không 
 
 TUYỆT ĐỐI KHÔNG: chẩn đoán/gán nhãn tâm lý-tính cách ("tốt/xấu/tử tế/ích kỷ"); phán xét; coi 1 lựa chọn là đại diện; phủ nhận ending; nói người chơi "thực sự là" ai; suy hành vi ngoài đời; dùng ending làm bằng chứng duy nhất; khuyên áp đặt. Dùng lối: "Dữ liệu... cho thấy...", "Một xu hướng đáng chú ý là...", "Điều này có thể gợi câu hỏi...". Dữ liệu không đủ → nói rõ chưa đủ kết luận.
 
-Trả lời tiếng Việt, 150–250 từ, trung lập, gần gũi, cụ thể, như phản hồi tự nhiên (không cần giữ tiêu đề mục).
+Trả lời tiếng Việt (chỉ chữ Latin có dấu, không dùng ký tự Trung/Nhật/Hàn), 150–250 từ, trung lập, gần gũi, cụ thể, như phản hồi tự nhiên (không cần giữ tiêu đề mục).
 
 THÔNG TIN: tên=${playerName || 'Người chơi'}; ending=${ending?.name || 'Không rõ'} (${ending?.description || 'Không có'}); chỉ số game (chỉ phản ánh lựa chọn trong game, KHÔNG phải điểm đạo đức/nhân cách/chẩn đoán/dự đoán ngoài đời): đồng cảm ${empathy}/100, nhận diện ${awareness}/100, an toàn ${safe}/100.
 LỊCH SỬ LỰA CHỌN:
