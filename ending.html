@@ -593,7 +593,7 @@
             data.stats.forEach((s) => {
                 byKey[s.key] = s.value;
             });
-            const ov = window.overallLevel(byKey.empathy, byKey.awareness, byKey.safe);
+            const ov = window.AIFormat.overallLevel(byKey.empathy, byKey.awareness, byKey.safe);
             const ovRow = document.createElement("div");
             ovRow.className = "stat-row";
             ovRow.innerHTML = `
@@ -705,7 +705,7 @@
         analyzeWithAI(endingData);
 
         /* ĐỊNH DẠNG NHẮN AI: dùng bản dùng chung trong js/ai-format.js
-           (escape + lọc ký tự CJK + **đậm**/*nghiêng*/`code`).
+           (escape + lọc ký tự CJK + định dạng đậm, nghiêng, code).
            Chỉ dùng cho tin AI. Tin của người chơi giữ textContent. */
 
         /* ============================================================
