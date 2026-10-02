@@ -47,6 +47,36 @@
 		}
 	}
 
+	/* Credentials with expired-token recovery. Prefers CloudSync.ensureSession
+	 * (refresh-once-and-retry); falls back to the raw session token when
+	 * CloudSync is absent (module load order). Returns
+	 * { token, studentId } or null. Never throws. */
+	async function credentials(profile) {
+		if (profile && profile.id) {
+			var direct = sessionToken();
+			if (direct) {
+				return { token: direct, studentId: profile.id };
+			}
+		}
+		try {
+			if (window.CloudSync && typeof window.CloudSync.ensureSession === 'function') {
+				var s = await window.CloudSync.ensureSession();
+				if (s && s.token && s.profile && s.profile.id) {
+					return { token: s.token, studentId: s.profile.id };
+				}
+				return null;
+			}
+		} catch (e) {
+			return null;
+		}
+		var token = sessionToken();
+		var studentId = (profile && profile.id) || profileId();
+		if (!token || !studentId) {
+			return null;
+		}
+		return { token: token, studentId: studentId };
+	}
+
 	function loadPushed() {
 		try {
 			var raw = localStorage.getItem(PUSHED_KEY);
@@ -210,11 +240,12 @@
 		if (!found.db || !keys.length) {
 			return { uploaded: 0 };
 		}
-		var token = sessionToken();
-		var studentId = (profile && profile.id) || profileId();
-		if (!token || !studentId) {
+		var creds = await credentials(profile);
+		if (!creds) {
 			return { uploaded: 0 };
 		}
+		var token = creds.token;
+		var studentId = creds.studentId;
 		var uploaded = 0;
 		for (var i = 0; i < keys.length; i++) {
 			var rec = found.slots[keys[i]];
@@ -241,11 +272,12 @@
 
 	/* Download cloud slots strictly newer than local; never delete local. */
 	async function pullNewer(profile) {
-		var token = sessionToken();
-		var studentId = (profile && profile.id) || profileId();
-		if (!token || !studentId) {
+		var creds = await credentials(profile);
+		if (!creds) {
 			return { downloaded: 0 };
 		}
+		var token = creds.token;
+		var studentId = creds.studentId;
 		var rows = await window.CloudClient.rest('save_slots', {
 			params: { student_id: 'eq.' + studentId, select: 'slot_key,data,updated_at' },
 			token: token

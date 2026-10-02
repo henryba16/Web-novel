@@ -299,7 +299,8 @@ YÊU CẦU:
                     role: 'user',
                     content: prompt
                 }
-            ]
+            ],
+            maxTokens: 800
         });
 
         if (!result.ok) {

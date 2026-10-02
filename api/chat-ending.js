@@ -29,6 +29,13 @@ export default async function handler(req, res) {
             ? question.slice(0, 500)
             : '';
 
+        // Player name is user-controlled (typed at game start): single line,
+        // 50 chars max — kills multi-line prompt-injection payloads. The
+        // question/history guards above stay unchanged.
+        const safePlayerName = typeof endingData?.playerName === 'string'
+            ? endingData.playerName.replace(/[\r\n]+/g, ' ').trim().slice(0, 50) || 'Người chơi'
+            : 'Người chơi';
+
         if (!safeQuestion.trim()) {
             return res.status(400).json({
                 error: 'Câu hỏi trống. Hãy nhập câu hỏi trước khi gửi.'
@@ -90,7 +97,7 @@ về quá trình ra quyết định của mình
 và giờ đang hỏi tiếp trong cùng cuộc trò chuyện.
 
 Tên người chơi:
-${endingData?.playerName || 'Người chơi'}
+${safePlayerName}
 
 ENDING:
 ${endingData?.ending?.name || 'Không rõ'}
@@ -134,7 +141,8 @@ YÊU CẦU:
                     role: 'user',
                     content: prompt
                 }
-            ]
+            ],
+            maxTokens: 400
         });
 
         if (!result.ok) {
