@@ -4,7 +4,7 @@
 const name = 'SchoolShield';
 
 // The cache version.
-const version = '0.3.5.0';
+const version = '0.3.5.1';
 
 // Name of the Cache Storage bucket this worker owns.
 const cacheName = `${name}-v${version}`;
@@ -94,9 +94,19 @@ function offlinePage () {
 
 // Only store our own successful, non-opaque responses. This keeps 404/500
 // pages and opaque cross-origin responses out of the cache.
+// The Cache API only supports http(s) requests — anything else
+// (chrome-extension:, data:, blob:, ...) throws on cache.put, so
+// reject those schemes up front.
 function isCacheable (request, response) {
+	if (request.method !== 'GET') {
+		return false;
+	}
+
+	if (!/^https?:\/\//i.test (request.url)) {
+		return false;
+	}
+
 	return (
-		request.method === 'GET' &&
 		!!response &&
 		response.status === 200 &&
 		response.type === 'basic'
@@ -109,7 +119,13 @@ function putInCache (request, response) {
 	}
 
 	const copy = response.clone ();
-	caches.open (cacheName).then ((cache) => cache.put (request, copy));
+	caches.open (cacheName)
+		.then ((cache) => cache.put (request, copy))
+		.catch (() => {
+			// Cache write failures (quota, unsupported scheme race, ...)
+			// must never break the page — the network response is
+			// already on its way back to the caller.
+		});
 }
 
 // Network-first: prefer fresh, fall back to cache, then the offline page for
@@ -211,6 +227,12 @@ self.addEventListener ('fetch', (event) => {
 	const { request } = event;
 
 	if (request.method !== 'GET') {
+		return;
+	}
+
+	// Let the browser handle non-http(s) schemes (chrome-extension:,
+	// data:, blob:, ...) — the Cache API cannot store them.
+	if (!/^https?:\/\//i.test (request.url)) {
 		return;
 	}
 

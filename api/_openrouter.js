@@ -23,9 +23,12 @@ const DEFAULT_PRIMARY = 'google/gemma-4-26b-a4b-it:free';
 
 const DEFAULT_FALLBACKS = [
 	'google/gemma-3-27b-it:free',
-	'meta-llama/llama-3.3-70b-instruct:free',
-	'mistralai/mistral-small-3.1-24b-instruct:free'
+	'meta-llama/llama-3.3-70b-instruct:free'
 ];
+
+// NOTE: OpenRouter rejects a `models` array with more than 3 items
+// (HTTP 400). Keep the total list capped at 3 so every attempt sends
+// a valid array. Extra env-configured models are ignored beyond the cap.
 
 function modelList() {
 	const primary = (
@@ -44,7 +47,9 @@ function modelList() {
 					.filter(Boolean)
 	).filter((m) => m && m !== primary);
 
-	return [primary, ...fallbacks];
+	// OpenRouter `models` max length is 3 — enforce it centrally so neither
+	// the client loop nor the per-attempt native array can exceed it.
+	return [primary, ...fallbacks].slice(0, 3);
 }
 
 // Statuses worth trying the NEXT model for. Everything else
@@ -104,7 +109,8 @@ export async function callOpenRouter({ messages, maxTokens }) {
 		const candidate = models[i];
 		// Native server-side failover for the remaining list, plus our
 		// client-side loop across attempts (defense in depth).
-		const remaining = models.slice(i);
+		// Slice to 3: OpenRouter rejects longer `models` arrays (400).
+		const remaining = models.slice(i, i + 3);
 		tried.push(candidate);
 
 		console.log(
