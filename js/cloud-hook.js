@@ -125,10 +125,19 @@
 				note.textContent = 'Ngoại tuyến — sẽ thử lại khi có mạng.';
 			} else if (res.authExpired) {
 				note.textContent = 'Phiên đăng nhập hết hạn — hãy đăng nhập lại rồi bấm Đồng bộ.';
-			} else if (res.stillPending > 0) {
-				note.textContent = 'Còn ' + res.stillPending + ' lượt chờ. Thử lại sau.';
 			} else {
-				note.textContent = 'Đã đồng bộ (' + res.uploaded + ' lượt chơi).';
+				var parts = [];
+				if (res.stillPending > 0) {
+					parts.push('Còn ' + res.stillPending + ' lượt chờ. Thử lại sau.');
+				} else {
+					parts.push('Đã đồng bộ (' + res.uploaded + ' lượt chơi).');
+				}
+				if (res.slotsDownloaded > 0) {
+					var live = remountSlotContainers();
+					parts.push('Đã tải ' + res.slotsDownloaded + ' save từ thiết bị khác' +
+						(live > 0 ? ' — danh sách đã cập nhật.' : ' — mở lại màn hình Load để xem.'));
+				}
+				note.textContent = parts.join(' ');
 			}
 		}).catch(function (e) {
 			note.textContent = 'Đồng bộ thất bại: ' + ((e && e.message) || 'lỗi không xác định, thử lại sau');
@@ -137,8 +146,43 @@
 		});
 	}
 
-	function renderSaveButtons() {
-		if (!enabled()) {
+	/* Live slot refresh: the engine reads save slots from IndexedDB only
+	 * when <slot-container> mounts (willMount), so a mid-session cloud pull
+	 * is invisible on an already-open save/load screen. Swapping each
+	 * container for a fresh element re-triggers mount → fresh IDB read, no
+	 * page reload, no engine state lost. Only touches visible screens;
+	 * hidden screens read fresh on their next open anyway. Never throws.
+	 * Returns the number of containers remounted. */
+	function remountSlotContainers() {
+		var count = 0;
+		saveScreens().forEach(function (screen) {
+			if (!isShown(screen)) {
+				return;
+			}
+			var slots = null;
+			try {
+				slots = screen.querySelectorAll('slot-container');
+			} catch (e) {
+				return;
+			}
+			for (var i = 0; i < slots.length; i++) {
+				try {
+					var old = slots[i];
+					var fresh = document.createElement('slot-container');
+					for (var a = 0; a < old.attributes.length; a++) {
+						fresh.setAttribute(old.attributes[a].name, old.attributes[a].value);
+					}
+					old.parentNode.replaceChild(fresh, old);
+					count++;
+				} catch (e) {
+					/* keep the old element on failure */
+				}
+			}
+		});
+		return count;
+	}
+
+	function renderSaveButtons() {		if (!enabled()) {
 			return;
 		}
 		var session = hasSession() ? '1' : '0';
