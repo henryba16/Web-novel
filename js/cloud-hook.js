@@ -123,6 +123,8 @@
 		window.CloudSync.syncNow(null).then(function (res) {
 			if (res.offline) {
 				note.textContent = 'Ngoại tuyến — sẽ thử lại khi có mạng.';
+			} else if (res.authExpired) {
+				note.textContent = 'Phiên đăng nhập hết hạn — hãy đăng nhập lại rồi bấm Đồng bộ.';
 			} else if (res.stillPending > 0) {
 				note.textContent = 'Còn ' + res.stillPending + ' lượt chờ. Thử lại sau.';
 			} else {

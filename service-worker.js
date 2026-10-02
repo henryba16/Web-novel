@@ -4,7 +4,7 @@
 const name = 'SchoolShield';
 
 // The cache version.
-const version = '0.3.5.2';
+const version = '0.3.5.3';
 
 // Name of the Cache Storage bucket this worker owns.
 const cacheName = `${name}-v${version}`;
@@ -177,28 +177,6 @@ async function staleWhileRevalidate (request) {
 	return Response.error ();
 }
 
-// Cache-first: serve from cache, fetch and store on a miss. Used for large,
-// effectively immutable game media under assets/.
-async function cacheFirst (request) {
-	const cached = await caches.match (request);
-
-	if (cached) {
-		return cached;
-	}
-
-	try {
-		const response = await fetch (request);
-		putInCache (request, response);
-		return response;
-	} catch (error) {
-		if (request.mode === 'navigate') {
-			return offlinePage ();
-		}
-
-		throw error;
-	}
-}
-
 self.addEventListener ('install', (event) => {
 	self.skipWaiting ();
 	event.waitUntil (
@@ -262,16 +240,23 @@ self.addEventListener ('fetch', (event) => {
 	const sameOrigin = url.origin === self.location.origin;
 
 	if (sameOrigin) {
-		// Game media: cache-first (large and effectively immutable per release).
+		// Game media: stale-while-revalidate — serve instantly from cache,
+		// refresh in the background so art updates (same filename, new
+		// bytes) arrive on the next load. (cache-first was used before
+		// 0.3.5.3 and NEVER picked up media updates until a version bump.)
 		if (url.pathname.startsWith ('/assets/')) {
-			event.respondWith (cacheFirst (request));
+			event.respondWith (staleWhileRevalidate (request));
 			return;
 		}
 
-		// Engine + game code (JS/CSS outside assets/): stale-while-revalidate so
-		// updates land on the next load without a version bump.
+		// Engine + game code (JS/CSS outside assets/): network-first so a
+		// reload ALWAYS runs the newest deployed code, with cache fallback
+		// offline. (stale-while-revalidate was used before 0.3.5.3 and
+		// served the previous release on the first load after every
+		// deploy.) Unchanged files are cheap: the browser revalidates
+		// with a 304 against the server's ETag/must-revalidate headers.
 		if (/\.(?:js|css)$/.test (url.pathname)) {
-			event.respondWith (staleWhileRevalidate (request));
+			event.respondWith (networkFirst (request));
 			return;
 		}
 	}

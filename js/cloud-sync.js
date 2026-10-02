@@ -141,10 +141,30 @@
 		if (profileOf(profile)) {
 			return profile;
 		}
-		if (window.CloudAuth && typeof window.CloudAuth.currentProfile === 'function') {
-			return window.CloudAuth.currentProfile();
+		if (!window.CloudAuth || typeof window.CloudAuth.currentProfile !== 'function') {
+			return null;
 		}
-		return null;
+		var who = await window.CloudAuth.currentProfile();
+		if (who) {
+			return who;
+		}
+		/* Token hết hạn (Supabase 401 → currentProfile null) làm sync kẹt
+		 * vĩnh viễn nếu không refresh. Thử refresh đúng 1 lần rồi đọc lại
+		 * profile; thất bại → null như cũ (guest/seassion chết). */
+		try {
+			if (window.CloudClient && typeof window.CloudClient.refreshSession === 'function') {
+				await window.CloudClient.refreshSession();
+			} else {
+				return null;
+			}
+		} catch (e) {
+			return null;
+		}
+		try {
+			return await window.CloudAuth.currentProfile();
+		} catch (e) {
+			return null;
+		}
 	}
 
 	/* Login-time merge: push each outbox snapshot once (newest-wins guarded),
@@ -163,6 +183,17 @@
 		var who = await resolveProfile(profile);
 		if (!who) {
 			result.stillPending = pendingCount();
+			/* Phân biệt "chưa đăng nhập" với "session còn nhưng token chết":
+			 * trường hợp sau (kể cả refresh đã thử) cần báo user đăng nhập
+			 * lại thay vì "Còn N lượt chờ" mãi. */
+			try {
+				var sess = window.CloudClient.getSession && window.CloudClient.getSession();
+				if (sess && sess.access_token) {
+					result.authExpired = true;
+				}
+			} catch (e) {
+				/* ignore */
+			}
 			return result;
 		}
 		var token = window.CloudClient.accessToken();
@@ -263,6 +294,26 @@
 		})();
 	}
 
+	/* Refresh-capable credential getter shared with CloudSlots (slot sync
+	 * has the same expired-token disease: raw sessionToken() goes 401 and
+	 * slot push/pull stalls silently). Returns { token, profile } with one
+	 * refresh-and-retry, or null. Never throws. */
+	async function ensureSession() {
+		try {
+			var who = await resolveProfile(null);
+			if (!who || !who.id) {
+				return null;
+			}
+			var token = window.CloudClient.accessToken();
+			if (!token) {
+				return null;
+			}
+			return { token: token, profile: who };
+		} catch (e) {
+			return null;
+		}
+	}
+
 	window.CloudSync = {
 		OUTBOX_KEY: OUTBOX_KEY,
 		pendingCount: pendingCount,
@@ -270,6 +321,7 @@
 		mergeOnLogin: mergeOnLogin,
 		syncNow: syncNow,
 		saveFinished: saveFinished,
-		describeCurrent: describeCurrent
+		describeCurrent: describeCurrent,
+		ensureSession: ensureSession
 	};
 })();

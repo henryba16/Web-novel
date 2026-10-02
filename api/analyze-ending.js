@@ -24,6 +24,12 @@ export default async function handler(req, res) {
             route
         } = req.body;
 
+        // Player name is user-controlled (typed at game start): single line,
+        // 50 chars max — kills multi-line prompt-injection payloads.
+        const safePlayerName = typeof playerName === 'string'
+            ? playerName.replace(/[\r\n]+/g, ' ').trim().slice(0, 50) || 'Người chơi'
+            : 'Người chơi';
+
         console.log("PLAYER:", playerName);
         console.log("ENDING:", ending);
         console.log("STATS:", stats);
@@ -61,11 +67,13 @@ Nhiệm vụ (chỉ dùng dữ liệu dưới đây, không bịa thêm; không 
 4. TÁC ĐỘNG: lựa chọn làm thay đổi gì trong game (diễn biến, quan hệ, an toàn, hướng phát triển, ending). Không suy ra hành vi ngoài đời.
 5. GỢI MỞ: một góc nhìn/câu hỏi mở (vai trò người chứng kiến, im lặng vs can thiệp, nhận diện cô lập, đồng cảm vs an toàn). Không phán xét.
 
+NGÔI XƯNG (bắt buộc): Bạn đang nói chuyện TRỰC TIẾP với người chơi, KHÔNG phải viết báo cáo cho người thứ ba. Xưng "mình", gọi người chơi là "bạn" + tên (vd: "bạn An"). Mở đầu bằng một câu chào gần gũi (vd: "Mình cùng nhìn lại hành trình của bạn An nhé."). Thay lối "Dữ liệu... cho thấy..." bằng lối trực tiếp: "Mình thấy bạn thường...", "Một điểm đáng chú ý ở bạn là...", "Điều này gợi cho bạn câu hỏi...?", "Bạn có muốn thử nghĩ về...?". Tuyệt đối không dùng "người chơi" ở ngôi thứ ba khi nói về bạn ấy.
+
 TUYỆT ĐỐI KHÔNG: chẩn đoán/gán nhãn tâm lý-tính cách ("tốt/xấu/tử tế/ích kỷ"); phán xét; coi 1 lựa chọn là đại diện; phủ nhận ending; nói người chơi "thực sự là" ai; suy hành vi ngoài đời; dùng ending làm bằng chứng duy nhất; khuyên áp đặt. Dùng lối: "Dữ liệu... cho thấy...", "Một xu hướng đáng chú ý là...", "Điều này có thể gợi câu hỏi...". Dữ liệu không đủ → nói rõ chưa đủ kết luận.
 
 Trả lời tiếng Việt (chỉ chữ Latin có dấu, không dùng ký tự Trung/Nhật/Hàn), 150–250 từ, trung lập, gần gũi, cụ thể, như phản hồi tự nhiên (không cần giữ tiêu đề mục).
 
-THÔNG TIN: tên=${playerName || 'Người chơi'}; ending=${ending?.name || 'Không rõ'} (${ending?.description || 'Không có'}); chỉ số game (chỉ phản ánh lựa chọn trong game, KHÔNG phải điểm đạo đức/nhân cách/chẩn đoán/dự đoán ngoài đời): đồng cảm ${empathy}/100, nhận diện ${awareness}/100, an toàn ${safe}/100.
+THÔNG TIN: tên=${safePlayerName}; ending=${ending?.name || 'Không rõ'} (${ending?.description || 'Không có'}); chỉ số game (chỉ phản ánh lựa chọn trong game, KHÔNG phải điểm đạo đức/nhân cách/chẩn đoán/dự đoán ngoài đời): đồng cảm ${empathy}/100, nhận diện ${awareness}/100, an toàn ${safe}/100.
 LỊCH SỬ LỰA CHỌN:
 ${routeText}
 `;
