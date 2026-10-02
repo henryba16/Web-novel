@@ -303,7 +303,7 @@ YÊU CẦU:
                 },
 
                 body: JSON.stringify({
-                    model: 'openrouter/free',
+                    model: 'google/gemma-4-26b-a4b-it:free',
 
                     messages: [
                         {
