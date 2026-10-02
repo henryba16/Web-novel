@@ -1,3 +1,5 @@
+import { callOpenRouter } from './_openrouter.js';
+
 export default async function handler(req, res) {
     console.log("=== AI API CALLED ===");
 
@@ -68,52 +70,36 @@ LỊCH SỬ LỰA CHỌN:
 ${routeText}
 `;
 
-		const response = await fetch(
-			'https://openrouter.ai/api/v1/chat/completions',
-			{
-				method: 'POST',
+		const result = await callOpenRouter({
+			messages: [
+				{
+					role: 'user',
+					content: prompt
+				}
+			],
+			maxTokens: 600
+		});
 
-				headers: {
-					'Authorization':
-						`Bearer ${process.env.OPENROUTER_API_KEY}`,
-					'Content-Type': 'application/json'
-				},
-
-				body: JSON.stringify({
-					model: 'google/gemma-4-26b-a4b-it:free',
-					max_tokens: 600,
-
-					messages: [
-						{
-							role: 'user',
-							content: prompt
-						}
-					]
-				})
-			}
-		);
-
-		if (!response.ok) {
-            const errorText = await response.text();
-
+		if (!result.ok) {
             console.error(
                 'OpenRouter error:',
-                errorText
+                result.errorText
             );
 
-            return res.status(response.status).json({
-                error: errorText
+            return res.status(result.status).json({
+                error: result.errorText
             });
         }
 
-		const data = await response.json();
+		const data = result.data;
 
 		const analysis =
 			data.choices?.[0]?.message?.content ||
 			'AI không thể phân tích lúc này.';
 
 		return res.status(200).json({
-			analysis
+			analysis,
+			model: result.model || undefined
 		});
 
 	} catch (error) {
