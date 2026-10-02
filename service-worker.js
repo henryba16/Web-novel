@@ -4,7 +4,7 @@
 const name = 'SchoolShield';
 
 // The cache version.
-const version = '0.3.5.1';
+const version = '0.3.5.2';
 
 // Name of the Cache Storage bucket this worker owns.
 const cacheName = `${name}-v${version}`;
@@ -70,7 +70,6 @@ const files = [
 	'assets/icons/icon_167x167.png',
 	'assets/icons/icon_180x180.png',
 	'assets/icons/icon_192x192.png',
-	'assets/icons/icon_310x150.png',
 	'assets/icons/icon_310x310.png',
 	'assets/icons/icon_512x512.png',
 	'assets/icons/icon.ico',
@@ -203,8 +202,24 @@ async function cacheFirst (request) {
 self.addEventListener ('install', (event) => {
 	self.skipWaiting ();
 	event.waitUntil (
-		caches.open (cacheName).then ((cache) => {
-			return cache.addAll (files);
+		caches.open (cacheName).then (async (cache) => {
+			// Per-file caching: one missing/failed URL must never fail
+			// the whole install (cache.addAll rejects on the first
+			// failure and leaves the old worker + stale caches in place
+			// forever — that is what stranded clients on old code).
+			const results = await Promise.allSettled (
+				files.map ((file) => cache.add (file))
+			);
+			results.forEach ((result, index) => {
+				if (result.status === 'rejected') {
+					console.warn (
+						`[SW] precache skipped ${files[index]}:`,
+						result.reason && result.reason.message
+							? result.reason.message
+							: result.reason
+					);
+				}
+			});
 		})
 	);
 });
