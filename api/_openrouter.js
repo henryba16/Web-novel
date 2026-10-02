@@ -7,8 +7,8 @@
 //
 // Fix: sequential client-side fallback across models + OpenRouter
 // native `models` array on each attempt (server-side failover).
-// Only retryable statuses (429 / 5xx / 408) trigger the next model.
-// Auth / quota / validation errors (400/401/402/403/404) return
+// Retryable statuses (404 retired model, 429, 5xx, 408) try the next
+// model. Auth / quota / validation errors (400/401/402/403) return
 // immediately — retrying those is useless.
 //
 // Override without redeploy-code change:
@@ -21,14 +21,24 @@
 
 const DEFAULT_PRIMARY = 'google/gemma-4-26b-a4b-it:free';
 
+// Verified free via GET /api/v1/models (pricing.prompt "0") on 2026-10-02.
+// gemma-3-27b-it:free and llama-3.3-70b-instruct:free are GONE from the
+// catalog (paid-only now) — do NOT re-add them without re-checking.
+// Last entry is always the Free Models Router: it picks a random
+// available free model, so the chain degrades gracefully even when
+// every named model is rate-limited or retired.
 const DEFAULT_FALLBACKS = [
-	'google/gemma-3-27b-it:free',
-	'meta-llama/llama-3.3-70b-instruct:free'
+	'google/gemma-4-31b-it:free',
+	'qwen/qwen3.8-27b:free',
+	'openrouter/free'
 ];
 
-// NOTE: OpenRouter rejects a `models` array with more than 3 items
-// (HTTP 400). Keep the total list capped at 3 so every attempt sends
-// a valid array. Extra env-configured models are ignored beyond the cap.
+// Hard cap on total attempts: bounds serverless latency when every
+// model is failing. NOTE: this is NOT limited to 3 — only each
+// per-request native `models` array is capped at 3 (OpenRouter rejects
+// longer arrays with 400). The client-side loop may walk more models
+// across separate requests.
+const MAX_ATTEMPTS = 6;
 
 function modelList() {
 	const primary = (
@@ -47,16 +57,17 @@ function modelList() {
 					.filter(Boolean)
 	).filter((m) => m && m !== primary);
 
-	// OpenRouter `models` max length is 3 — enforce it centrally so neither
-	// the client loop nor the per-attempt native array can exceed it.
-	return [primary, ...fallbacks].slice(0, 3);
+	// Client loop may exceed 3 models; each individual request's native
+	// `models` array is sliced to 3 at send time (OpenRouter max).
+	return [primary, ...fallbacks].slice(0, MAX_ATTEMPTS);
 }
 
-// Statuses worth trying the NEXT model for. Everything else
-// (400 bad request, 401 bad key, 402 no credits, 403 guardrail /
-// moderation, 404 unknown model) will fail identically on every
-// model, so return immediately.
-const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504, 529]);
+// Statuses worth trying the NEXT model for.
+// 404 included: a retired/renamed `:free` variant returns "model not
+// found" — that must fall through, not abort the chain. Everything
+// else non-retryable (400 bad request, 401 bad key, 402 no credits,
+// 403 guardrail/moderation) fails identically on every model.
+const RETRYABLE_STATUS = new Set([404, 408, 429, 500, 502, 503, 504, 529]);
 
 function isRetryableStatus(status) {
 	return RETRYABLE_STATUS.has(Number(status));
