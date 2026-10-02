@@ -144,7 +144,15 @@
 		if (!window.CloudAuth || typeof window.CloudAuth.currentProfile !== 'function') {
 			return null;
 		}
-		var who = await window.CloudAuth.currentProfile();
+		var who = null;
+		try {
+			// Guarded even though currentProfile catches internally: a
+			// rejecting implementation must never crash the sync chain —
+			// resolveProfile's contract is profile-or-null, never throws.
+			who = await window.CloudAuth.currentProfile();
+		} catch (e) {
+			who = null;
+		}
 		if (who) {
 			return who;
 		}

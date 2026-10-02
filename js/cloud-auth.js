@@ -171,7 +171,10 @@
 			if (!user) {
 				return null;
 			}
-			return fetchProfile(user.id, session.access_token);
+			// `return await` is REQUIRED here: a bare `return fetchProfile(...)`
+			// would let its rejection escape this try/catch (async return
+			// adopts without awaiting) and crash every sync caller uncaught.
+			return await fetchProfile(user.id, session.access_token);
 		} catch (e) {
 			return null;
 		}
