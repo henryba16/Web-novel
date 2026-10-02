@@ -210,7 +210,26 @@
 		var db = await openDb(dbName);
 		try {
 			await txPromise(db, 'readwrite', function (store, resolve, reject) {
-				var req = store.put(record, key);
+				var req;
+				try {
+					/* Engine's GameData store uses in-line keys (keyPath):
+					 * passing an explicit key throws DataError. With a
+					 * keyPath, the record already carries its key — but
+					 * older cloud rows may lack the field, so fill it from
+					 * the slot key before a keyless put. */
+					var kp = store.keyPath;
+					if (kp && record && typeof record === 'object') {
+						if (typeof kp === 'string' && (record[kp] === undefined || record[kp] === null)) {
+							record[kp] = key;
+						}
+						req = store.put(record);
+					} else {
+						req = store.put(record, key);
+					}
+				} catch (e) {
+					reject(e);
+					return;
+				}
 				req.onsuccess = function () {
 					resolve(true);
 				};
