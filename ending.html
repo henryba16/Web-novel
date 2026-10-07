@@ -854,16 +854,16 @@
                     }
                 );
 
-                var result = await response.json();
-
-                console.log("CHAT API RESULT:", result);
-
                 if (!response.ok) {
-                    throw new Error(
-                        result.error ||
-                        "AI request failed"
-                    );
+                    let errText = 'Yêu cầu AI thất bại.';
+                    try {
+                        const errJson = await response.json();
+                        errText = errJson.error || errText;
+                    } catch (e) {}
+                    throw new Error(errText);
                 }
+
+                var result = await response.json();
 
                 var reply = result.reply || "Không có câu trả lời.";
                 const citations = Array.isArray(result.citations) ? result.citations : [];
@@ -941,16 +941,16 @@
                     }
                 );
 
-                const result = await response.json();
-
-                console.log('AI API RESULT:', result);
-
                 if (!response.ok) {
-                    throw new Error(
-                        result.error ||
-                        'AI request failed'
-                    );
+                    let errText = 'Yêu cầu phân tích AI thất bại.';
+                    try {
+                        const errJson = await response.json();
+                        errText = errJson.error || errText;
+                    } catch (e) {}
+                    throw new Error(errText);
                 }
+
+                const result = await response.json();
 
                 const reflection =
                     result.analysis || 'Không có kết quả phân tích.';

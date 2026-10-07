@@ -177,7 +177,9 @@ Lựa chọn ${index + 1}:
 			} else {
 				const data = result.data;
 				const raw = String(data?.choices?.[0]?.message?.content || '').trim();
-				const parsed = __parseModelJson(raw);
+				// Sanitize any reasoning blocks (<think>...</think>)
+				const sanitized = raw.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+				const parsed = __parseModelJson(sanitized);
 				const prov = Array.isArray(__retrieved.citationIds) ? __retrieved.citationIds : [];
 				if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
 					// Contract guard (17-10-26): display text must be a non-empty string text field;
