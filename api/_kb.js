@@ -6,7 +6,16 @@
 // URL-resolution verified — see phase-02-kb-expansion_NOTE_17-10-26.md), retrieval
 // now ranks by number of matching tags (still deterministic: score desc, id asc),
 // and analyze-ending passes tags derived from the real ending/route/stats.
-export const KB_VERSION = 'kb-v1-2026-10-17';
+//
+// Expansion 2026-10-17 (owner research sources): 5 new reviewed entries added:
+//   kb_empathy_from_experience  — altruism born of suffering (Staub & Vollhardt 2008,
+//                                  Greenberg et al. 2018); empathy growing from lived experience
+//   kb_upstander_how_to         — StopBullying.gov upstander guidance (deeper than kb_safe_bystander_action)
+//   kb_connection_and_belonging — CDC adolescent mental health; belonging as protective factor
+//   kb_why_people_bully_or_freeze — Bauer 2006, Hamstra 2022, Lereya 2015; hurt→bully cycle
+//   kb_empathy_is_learned       — Sultan & Khan 2025, Rakoczy 2022, meta-analysis 2024;
+//                                  empathy requires practice and guidance
+export const KB_VERSION = 'kb-v2-2026-10-17';
 
 // `reviewed` = passed the curation checklist in phase-02-kb-curation-rules_REF_17-10-26.md
 // (structure + traceable source + resolution check recorded). Draft entries are never
@@ -166,6 +175,68 @@ export const KNOWLEDGE_RECORDS = [
     scope: 'demo placeholder only; not citable',
     limitations: 'Requires external approval to promote; content synthetic only.',
     reviewedBy: 'none'
+  },
+
+  // --- KB expansion 2026-10-17 (owner research sources) ---
+
+  {
+    id: 'kb_empathy_from_experience',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'empathy', 'đồng', 'cảm', 'trải', 'nghiệm', 'tổn', 'thương', 'giúp', 'đỡ', 'quan', 'tâm', 'cảm', 'xúc', 'người', 'khác', 'altruism', 'suffered'],
+    title: 'Empathy can grow from lived experience: caring more after difficulty',
+    content: 'Research shows going through painful experiences — exclusion, misunderstanding, or hurt — can deepen empathy ("altruism born of suffering"). People who have suffered may become more attuned to others in distress. In the game, a high empathy score may reflect someone who understands from experience what it feels like to be on the receiving end. That awareness is a strength — the foundation for genuinely helping others. Educational reflection; not a clinical finding.',
+    source: { title: 'Staub & Vollhardt (2008), Altruism born of suffering; Greenberg et al. (2018), Elevated empathy after trauma', url: 'https://www.apa.org/topics/resilience', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a clinical tool',
+    limitations: 'Not a diagnostic instrument. High empathy does not diagnose past trauma. Simulated game choices only.',
+    reviewedBy: 'Owner-directed KB expansion (2026-10-17)'
+  },
+
+  {
+    id: 'kb_upstander_how_to',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'bystander', 'upstander', 'chứng', 'kiến', 'can', 'thiệp', 'an', 'toàn', 'lên', 'tiếng', 'hành', 'động', 'bạo', 'lực', 'phòng', 'ngăn', 'giúp', 'đứng', 'về', 'phía'],
+    title: 'From bystander to upstander: safe actions that reduce harm',
+    content: 'A bystander watches without acting; an upstander takes safe action to reduce harm. Upstander moves do not need confrontation: sitting next to an excluded peer, checking in privately, not laughing at cruel jokes, or telling a trusted adult. Even one person stepping in changes the dynamic in most bullying situations. Small actions matter. Educational content; not an intervention protocol.',
+    source: { title: 'StopBullying.gov - How to Prevent Bullying', url: 'https://www.stopbullying.gov/prevention/how-to-prevent-bullying', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not an intervention protocol',
+    limitations: 'Not a safety protocol for real incidents. Safety first — involve trusted adults when risk is present.',
+    reviewedBy: 'Owner-directed KB expansion (2026-10-17)'
+  },
+
+  {
+    id: 'kb_connection_and_belonging',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'gắn', 'kết', 'thuộc', 'về', 'bạn', 'bè', 'gia', 'đình', 'trường', 'học', 'tinh', 'thần', 'cô', 'lập', 'bảo', 'vệ', 'sức', 'khỏe', 'belonging', 'connection', 'safe'],
+    title: 'Belonging and connection protect mental wellbeing',
+    content: 'Feeling connected — to school, friends, or family — is one of the strongest protective factors for youth mental wellbeing. Even one trusted person makes a major difference. In the game, reaching out, staying, asking "are you OK?", or refusing to join exclusion builds connection. Notice which choices made someone feel less alone. Educational guidance; not a clinical claim.',
+    source: { title: 'CDC - Adolescent Mental Health', url: 'https://www.cdc.gov/children-mental-health/about/', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a clinical tool',
+    limitations: 'Not a diagnostic instrument. General educational guidance on protective factors.',
+    reviewedBy: 'Owner-directed KB expansion (2026-10-17)'
+  },
+
+  {
+    id: 'kb_why_people_bully_or_freeze',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'bắt', 'nạt', 'gây', 'hấn', 'đứng', 'nhìn', 'không', 'hành', 'động', 'quyết', 'định', 'khó', 'khăn', 'tổn', 'thương', 'lo', 'âu', 'cảm', 'xúc', 'gia', 'đình', 'bạo', 'lực', 'nạn', 'nhân'],
+    title: 'Why people bully or freeze: hurt people can hurt people',
+    content: 'Many who bully have themselves experienced hurt — exclusion, harsh homes, or unguided emotion regulation. Understanding this pattern does not excuse harm, but explains it. Similarly, people who freeze under stress are not cowards — the brain under threat struggles to find safe options. Breaking cycles requires recognizing these patterns. Educational insight; not a diagnostic tool.',
+    source: { title: 'Bauer et al. (2006), Pediatrics; Hamstra et al. (2022); Lereya et al. (2015)', url: 'https://www.cdc.gov/youth-violence/about/index.html', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a clinical tool',
+    limitations: 'Not a diagnostic or risk-scoring instrument. Understanding patterns does not excuse harm.',
+    reviewedBy: 'Owner-directed KB expansion (2026-10-17)'
+  },
+
+  {
+    id: 'kb_empathy_is_learned',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'đồng', 'cảm', 'học', 'dạy', 'hình', 'thành', 'phát', 'triển', 'kể', 'chuyện', 'nhập', 'vai', 'suy', 'ngẫm', 'đạo', 'đức', 'lý', 'luận', 'đúng', 'sai', 'empathy', 'moral', 'prosocial'],
+    title: 'Empathy is learned, not automatic: stories and practice build it',
+    content: 'Empathy develops through experience: being listened to, seeing care modeled, taking others\' perspectives through stories or roleplay, and guided reflection. Without guidance, children may assume only their own feelings matter. Games that simulate another\'s experience are a way to practice that thinking. Notice where the game asked you to consider someone else\'s feelings. Educational insight; not a clinical claim.',
+    source: { title: 'Sultan & Khan (2025); Rakoczy (2022), Nat Rev Psychol; 2024 meta-analysis', url: 'https://www.stopbullying.gov/prevention/how-to-prevent-bullying', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a clinical tool',
+    limitations: 'Not a diagnostic instrument. Empathy development is complex and educational only.',
+    reviewedBy: 'Owner-directed KB expansion (2026-10-17)'
   }
 ];
 

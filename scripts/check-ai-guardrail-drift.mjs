@@ -44,11 +44,13 @@ const PINNED_GUARDRAIL_SHA256 = 'fb1d9005c402bca26833d6c47919c8bba83cd6d7b2419de
 // TOÀN / DỮ LIỆU / ĐỊNH DẠNG ĐẦU RA). The assembled prompt changed by design.
 // Evidence: api/_prompts.js VERSION_ANALYZE_V2 (analyze-ending-grounded-2026-10-17.5)
 // + check-ai-prompt-integrity B8 (header + Latin-only rule still present).
-// Re-pinned 2026-10-17 (owner directive): citation-style fix — the output
-// instruction now forbids inline source references (no kb_xxx IDs / source names
-// in the text; citations go only in the citations field). Evidence:
-// api/_prompts.js VERSION_ANALYZE_V2 (analyze-ending-grounded-2026-10-17.6).
-const PINNED_ANALYZE_PROMPT_SHA256 = '51010ce7f6e691be28cba410cb13b837fc43375b4c8d3954c97ec5d5947baa45';
+// Re-pinned 2026-10-17 (owner research sources): KB expanded from 12 to 17 reviewed
+// entries (5 new: kb_empathy_from_experience, kb_upstander_how_to,
+// kb_connection_and_belonging, kb_why_people_bully_or_freeze, kb_empathy_is_learned).
+// KB_VERSION bumped to kb-v2-2026-10-17, changing the assembled grounding snippets
+// and therefore this sha. Sources: Staub & Vollhardt 2008, Greenberg et al. 2018,
+// Sultan & Khan 2025, Rakoczy 2022, Bauer 2006, Hamstra 2022, Lereya 2015, CDC, StopBullying.gov.
+const PINNED_ANALYZE_PROMPT_SHA256 = '91a59ae23be851b0d6b76adbcc23989d93cbbcb46bb72683b84d641830d064bb';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');
