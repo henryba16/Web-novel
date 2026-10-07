@@ -772,7 +772,7 @@
                      * is off (default), no AI block is created at all. */
                     if (window.CloudDashboard.TEACHER_PILOT_ENABLED) {
                         var aiH = document.createElement('h3');
-                        aiH.textContent = 'Ghi chú AI';
+                        aiH.textContent = 'Phân tích học sinh';
                         mount.appendChild(aiH);
                         var aiLbl = document.createElement('p');
                         aiLbl.className = 'sub pilot-note';
@@ -781,13 +781,13 @@
                         var aiBtn = document.createElement('button');
                         aiBtn.className = 'action mini';
                         aiBtn.type = 'button';
-                        aiBtn.textContent = 'Tạo ghi chú AI';
+                        aiBtn.textContent = 'Tạo phân tích học sinh';
                         var aiStatus = document.createElement('p');
                         aiStatus.className = 'status';
                         var aiOut = document.createElement('div');
                         var aiInit = document.createElement('p');
                         aiInit.className = 'sub';
-                        aiInit.textContent = 'Chưa tạo ghi chú.';
+                        aiInit.textContent = 'Chưa tạo phân tích học sinh.';
                         aiOut.appendChild(aiInit);
                         mount.appendChild(aiBtn);
                         mount.appendChild(aiStatus);
@@ -797,7 +797,7 @@
                             var cid = dashSelect.value;
                             if (!sid || !cid) {
                                 aiStatus.className = 'status err';
-                                aiStatus.textContent = 'Hãy chọn lớp và học sinh trước khi tạo ghi chú.';
+                                aiStatus.textContent = 'Hãy chọn lớp và học sinh trước khi tạo phân tích.';
                                 return;
                             }
                             if (!window.CloudDashboard.hasMinimumData(runs)) {

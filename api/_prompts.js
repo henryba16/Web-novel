@@ -132,6 +132,7 @@ khoảng 150-250 từ, theo đúng 4 mục sau:
    1-2 câu hỏi gợi mở để giáo viên trò chuyện thêm với em.
 
 Giọng văn trung lập, tôn trọng học sinh.
+TUYỆT ĐỐI KHÔNG xuất quá trình suy nghĩ (chain-of-thought), KHÔNG giải thích, KHÔNG viết lời dẫn; đi thẳng vào 4 mục yêu cầu.
 
 ${GUARDRAIL_BLOCK}`;
 }
@@ -189,6 +190,7 @@ Bắt buộc phải có 4 mục sau theo đúng thứ tự (có thể thêm các
 (Mô hình có thể bổ sung thêm mục khác nếu cần, ví dụ: 5. GỢI Ý TRÒ CHUYỆN để đề xuất chủ đề thảo luận SEL cho lớp).
 
 Giọng văn trung lập, tôn trọng học sinh.
+TUYỆT ĐỐI KHÔNG xuất quá trình suy nghĩ (chain-of-thought), KHÔNG giải thích, KHÔNG viết lời dẫn; đi thẳng vào 4 mục yêu cầu.
 
 ${GUARDRAIL_BLOCK}`;
 }
