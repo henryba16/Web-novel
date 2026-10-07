@@ -120,7 +120,7 @@ SchoolShield tích hợp các tính năng AI hỗ trợ học sinh tự phản t
   - Vận hành linh hoạt: Khi tìm thấy bằng chứng đối chiếu phù hợp từ Cơ sở tri thức (KB), AI trích dẫn cơ sở khoa học để củng cố phản tư; khi không có nguồn trùng khớp, AI tự động chuyển sang luồng an ủi - gợi mở tự nhiên, đảm bảo người chơi luôn nhận được phản hồi thấu cảm.
 - **AI Giáo viên (`dashboard.html` - `/api/summarize-class`, `/api/summarize-student`)**:
   - Đóng vai trò **trợ lý phân tích sư phạm**, hỗ trợ giáo viên tổng hợp tình hình lớp học sau các đợt thực hành SEL.
-  - Cung cấp tính năng **Tạo tóm tắt AI** với 5 mục rõ ràng: Quan sát từ dữ liệu, Điểm cần lưu ý, Danh sách học sinh cần quan tâm, Giới hạn dữ liệu và Gợi ý câu hỏi trò chuyện.
+  - Cung cấp tính năng **Tạo tóm tắt AI** với 4 mục chuẩn hóa bắt buộc: 1. Quan sát từ dữ liệu, 2. Điểm cần lưu ý, 3. Học sinh nên theo dõi, 4. Giới hạn (Disclaimer), cùng khả năng linh hoạt bổ sung thêm các mục mở rộng (như Gợi ý câu hỏi trò chuyện).
   - Nhận diện các dấu hiệu cần lưu ý: học sinh chưa chơi, học sinh có điểm thành phần thấp, và đặc biệt là nhóm có **điểm đồng cảm rất cao** (theo nghiên cứu, đây có thể là học sinh từng chịu tổn thương nên nhạy cảm hơn, cần được quan sát và nâng đỡ thay vì bỏ qua).
 
 ### 2. Cơ sở tri thức (Knowledge Base)
@@ -134,6 +134,32 @@ SchoolShield tích hợp các tính năng AI hỗ trợ học sinh tự phản t
 - **Trích dẫn độc lập**: Nguồn trích dẫn hiển thị riêng biệt trong phần danh mục (`#ai-citations`), tuyệt đối không chèn mã kỹ thuật hay tên ID nguồn vào lời thoại gây xao nhãng.
 - **Bảo mật danh tính (Pseudonymization)**: Tên học sinh không bao giờ được gửi thô tới nhà cung cấp mô hình AI; thay vào đó hệ thống luôn sử dụng nhãn trung tính.
 - **Hạ tầng mô hình mở/miễn phí**: Chạy hoàn toàn trên chuỗi mô hình mở miễn phí (free-tier models) qua OpenRouter với cơ chế tự động chuyển đổi dự phòng (failover) và bộ phục hồi định dạng JSON thông minh.
+
+### 4. Tóm tắt cấu trúc Prompt của hệ thống AI
+
+Hệ thống prompt được thiết kế theo cấu trúc phân tầng rõ ràng, đảm bảo tính nhất quán và an toàn:
+
+- **Khối bảo vệ an toàn dùng chung (`GUARDRAIL_BLOCK`)**:
+  - Được tích hợp trực tiếp vào các prompt phía giáo viên và trò chuyện.
+  - Quy định bất biến: Không chẩn đoán tâm lý/bệnh học, không gán nhãn đạo đức ("tốt/xấu"), không suy diễn nhân cách đời thực từ lựa chọn game, giữ thái độ tôn trọng và chỉ sử dụng chữ cái Latin (tiếng Việt có dấu).
+- **Prompt Phản tư kết thúc cho học sinh (`analyze-ending`)**:
+  - *Vai trò (Role)*: Người bạn đồng hành ấm áp, lắng nghe, khích lệ suy ngẫm.
+  - *Dữ liệu (Input)*: Tên trung tính, kết thúc đạt được, 3 chỉ số game (`empathy`, `awareness`, `safe`), các bước quyết định và tri thức liên quan từ KB.
+  - *Đầu ra (Output)*: Lời động viên, an ủi tự nhiên cùng câu hỏi tự nhìn nhận; tự động chuyển sang luồng an ủi thuần túy nếu không có tài liệu KB trùng khớp.
+- **Prompt Trò chuyện nối tiếp cho học sinh (`chat-ending`)**:
+  - *Vai trò*: Bạn đồng hành giải đáp thắc mắc tiếp theo của học sinh sau khi xem kết thúc.
+  - *Dữ liệu*: Lịch sử hội thoại 10 lượt gần nhất, câu hỏi mới của học sinh, bối cảnh kết thúc và nguồn trích dẫn từ KB.
+- **Prompt Tóm tắt lớp học cho giáo viên (`summarize-class`)**:
+  - *Vai trò*: Trợ lý sư phạm phân tích xu hướng chung của tập thể lớp.
+  - *Dữ liệu*: Số lượt hoàn thành, trung bình 3 chỉ số, phân bố các ending, phân tích lựa chọn theo cảnh và danh sách học sinh cần chú ý (chỉ số thấp hoặc điểm đồng cảm ≥ 90).
+  - *Cấu trúc bắt buộc (4 mục cố định)*:
+    1. **QUAN SÁT TỪ DỮ LIỆU**: Thống kê số liệu khách quan từ lượt chơi.
+    2. **ĐIỂM CẦN LƯU Ý**: Hiện tượng cần quan tâm khi tương tác với lớp.
+    3. **HỌC SINH NÊN THEO DÕI**: Liệt kê mã định danh học sinh và lý do ngắn gọn (chưa chơi, điểm thấp, đồng cảm rất cao).
+    4. **GIỚI HẠN (DISCLAIMER)**: Nhắc nhở dữ liệu chỉ mang tính tham khảo từ trò chơi, không phải công cụ đánh giá hay chẩn đoán.
+    *(Mô hình có thể bổ sung các mục mở rộng như 5. GỢI Ý TRÒ CHUYỆN).*
+- **Prompt Ghi chú học sinh cá nhân (`summarize-student`)**:
+  - *Vai trò*: Hỗ trợ giáo viên xem nhanh hành trình của 1 học sinh cụ thể trước khi trao đổi riêng, gồm 4 phần: Quan sát, Điểm cần lưu ý, Giới hạn (Disclaimer) và Gợi ý trò chuyện.
 
 ## Yêu cầu hệ thống
 

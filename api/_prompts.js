@@ -13,7 +13,7 @@ function clamp(s, n) {
 export const VERSION_ANALYZE = "analyze-ending-2026-10-16.1";
 export const VERSION_CHAT = "chat-ending-2026-10-16.1";
 export const VERSION_STUDENT = "summarize-student-2026-10-17.2";
-export const VERSION_CLASS = "summarize-class-2026-10-17.3";
+export const VERSION_CLASS = "summarize-class-2026-10-17.4";
 
 export const CHANGE_NOTES = [
   { version: VERSION_ANALYZE, date: '2026-10-16', note: 'Initial extraction of prompt body from api/analyze-ending.js into a versioned builder (byte-parity preserved).' },
@@ -167,8 +167,8 @@ ${splitLines || '(chưa có)'}
 HỌC SINH NÊN THEO DÕI (từ dữ liệu, chưa nhất thiết là kết luận):
 ${atRiskLines || '(không có học sinh nào vượt ngưỡng cần theo dõi từ dữ liệu này)'}
 
-Hãy viết một tóm tắt bằng tiếng Việt,
-khoảng 200-300 từ, theo đúng 5 mục sau:
+Hãy viết một tóm tắt bằng tiếng Việt, khoảng 200-300 từ.
+Bắt buộc phải có 4 mục sau theo đúng thứ tự (có thể thêm các mục khác nếu cần):
 
 1. QUAN SÁT TỪ DỮ LIỆU:
    Xu hướng lựa chọn nổi bật và xu hướng điểm số của cả lớp
@@ -182,11 +182,11 @@ khoảng 200-300 từ, theo đúng 5 mục sau:
    dựa trên phần "HỌC SINH NÊN THEO DÕI" ở trên (ví dụ: đồng cảm rất cao,
    điểm thấp, chưa chơi). Chỉ nêu mã ngắn học sinh + lý do ngắn gọn;
    không gán nhãn tính cách, không chẩn đoán.
-4. GIỚI HẠN:
-   Vì sao dữ liệu tổng hợp này chưa đủ để kết luận về cả lớp
-   (chỉ từ dữ liệu trò chơi, không phải đánh giá học sinh).
-5. GỢI Ý TRÒ CHUYỆN:
-   1-2 gợi ý trò chuyện hoặc hoạt động để giáo viên trao đổi thêm với lớp.
+4. GIỚI HẠN (DISCLAIMER):
+   Vì sao dữ liệu tổng hợp này chỉ mang tính tham khảo và chưa đủ để kết luận về cả lớp
+   (chỉ từ dữ liệu trò chơi mô phỏng, không phải công cụ đánh giá hay chẩn đoán học sinh).
+
+(Mô hình có thể bổ sung thêm mục khác nếu cần, ví dụ: 5. GỢI Ý TRÒ CHUYỆN để đề xuất chủ đề thảo luận SEL cho lớp).
 
 Giọng văn trung lập, tôn trọng học sinh.
 
@@ -217,7 +217,7 @@ const CHANGE_NOTES_V2 = [
   { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Restructured as a proper system instruction: VAI TRÒ (role) -> NHIỆM VỤ -> DỮ LIỆU -> ĐỊNH DẠNG ĐẦU RA, with the canonical GUARDRAIL_BLOCK retained at the end (B8 parity).' },
   { version: VERSION_ANALYZE_V2, date: '2026-10-17', note: 'Citation style fix: the output instruction now forbids inline source references in the text (no kb_xxx IDs, no source names). Citations go ONLY in the citations field; the text reads as natural companion speech. Triggered by a live output that said "điều được nhấn mạnh trong tài liệu hỗ trợ bạn bè (kb_supporting_a_friend)".' },
   { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Citation style fix: same rule as analyze — no inline kb_xxx IDs or source names in the text; citations go only in the citations field.' },
-  { version: VERSION_CLASS, date: '2026-10-17', note: 'Owner directive (17-10-26): class summary now lists "HỌC SINH NÊN THEO DÕI" — per-student latest-run flags including "too empathy" (đồng cảm rất cao, ≥90) and sub-45 metrics — so the summary button shows who the teacher should keep an eye on. Short student-id suffix labels are used; no names enter the prompt.' }
+  { version: VERSION_CLASS, date: '2026-10-17', note: 'Owner directive (17-10-26): class summary prompt updated for consistency — requires 4 core sections: 1: Quan sát từ dữ liệu, 2: Điểm cần lưu ý, 3: Học sinh nên theo dõi, 4: Giới hạn (Disclaimer), and allows the model to append extra sections as needed (e.g. 5: Gợi ý trò chuyện).' }
 ];
 
 export function buildAnalyzePromptGrounded({ safePlayerName, ending, empathy, awareness, safe, routeText, sources }) {
