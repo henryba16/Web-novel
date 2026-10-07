@@ -6,6 +6,12 @@ Website: [https://web-novel-rosy.vercel.app](https://web-novel-rosy.vercel.app)
 
 Danh sách công cụ AI đã dùng: [https://web-novel-rosy.vercel.app/AI-ATTRIBUTION.html](https://web-novel-rosy.vercel.app/AI-ATTRIBUTION.html)
 
+## Tài liệu báo cáo và tham khảo chuyên gia
+
+- **Báo cáo chuyên gia kiểm tra web**: Phân tích kỹ thuật, bảo mật, vận hành và tuân thủ RIPER-5 methodology: [<https://docs.google.com/document/d/1nZtuKPXVnfPG2JX_u044hbjZ9i1d-mZyDRZwxPE2MOs/edit?usp=sharing>](https://docs.google.com/document/d/1nZtuKPXVnfPG2JX_u044hbjZ9i1d-mZyDRZwxPE2MOs/edit?usp=sharing)
+- **Báo cáo lý do cập nhật hệ thống Prompt AI**: Giải thích chi tiết về việc tinh chỉnh prompt học sinh/giáo viên, kiểm chứng minh bạch bằng chứng và cơ chế an toàn AI hai tầng: [<https://docs.google.com/document/d/1hXnDt45-3cIaosN1vPaHUVT49GZbBXPUZb2sTH_P7bU/edit?usp=sharing>](https://docs.google.com/document/d/1hXnDt45-3cIaosN1vPaHUVT49GZbBXPUZb2sTH_P7bU/edit?usp=sharing)
+- **Báo cáo Công cụ AI & Nguồn lực (`AI-ATTRIBUTION.html`)**: Liệt kê trung thực các mô hình phát triển (bao gồm OpenCode trên OmniRoute `auto/coding`), API thời gian thực qua OpenRouter, và các thư viện mã nguồn mở được sử dụng trong dự án: [<https://web-novel-rosy.vercel.app/AI-ATTRIBUTION.html>](https://web-novel-rosy.vercel.app/AI-ATTRIBUTION.html)
+
 ## Bối cảnh vấn đề
 
 Học sinh THCS-THPT có thể gặp lo âu, căng thẳng và suy giảm tự tin trong giai đoạn phát triển tâm sinh lý quan trọng. Tuy nhiên, nhiều em chưa được trang bị đầy đủ kỹ năng nhận diện cảm xúc của bản thân hoặc phản ứng phù hợp trước các tình huống xã hội gây tổn thương.
