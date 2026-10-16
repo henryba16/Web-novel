@@ -1,0 +1,49 @@
+{
+  "id": "s012",
+  "suite": "teacher",
+  "title": "Synthetic AI evaluation scenario 12",
+  "session": {
+    "playerName": "Synthetic learner 12",
+    "ending": {
+      "name": "Ending stub 12",
+      "description": "synthetic game ending descriptor for eval dataset"
+    },
+    "stats": [
+      {
+        "key": "empathy",
+        "value": 47
+      },
+      {
+        "key": "awareness",
+        "value": 66
+      },
+      {
+        "key": "safe",
+        "value": 55
+      }
+    ],
+    "route": [
+      {
+        "chapter": 1,
+        "scene": 1,
+        "context": "intro",
+        "choice": "choice-12"
+      },
+      {
+        "chapter": 2,
+        "scene": 2,
+        "context": "mid",
+        "choice": "choice-13"
+      }
+    ]
+  },
+  "teacher": {
+    "studentId": "stub-student-12",
+    "classId": "stub-class-0",
+    "classRow": {
+      "name": "Synthetic Class 0",
+      "code": "CODE-12"
+    },
+    "headers": {}
+  }
+}

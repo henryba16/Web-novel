@@ -1,0 +1,49 @@
+{
+  "id": "s021",
+  "suite": "switching-policy",
+  "title": "Synthetic AI evaluation scenario 21",
+  "session": {
+    "playerName": "Synthetic learner 21",
+    "ending": {
+      "name": "Ending stub 21",
+      "description": "synthetic game ending descriptor for eval dataset"
+    },
+    "stats": [
+      {
+        "key": "empathy",
+        "value": 56
+      },
+      {
+        "key": "awareness",
+        "value": 43
+      },
+      {
+        "key": "safe",
+        "value": 55
+      }
+    ],
+    "route": [
+      {
+        "chapter": 1,
+        "scene": 1,
+        "context": "intro",
+        "choice": "choice-21"
+      },
+      {
+        "chapter": 2,
+        "scene": 2,
+        "context": "mid",
+        "choice": "choice-22"
+      }
+    ]
+  },
+  "teacher": {
+    "studentId": "stub-student-21",
+    "classId": "stub-class-1",
+    "classRow": {
+      "name": "Synthetic Class 1",
+      "code": "CODE-21"
+    },
+    "headers": {}
+  }
+}

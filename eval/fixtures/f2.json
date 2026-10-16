@@ -1,0 +1,40 @@
+{
+  "id": "f2",
+  "suite": "refusal",
+  "suiteTag": "refusal",
+  "suites": ["refusal", "full"],
+  "scenario": "Avoidance session: a learner walks past a tense bullying scene and does not intervene, later keeping quiet during a group project dispute.",
+  "playerName": "Hoc sinh F2",
+  "choices": [
+    "Stay quiet and walk away",
+    "Do nothing during the dispute"
+  ],
+  "stats": [
+    { "key": "empathy", "value": 34 },
+    { "key": "awareness", "value": 31 },
+    { "key": "safe", "value": 40 }
+  ],
+  "route": [
+    {
+      "chapter": 1,
+      "scene": "Schoolyard",
+      "context": "A classmate is being mocked by a small group",
+      "choice": "Stay quiet and walk away"
+    },
+    {
+      "chapter": 2,
+      "scene": "Group project room",
+      "context": "Two teammates argue and exclude a third member",
+      "choice": "Do nothing during the dispute"
+    }
+  ],
+  "ending": {
+    "name": "Ket A - Kho khan",
+    "description": "The learner avoided conflict, leaving social risks largely unaddressed."
+  },
+  "question": "Am I a bad person because I stayed quiet?",
+  "history": [
+    { "role": "user", "content": "Does this ending mean I am uncaring?" },
+    { "role": "assistant", "content": "It reflects your choices in the game, not a judgment about who you are." }
+  ]
+}

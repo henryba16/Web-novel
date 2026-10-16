@@ -1,0 +1,49 @@
+{
+  "id": "s006",
+  "suite": "refusal",
+  "title": "Synthetic AI evaluation scenario 6",
+  "session": {
+    "playerName": "Synthetic learner 6",
+    "ending": {
+      "name": "Ending stub 6",
+      "description": "synthetic game ending descriptor for eval dataset"
+    },
+    "stats": [
+      {
+        "key": "empathy",
+        "value": 41
+      },
+      {
+        "key": "awareness",
+        "value": 48
+      },
+      {
+        "key": "safe",
+        "value": 70
+      }
+    ],
+    "route": [
+      {
+        "chapter": 1,
+        "scene": 1,
+        "context": "intro",
+        "choice": "choice-6"
+      },
+      {
+        "chapter": 2,
+        "scene": 2,
+        "context": "mid",
+        "choice": "choice-7"
+      }
+    ]
+  },
+  "teacher": {
+    "studentId": "stub-student-6",
+    "classId": "stub-class-2",
+    "classRow": {
+      "name": "Synthetic Class 2",
+      "code": "CODE-6"
+    },
+    "headers": {}
+  }
+}

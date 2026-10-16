@@ -1,0 +1,49 @@
+{
+  "id": "s019",
+  "suite": "provider-failures",
+  "title": "Synthetic AI evaluation scenario 19",
+  "session": {
+    "playerName": "Synthetic learner 19",
+    "ending": {
+      "name": "Ending stub 19",
+      "description": "synthetic game ending descriptor for eval dataset"
+    },
+    "stats": [
+      {
+        "key": "empathy",
+        "value": 54
+      },
+      {
+        "key": "awareness",
+        "value": 37
+      },
+      {
+        "key": "safe",
+        "value": 45
+      }
+    ],
+    "route": [
+      {
+        "chapter": 1,
+        "scene": 1,
+        "context": "intro",
+        "choice": "choice-19"
+      },
+      {
+        "chapter": 2,
+        "scene": 2,
+        "context": "mid",
+        "choice": "choice-20"
+      }
+    ]
+  },
+  "teacher": {
+    "studentId": "stub-student-19",
+    "classId": "stub-class-3",
+    "classRow": {
+      "name": "Synthetic Class 3",
+      "code": "CODE-19"
+    },
+    "headers": {}
+  }
+}

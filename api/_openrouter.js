@@ -18,6 +18,15 @@
 // Vercel: files named api/_*.js are NOT routed as endpoints, so this
 // module is import-only. Handlers import via:
 //   import { callOpenRouter } from './_openrouter.js';
+//
+// Telemetry (Phase 01 C1/C2): one structured JSON line per provider
+// attempt plus one terminal line per call, emitted via console.log. Endpoint
+// label is passed in by the caller and is payload-neutral (analyze-ending,
+// chat-ending, summarize-student, summarize-class, or unknown). No secrets,
+// names, free text, or IDs are ever logged — only request_id (random).
+// Logging is fail-open: a telemetry error can never throw or change control.
+
+import crypto from 'node:crypto';
 
 const DEFAULT_PRIMARY = 'google/gemma-4-26b-a4b-it:free';
 
@@ -78,7 +87,8 @@ function isRetryableStatus(status) {
 // the provider failed). Detect that so we can fall through to the
 // next model instead of returning an empty reply.
 function bodyErrorCode(data) {
-	const code = data && data.error && data.error.code;
+	const code = data && data.error ? data.error.code : undefined;
+	if (code === null || code === undefined) return null;
 	const n = Number(code);
 	return Number.isFinite(n) ? n : null;
 }
@@ -91,6 +101,52 @@ function hasUsableChoice(data) {
 	return typeof content === 'string' && content.trim().length > 0;
 }
 
+// Failure taxonomy classifiers used by telemetry (Phase 01 C2).
+function failureClassForStatus(status) {
+	const s = Number(status);
+	if (s === 404) return 'retired_model';
+	if (s === 408) return 'timeout';
+	if (s === 429) return 'quota_rate';
+	if (s >= 500) return 'provider_availability';
+	return 'client_rejected';
+}
+
+function failureClassForCode(code) {
+	const s = Number(code);
+	if (s === 404) return 'retired_model';
+	if (s === 408) return 'timeout';
+	if (s === 429) return 'quota_rate';
+	if (s >= 500) return 'provider_availability';
+	if (s >= 400 && s <= 403) return 'client_rejected';
+	return 'invalid_response';
+}
+
+// Parse Retry-After header into numeric seconds (Phase 04 cooldown math).
+function parseRetryAfter(value) {
+	if (value === null || value === undefined) return null;
+	const direct = Number(value);
+	if (Number.isFinite(direct)) return direct;
+	const parsed = Date.parse(value);
+	if (!Number.isNaN(parsed)) {
+		const seconds = Math.round((parsed - Date.now()) / 1000);
+		return seconds >= 0 ? seconds : 0;
+	}
+	return null;
+}
+
+// Random request id — the ONLY correlation id (no user/student data).
+function newRequestId() {
+	try {
+		if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+			return crypto.randomUUID();
+		}
+	} catch (e) {
+		// fall through
+	}
+	// Fallback (browser/old Node): not cryptographic, only for correlation.
+	return 'req-' + Math.random().toString(36).slice(2) + '-' + Date.now().toString(36);
+}
+
 export const OPENROUTER_MODELS = modelList();
 
 export function getOpenRouterModels() {
@@ -98,10 +154,51 @@ export function getOpenRouterModels() {
 	return modelList();
 }
 
-export async function callOpenRouter({ messages, maxTokens }) {
+export async function callOpenRouter({ messages, maxTokens, endpoint } = {}) {
+	const callStart = Date.now();
+	const requestId = newRequestId();
+	const label =
+		typeof endpoint === 'string' && endpoint.trim() !== ''
+			? endpoint.trim()
+			: 'unknown';
+	const maxTokensNorm =
+		maxTokens === null || maxTokens === undefined ? null : Number(maxTokens);
+
+	// Look up the key before defining any console-based helper (log-hygiene P2).
 	const apiKey = process.env.OPENROUTER_API_KEY;
 
+	const telemetryFields = (extra) => ({
+		ts: new Date().toISOString(),
+		endpoint: label,
+		request_id: requestId,
+		max_tokens: maxTokensNorm,
+		...extra
+	});
+
+	// Fail-open telemetry emitter: never throws, never alters control flow.
+	const emitTelemetry = (record) => {
+		try {
+			console.log(JSON.stringify(record));
+		} catch (e) {
+			// intentional: telemetry must never throw
+		}
+	};
+
 	if (!apiKey) {
+		// Config gap: terminal-only record, 0 attempts, no provider call.
+		emitTelemetry(
+			telemetryFields({
+				attempt: 0,
+				candidate_model: null,
+				provider_model_used: null,
+				outcome: 'failed_early',
+				http_status: null,
+				failure_class: 'config_missing',
+				latency_ms: Date.now() - callStart,
+				retry_after_s: null,
+				empty_content: false
+			})
+		);
 		return {
 			ok: false,
 			status: 500,
@@ -115,12 +212,10 @@ export async function callOpenRouter({ messages, maxTokens }) {
 	const tried = [];
 	let lastError = 'Unknown error';
 	let lastStatus = 502;
+	let lastFailureClass = 'provider_availability';
 
 	for (let i = 0; i < models.length; i++) {
 		const candidate = models[i];
-		// Native server-side failover for the remaining list, plus our
-		// client-side loop across attempts (defense in depth).
-		// Slice to 3: OpenRouter rejects longer `models` arrays (400).
 		const remaining = models.slice(i, i + 3);
 		tried.push(candidate);
 
@@ -128,6 +223,7 @@ export async function callOpenRouter({ messages, maxTokens }) {
 			`[openrouter] attempt ${i + 1}/${models.length}: ${candidate}`
 		);
 
+		const attemptStart = Date.now();
 		let response;
 		try {
 			response = await fetch(
@@ -148,13 +244,28 @@ export async function callOpenRouter({ messages, maxTokens }) {
 			);
 		} catch (networkError) {
 			// Network / DNS / timeout — try next model.
+			const latency = Date.now() - attemptStart;
 			lastStatus = 502;
 			lastError =
 				(networkError && networkError.message) ||
 				'Network error reaching OpenRouter';
+			lastFailureClass = 'net_transport';
 			console.error(
 				`[openrouter] ${candidate} network error:`,
 				lastError
+			);
+			emitTelemetry(
+				telemetryFields({
+					attempt: i + 1,
+					candidate_model: candidate,
+					provider_model_used: null,
+					outcome: 'failed_chain',
+					http_status: null,
+					failure_class: 'net_transport',
+					latency_ms: latency,
+					retry_after_s: null,
+					empty_content: false
+				})
 			);
 			continue;
 		}
@@ -162,6 +273,7 @@ export async function callOpenRouter({ messages, maxTokens }) {
 		const retryAfter = response.headers
 			? response.headers.get('Retry-After')
 			: null;
+		const retryAfterSec = parseRetryAfter(retryAfter);
 
 		let text = '';
 		try {
@@ -171,23 +283,55 @@ export async function callOpenRouter({ messages, maxTokens }) {
 		}
 
 		let data = null;
+		let unparseable = false;
 		try {
 			data = text ? JSON.parse(text) : null;
 		} catch (e) {
 			data = null;
+			unparseable = text.length > 0;
 		}
 
 		if (response.ok) {
 			const code = bodyErrorCode(data);
 			if (code !== null) {
+				const cls = failureClassForCode(code);
+				const retryable = isRetryableStatus(code);
+				const latency = Date.now() - attemptStart;
 				lastStatus = code;
 				lastError =
-					(data.error && data.error.message) || text || `Model error ${code}`;
+					(data && data.error && data.error.message) || text || `Model error ${code}`;
 				console.error(
 					`[openrouter] ${candidate} body error ${code}:`,
 					String(lastError).slice(0, 300)
 				);
-				if (!isRetryableStatus(code)) {
+				lastFailureClass = cls;
+				emitTelemetry(
+					telemetryFields({
+						attempt: i + 1,
+						candidate_model: candidate,
+						provider_model_used: null,
+						outcome: retryable ? 'failed_chain' : 'failed_early',
+						http_status: response.status,
+						failure_class: cls,
+						latency_ms: latency,
+						retry_after_s: retryAfterSec,
+						empty_content: false
+					})
+				);
+				if (!retryable) {
+					emitTelemetry(
+						telemetryFields({
+							attempt: i + 1,
+							candidate_model: null,
+							provider_model_used: null,
+							outcome: 'failed_early',
+							http_status: lastStatus,
+							failure_class: cls,
+							latency_ms: Date.now() - callStart,
+							retry_after_s: null,
+							empty_content: false
+						})
+					);
 					return {
 						ok: false,
 						status: code,
@@ -199,32 +343,150 @@ export async function callOpenRouter({ messages, maxTokens }) {
 				continue;
 			}
 
+			if (unparseable) {
+				const latency = Date.now() - attemptStart;
+				lastStatus = 502;
+				lastError = 'Unparseable provider response';
+				lastFailureClass = 'invalid_response';
+				console.error(
+					`[openrouter] ${candidate} unparseable response`
+				);
+				emitTelemetry(
+					telemetryFields({
+						attempt: i + 1,
+						candidate_model: candidate,
+						provider_model_used: null,
+						outcome: 'failed_early',
+						http_status: response.status,
+						failure_class: 'invalid_response',
+						latency_ms: latency,
+						retry_after_s: retryAfterSec,
+						empty_content: false
+					})
+				);
+				emitTelemetry(
+					telemetryFields({
+						attempt: i + 1,
+						candidate_model: null,
+						provider_model_used: null,
+						outcome: 'failed_early',
+						http_status: lastStatus,
+						failure_class: 'invalid_response',
+						latency_ms: Date.now() - callStart,
+						retry_after_s: null,
+						empty_content: false
+					})
+				);
+				return {
+					ok: false,
+					status: 502,
+					errorText: lastError,
+					tried,
+					model: null
+				};
+			}
+
 			if (hasUsableChoice(data)) {
 				const used =
 					(data && data.model) || candidate;
+				const latency = Date.now() - attemptStart;
 				console.log(`[openrouter] success via ${used}`);
+				emitTelemetry(
+					telemetryFields({
+						attempt: i + 1,
+						candidate_model: candidate,
+						provider_model_used: used,
+						outcome: 'success',
+						http_status: response.status,
+						failure_class: null,
+						latency_ms: latency,
+						retry_after_s: retryAfterSec,
+						empty_content: false
+					})
+				);
+				emitTelemetry(
+					telemetryFields({
+						attempt: i + 1,
+						candidate_model: null,
+						provider_model_used: used,
+						outcome: 'success',
+						http_status: response.status,
+						failure_class: null,
+						latency_ms: Date.now() - callStart,
+						retry_after_s: null,
+						empty_content: false
+					})
+				);
 				return { ok: true, data, model: used, tried };
 			}
 
 			// 200 but empty (cold-start / scaling) — try next model.
+			const emptyLatency = Date.now() - attemptStart;
 			lastStatus = 502;
 			lastError = 'Model returned empty content';
+			lastFailureClass = 'empty_content';
 			console.error(
 				`[openrouter] ${candidate} empty content, trying next model`
+			);
+			emitTelemetry(
+				telemetryFields({
+					attempt: i + 1,
+					candidate_model: candidate,
+					provider_model_used: null,
+					outcome: 'failed_chain',
+					http_status: response.status,
+					failure_class: 'empty_content',
+					latency_ms: emptyLatency,
+					retry_after_s: retryAfterSec,
+					empty_content: true
+				})
 			);
 			continue;
 		}
 
 		// Non-2xx HTTP status.
+		const retryable = isRetryableStatus(response.status);
+		const cls = retryable
+			? failureClassForStatus(response.status)
+			: failureClassForStatus(response.status);
+		const non2xxLatency = Date.now() - attemptStart;
 		lastStatus = response.status;
 		lastError = text || `OpenRouter HTTP ${response.status}`;
+		lastFailureClass = cls;
 		console.error(
 			`[openrouter] ${candidate} HTTP ${response.status}:`,
 			String(lastError).slice(0, 300),
 			retryAfter ? `(Retry-After: ${retryAfter})` : ''
 		);
 
-		if (!isRetryableStatus(response.status)) {
+		emitTelemetry(
+			telemetryFields({
+				attempt: i + 1,
+				candidate_model: candidate,
+				provider_model_used: null,
+				outcome: retryable ? 'failed_chain' : 'failed_early',
+				http_status: response.status,
+				failure_class: cls,
+				latency_ms: non2xxLatency,
+				retry_after_s: retryAfterSec,
+				empty_content: false
+			})
+		);
+
+		if (!retryable) {
+			emitTelemetry(
+				telemetryFields({
+					attempt: i + 1,
+					candidate_model: null,
+					provider_model_used: null,
+					outcome: 'failed_early',
+					http_status: lastStatus,
+					failure_class: cls,
+					latency_ms: Date.now() - callStart,
+					retry_after_s: null,
+					empty_content: false
+				})
+			);
 			return {
 				ok: false,
 				status: response.status,
@@ -233,14 +495,28 @@ export async function callOpenRouter({ messages, maxTokens }) {
 				model: null
 			};
 		}
-		// Retryable → fall through to next model immediately (honoring
-		// Retry-After with a sleep would exceed serverless timeouts;
-		// a different model has a separate rate-limit bucket).
+		// Retryable → fall through to next model immediately.
 	}
 
+	// Exhausted all models.
+	const finalClass = lastFailureClass;
 	console.error(
 		`[openrouter] all ${tried.length} models exhausted:`,
 		String(lastError).slice(0, 300)
+	);
+
+	emitTelemetry(
+		telemetryFields({
+			attempt: tried.length,
+			candidate_model: null,
+			provider_model_used: null,
+			outcome: 'failed_chain',
+			http_status: lastStatus,
+			failure_class: finalClass,
+			latency_ms: Date.now() - callStart,
+			retry_after_s: null,
+			empty_content: false
+		})
 	);
 
 	return {

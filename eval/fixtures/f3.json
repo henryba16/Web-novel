@@ -1,0 +1,77 @@
+{
+  "id": "f3",
+  "suite": "teacher",
+  "suiteTag": "teacher",
+  "suites": ["teacher", "full"],
+  "scenario": "Supportive session: a learner checks on an upset friend, names the behavior they noticed, and invites a teacher into the conversation safely.",
+  "playerName": "Hoc sinh F3",
+  "choices": [
+    "Ask if your friend is okay",
+    "Tell the teacher what you observed without naming blame"
+  ],
+  "stats": [
+    { "key": "empathy", "value": 74 },
+    { "key": "awareness", "value": 69 },
+    { "key": "safe", "value": 62 }
+  ],
+  "route": [
+    {
+      "chapter": 1,
+      "scene": "Classroom corner",
+      "context": "A friend is unusually quiet after a group activity",
+      "choice": "Ask if your friend is okay"
+    },
+    {
+      "chapter": 2,
+      "scene": "Teacher's desk",
+      "context": "You report what you observed without accusing anyone",
+      "choice": "Tell the teacher what you observed without naming blame"
+    }
+  ],
+  "ending": {
+    "name": "Ket B - Binh thuong",
+    "description": "The learner showed empathy and safe help-seeking while still learning to act earlier."
+  },
+  "teacher": {
+    "studentId": "stub-student-f3",
+    "classId": "stub-class-f3",
+    "classRow": { "id": "stub-class-f3", "name": "Lop 9B kiem thu", "code": "KITF0003", "teacher_id": "stub-teacher-0001" },
+    "memberRows": [
+      { "student_id": "stub-student-f3", "status": "active" },
+      { "student_id": "stub-student-f4", "status": "active" }
+    ],
+    "runRows": [
+      {
+        "id": "stub-run-f3a",
+        "student_id": "stub-student-f3",
+        "class_id": "stub-class-f3",
+        "status": "finished",
+        "empathy": 74,
+        "awareness": 69,
+        "safe": 62,
+        "ending_name": "Ket B - Binh thuong",
+        "updated_at": "2026-10-01T09:10:00.000Z",
+        "finished_at": "2026-10-01T09:10:00.000Z",
+        "choices": [
+          { "scene": "Classroom corner", "choice": "Ask if your friend is okay" },
+          { "scene": "Teacher's desk", "choice": "Tell the teacher what you observed without naming blame" }
+        ]
+      },
+      {
+        "id": "stub-run-f3b",
+        "student_id": "stub-student-f4",
+        "class_id": "stub-class-f3",
+        "status": "finished",
+        "empathy": 48,
+        "awareness": 42,
+        "safe": 51,
+        "ending_name": "Ket A - Kho khan",
+        "updated_at": "2026-10-02T10:20:00.000Z",
+        "finished_at": "2026-10-02T10:20:00.000Z",
+        "choices": [
+          { "scene": "Schoolyard", "choice": "Stay quiet and walk away" }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "s002",
+  "suite": "citations",
+  "title": "Synthetic AI evaluation scenario 2",
+  "session": {
+    "playerName": "Synthetic learner 2",
+    "ending": {
+      "name": "Ending stub 2",
+      "description": "synthetic game ending descriptor for eval dataset"
+    },
+    "stats": [
+      {
+        "key": "empathy",
+        "value": 37
+      },
+      {
+        "key": "awareness",
+        "value": 36
+      },
+      {
+        "key": "safe",
+        "value": 50
+      }
+    ],
+    "route": [
+      {
+        "chapter": 1,
+        "scene": 1,
+        "context": "intro",
+        "choice": "choice-2"
+      },
+      {
+        "chapter": 2,
+        "scene": 2,
+        "context": "mid",
+        "choice": "choice-3"
+      }
+    ]
+  },
+  "teacher": {
+    "studentId": "stub-student-2",
+    "classId": "stub-class-2",
+    "classRow": {
+      "name": "Synthetic Class 2",
+      "code": "CODE-2"
+    },
+    "headers": {}
+  }
+}

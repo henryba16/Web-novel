@@ -1,0 +1,49 @@
+{
+  "id": "s023",
+  "suite": "full",
+  "title": "Synthetic AI evaluation scenario 23",
+  "session": {
+    "playerName": "Synthetic learner 23",
+    "ending": {
+      "name": "Ending stub 23",
+      "description": "synthetic game ending descriptor for eval dataset"
+    },
+    "stats": [
+      {
+        "key": "empathy",
+        "value": 58
+      },
+      {
+        "key": "awareness",
+        "value": 49
+      },
+      {
+        "key": "safe",
+        "value": 65
+      }
+    ],
+    "route": [
+      {
+        "chapter": 1,
+        "scene": 1,
+        "context": "intro",
+        "choice": "choice-23"
+      },
+      {
+        "chapter": 2,
+        "scene": 2,
+        "context": "mid",
+        "choice": "choice-24"
+      }
+    ]
+  },
+  "teacher": {
+    "studentId": "stub-student-23",
+    "classId": "stub-class-3",
+    "classRow": {
+      "name": "Synthetic Class 3",
+      "code": "CODE-23"
+    },
+    "headers": {}
+  }
+}
