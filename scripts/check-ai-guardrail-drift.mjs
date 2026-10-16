@@ -22,7 +22,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const PINNED_GUARDRAIL_SHA256 = '7cc057618e173f6a8325bb4563e5ab91985c8acdc2d156ae1543204aa32fd11e';
-const PINNED_ANALYZE_PROMPT_SHA256 = '65366cb2fb9bcca5833da2e8644f1a61a1b5f344848d4af1f35207f757868cfa';
+const PINNED_ANALYZE_PROMPT_SHA256 = '72cd253b09d8b31e1a700ce11591a1cfd42ab9e6908ba53969af0ae90fcb6c96';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');

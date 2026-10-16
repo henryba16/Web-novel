@@ -49,7 +49,7 @@ export function buildChatPrompt({ safePlayerName, endingData, empathy, awareness
   return `
 Bạn là AI trò chuyện cho SchoolShield,
 một visual novel giáo dục về sự cô lập xã hội,
-định kiến, bắt nạt học đường và vai trò của người chứng kiến.
+định kiến, bạo lực học đường và vai trò của người chứng kiến.
 
 Người chơi vừa nhận phần nhận xét đầu tiên
 về quá trình ra quyết định của mình
@@ -90,7 +90,7 @@ export function buildStudentPrompt({ className, finished, unfinishedCount, histo
   return `
 Bạn là AI ghi chú cho giáo viên SchoolShield,
 một visual novel giáo dục về sự cô lập xã hội,
-định kiến, bắt nạt học đường và vai trò của người chứng kiến.
+định kiến, bạo lực học đường và vai trò của người chứng kiến.
 
 Hãy mô tả QUÁ TRÌNH CHƠI của một học sinh từ số liệu dưới đây.
 Chỉ mô tả lựa chọn trong game, không suy đoán ngoài game.
@@ -128,7 +128,7 @@ export function buildClassPrompt({ className, finished, notFinishedCount, means,
   return `
 Bạn là AI tóm tắt cho giáo viên SchoolShield,
 một visual novel giáo dục về sự cô lập xã hội,
-định kiến, bắt nạt học đường và vai trò của người chứng kiến.
+định kiến, bạo lực học đường và vai trò của người chứng kiến.
 
 Hãy tóm tắt XU HƯỚNG CHUNG của cả lớp từ số liệu dưới đây.
 Chỉ mô tả lựa chọn trong game, không suy đoán ngoài game.
@@ -162,3 +162,49 @@ Tập trung vào:
 ${GUARDRAIL_BLOCK}`;
 }
 
+// --- Phase 02 (fast demo) v2 builders + change notes + citation ID list ---
+export const VERSION_ANALYZE_V2 = "analyze-ending-grounded-2026-10-16.1";
+export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-16.1";
+
+const CHANGE_NOTES_V2 = [
+  { version: VERSION_ANALYZE_V2, date: '2026-10-16', note: 'Grounded reflection response from curated KB + citable source IDs; insufficient-evidence refusal; no behavior change from base prompt except input contract.' },
+  { version: VERSION_CHAT_V2, date: '2026-10-16', note: 'Grounded follow-up chat from provided source metadata only.' },
+];
+
+export function buildAnalyzePromptGrounded({ safePlayerName, ending, empathy, awareness, safe, routeText, sources }) {
+  const src = _formatSources(sources);
+  return `Bạn là AI phản tư của SchoolShield (visual novel giáo dục). Chỉ trích dẫn từ nguồn đã cung cấp. Nếu không đủ nguồn → status=insufficient_evidence.
+
+NGUỒN ĐỦ ĐIỀU KIỆN (chỉ được trích dẫn IDs này):
+${src}
+
+THÔNG TIN: tên=${safePlayerName}; ending=${ending?.name || 'Không rõ'} (${ending?.description || 'Không có'}); chỉ số game: đồng cảm ${empathy}/100, nhận diện ${awareness}/100, an toàn ${safe}/100.
+LỊCH SỬ LỰA CHỌN:
+${routeText}
+
+Output JSON: {"status":"grounded"|"insufficient_evidence"|"generation_failure","text":"...","citations":["kb-id"],"limitationNote":"..."}.
+Chỉ trích dẫn IDs từ danh sách nguồn đã cung cấp. Nếu không đủ nguồn → citations=[] và text giải thích hạn chế + một câu hỏi trung lập.
+`;
+}
+
+export function buildChatPromptGrounded({ safePlayerName, endingData, safeQuestion, transcriptText, sources }) {
+  const src = _formatSources(sources);
+  return `Bạn là AI trò chuyện cho SchoolShield (phản tư sau ending).
+
+NGUỒN ĐỦ ĐIỀU KIỆN:
+${src}
+
+Câu hỏi: ${safeQuestion}
+Ending: ${endingData?.ending?.name || 'Không rõ'}
+
+Output JSON: {"status":"grounded"|"insufficient_evidence"|"generation_failure","text":"...","citations":["kb-id"],"limitationNote":"..."}.
+Nếu status = insufficient_evidence: text giải thích thiếu nguồn + một câu hỏi trung lập, không chẩn đoán.
+`;
+}
+
+function _formatSources(sources) {
+  const arr = Array.isArray(sources) ? sources : [];
+  if (!arr.length) return '(NO VERIFIED SOURCES SUPPLIED).';
+  return arr.map(s => 'ID=' + s.id + ' -- topics=' + (s.topics || []).join(',') + ' -- title=' + (s.title || ''))
+    .join('\n');
+}

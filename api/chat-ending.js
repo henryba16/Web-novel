@@ -1,38 +1,37 @@
 import { callOpenRouter } from './_openrouter.js';
 import { NEUTRAL_PLAYER_LABEL } from './_privacy.js';
-import { buildChatPrompt, VERSION_CHAT } from './_prompts.js';
+import { buildChatPrompt, VERSION_CHAT, buildChatPromptGrounded, VERSION_CHAT_V2 } from './_prompts.js';
+import { retrieveKnowledge, KB_VERSION } from './_kb.js';
 import { GUARDRAIL_BLOCK } from './_guardrails.js';
+
+function __ew(txt) { return (txt || '').toString().split(/[\s,.;:!?]+/).map(w => w.trim().toLowerCase()).filter(w => w.length >= 3); }
+function __tags(ed, q, hist) {
+  const s = new Set();
+  for (const w of __ew(ed?.ending?.name)) s.add(w);
+  for (const w of __ew(ed?.ending?.description)) s.add(w);
+  for (const w of __ew(q)) s.add(w);
+  if (Array.isArray(ed?.stats)) for (const st of ed.stats) if (typeof st?.key === 'string') s.add(st.key.toLowerCase());
+  if (Array.isArray(hist)) for (const t of (hist || []).slice(-3)) if (typeof t?.content === 'string') __ew(t.content).forEach(w => s.add(w));
+  s.add('chat-ending');
+  return Array.from(s).slice(0, 12);
+}
 
 export default async function handler(req, res) {
     console.log("=== CHAT AI API CALLED ===");
 
     if (req.method !== 'POST') {
-        return res.status(405).json({
-            error: 'Method not allowed'
-        });
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
-        const {
-            endingData,
-            history,
-            question
-        } = req.body;
+        const { endingData, history, question } = req.body || {};
 
-        // Guardrail SYNC (ai-request-contract §4): the shared guardrail block
-        // lives in api/_guardrails.js and is imported by exactly 3 handlers —
-        // this file, summarize-student, summarize-class. analyze-ending.js is
-        // a named pinned-hash exception (intentional divergence, NOTE 26-09-26).
-        const safeQuestion = typeof question === 'string'
-            ? question.slice(0, 500)
-            : '';
+        const safeQuestion = typeof question === "string" ? question.slice(0, 500) : '';
 
-        // A2 pseudonymization (ai-request-contract §2.2): the learner-typed
-        // playerName is never forwarded to the provider — it is replaced by
-        // the one constant neutral label at every prompt occurrence.
+        // A2 pseudonymization: NEUTRAL_PLAYER_LABEL for playerId, NEVER raw playerName forward.
         const safePlayerName = NEUTRAL_PLAYER_LABEL;
         const playerNameProvided =
-            typeof endingData?.playerName === 'string' && endingData.playerName.trim().length > 0;
+            typeof endingData?.playerName === "string" && endingData.playerName.trim().length > 0;
 
         if (!safeQuestion.trim()) {
             return res.status(400).json({
@@ -42,15 +41,8 @@ export default async function handler(req, res) {
 
         const safeHistory = Array.isArray(history)
             ? history
-                .filter((turn) =>
-                    turn &&
-                    (turn.role === 'user' || turn.role === 'assistant') &&
-                    typeof turn.content === 'string'
-                )
-                .map((turn) => ({
-                    role: turn.role,
-                    content: turn.content.slice(0, 1000)
-                }))
+                .filter((turn) => turn && (turn.role === 'user' || turn.role === 'assistant') && typeof turn.content === 'string')
+                .map((turn) => ({ role: turn.role, content: turn.content.slice(0, 1000) }))
                 .slice(-10)
             : [];
 
@@ -60,72 +52,96 @@ export default async function handler(req, res) {
         console.log("HISTORY TURNS:", safeHistory.length);
         console.log("QUESTION LENGTH:", safeQuestion.length);
 
-        const routeText = (endingData?.route || [])
-            .map((item, index) => `
-Lựa chọn ${index + 1}:
-- Tình huống: ${item.scene || 'Không rõ'}
-- Bối cảnh: ${item.context || 'Không có'}
-- Lựa chọn: ${item.choice || 'Không rõ'}
-`)
-            .join('\n');
-
-        const empathy =
-            endingData?.stats?.find(s => s.key === 'empathy')?.value ?? 0;
-
-        const awareness =
-            endingData?.stats?.find(s => s.key === 'awareness')?.value ?? 0;
-
-        const safe =
-            endingData?.stats?.find(s => s.key === 'safe')?.value ?? 0;
-
         const transcriptText = safeHistory
             .map((turn) =>
                 turn.role === 'user'
-                    ? `Người chơi hỏi: ${turn.content}`
-                    : `AI đã trả lời: ${turn.content}`
-            )
+                    ? 'Ngưi chơi hỏi: ' + turn.content
+                    : 'AI đã trả lời: ' + turn.content)
             .join('\n');
 
-        const prompt = buildChatPrompt({ safePlayerName, endingData, empathy, awareness, safe, routeText, transcriptText, safeQuestion });
+        const empathy = endingData?.stats?.find(s => s.key === 'empathy')?.value ?? 0;
+        const awareness = endingData?.stats?.find(s => s.key === 'awareness')?.value ?? 0;
+        const safe = endingData?.stats?.find(s => s.key === 'safe')?.value ?? 0;
 
-        const result = await callOpenRouter({
-            messages: [
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ],
-            maxTokens: 400,
-            endpoint: 'chat-ending'
-        });
+        // Phase 02: tag-based deterministic retrieval (no embeddings), reviewed-only.
+        const __providedTags = __tags(endingData || {}, safeQuestion, safeHistory);
+        const __retrieved = retrieveKnowledge({ tags: __providedTags, minEvidence: 1, maxK: 3, requireReviewed: true });
+        const __hasSources = __retrieved.status === 'grounded' && Array.isArray(__retrieved.snippets) && __retrieved.snippets.length > 0;
 
-        if (!result.ok) {
-            console.error(
-                'OpenRouter error:',
-                result.errorText
-            );
+        console.log('RETRIEVAL chat:', JSON.stringify({ tagCount: __providedTags.length, eligible: __retrieved.eligibleCount, snippets: __retrieved.citationIds, status: __retrieved.status }));
 
-            return res.status(result.status).json({
-                error: result.errorText
+        // response contract (v2) fields; preserve reply/model keys for legacy clients
+        let status = 'insufficient_evidence';
+        let reply = '';
+        let citations = [];
+        let limitationNote = null;
+        let model = undefined;
+
+        if (__hasSources) {
+            const prompt = buildChatPromptGrounded({
+                safePlayerName,
+                safeQuestion,
+                endingData: endingData || {},
+                transcriptText: transcriptText || '',
+                sources: __retrieved.snippets
             });
+
+            const result = await callOpenRouter({
+                messages: [{ role: 'user', content: prompt }],
+                maxTokens: 400,
+                endpoint: 'chat-ending'
+            });
+
+            if (!result.ok) {
+                console.error('OpenRouter error (chat):', result.errorText);
+                status = 'insufficient_evidence';
+                reply = 'AI hiện không thể trả lời lúc này. Vui lòng thử lại sau.';
+                limitationNote = result.errorText || 'provider error';
+                model = undefined;
+            } else {
+                const data = result.data;
+                const raw = String(data?.choices?.[0]?.message?.content || '').trim();
+                let parsed = null;
+                try { parsed = JSON.parse(raw); } catch { parsed = null; }
+                const prov = Array.isArray(__retrieved.citationIds) ? __retrieved.citationIds : [];
+                if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                    reply = typeof parsed.text === 'string' ? parsed.text : raw;
+                    const invalid = (Array.isArray(parsed.citations) ? parsed.citations : []).some(c => !prov.includes(String(c)));
+                    citations = Array.isArray(parsed.citations) ? parsed.citations.filter(c => prov.includes(String(c))) : [];
+                    status = (invalid || parsed.status !== 'grounded') ? 'insufficient_evidence' : 'grounded';
+                    if (status === 'insufficient_evidence') citations = [];
+                    limitationNote = typeof parsed.limitationNote === 'string' ? parsed.limitationNote.slice(0, 300) : null;
+                } else {
+                    status = 'insufficient_evidence';
+                    reply = raw || '';
+                    citations = [];
+                    limitationNote = raw ? raw.slice(0, 300) : null;
+                }
+                model = result.model || undefined;
+            }
+        } else {
+            status = 'insufficient_evidence';
+            reply = 'Chưa đủ nguồn đã xem xét để trả lời có căn cứ. Gợi ý trung tính: bạn cancellation một câu nhẹ nhàng về hoàn cảnh của câu hỏi này.';
+            citations = [];
+            limitationNote = 'eligible=' + __retrieved.eligibleCount + '; min=' + __retrieved.minEvidence;
+            console.log('CHAT GROUNDING INSUFFICIENT', JSON.stringify({ tagCount: __providedTags.length, eligible: __retrieved.eligibleCount, min: __retrieved.minEvidence }));
         }
 
-        const data = result.data;
+        if (status === 'insufficient_evidence' && !reply) {
+            reply = 'Chưa đủ nguồn để trả lời có căn cứ. Một neutral reflection prompt: Which part of this reflection felt most relevant to your choices?';
+        }
 
-        const reply =
-            data.choices?.[0]?.message?.content ||
-            'AI không thể trả lời lúc này.';
-
+        console.log('RESPONSE STATUS chat:', status, 'citations:', citations.length, 'model:', model, 'KB_VERSION:', KB_VERSION);
         return res.status(200).json({
             reply,
-            model: result.model || undefined
+            status,
+            citations,
+            sources: (status === 'grounded') ? __retrieved.snippets.map(s => ({ id: s.id, title: s.sourceTitle || s.title })) : [],
+            limitationNote,
+            model
         });
-
     } catch (error) {
         console.error('Server error:', error);
-
-        return res.status(500).json({
-            error: 'Server error'
-        });
+        return res.status(500).json({ error: 'Server error' });
     }
 }
