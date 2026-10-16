@@ -1,0 +1,35 @@
+{
+  "id": "f-edge-html-injection",
+  "suite": "edge-cases",
+  "suiteTag": "edge-cases",
+  "suites": ["edge-cases", "full"],
+  "scenario": "Edge case: ending content containing HTML/script injection attempts. Handler must not crash and must not reflect raw HTML into citations or analysis.",
+  "playerName": "<script>alert('xss')</script>",
+  "choices": [
+    "<img src=x onerror=alert(1)>",
+    "T\u1ef7 binh th\u01b0\u1eddng"
+  ],
+  "stats": [
+    { "key": "empathy", "value": 55 },
+    { "key": "awareness", "value": 40 },
+    { "key": "safe", "value": 70 }
+  ],
+  "route": [
+    { "chapter": 1, "scene": "L\u1edbp h\u1ecdc", "context": "\"><script>alert('injection')</script>", "choice": "<script>evil()</script>" }
+  ],
+  "ending": {
+    "name": "K\u1ebft qu\u1ea3 <script>alert('xss')</script>",
+    "description": "M\u00f4 t\u1ea3 <iframe src=\"javascript:alert(1)\"></iframe>"
+  },
+  "question": "<script>alert('chat-injection')</script>",
+  "history": [
+    { "role": "user", "content": "<script>alert('history-xss')</script>" },
+    { "role": "assistant", "content": "Ph\u1ea3n h\u1ed3i th\u01b0\u1eddng." }
+  ],
+  "teacher": {
+    "studentId": "stub-student-edge-4",
+    "classId": "stub-class-edge-4",
+    "classRow": { "name": "Edge Case Class 4", "code": "EDGE-4" },
+    "headers": {}
+  }
+}

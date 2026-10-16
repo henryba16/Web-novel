@@ -1,0 +1,978 @@
+{
+  "C:/Users/henry/Documents/project/Web-novel/api/_guardrails.js": {
+    "mtime": 1792167181104.073,
+    "hash": "727fbc291abec578478895fecf60374b"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/api/_kb.js": {
+    "mtime": 1792170045395.843,
+    "hash": "561b1313310cf301a863216d002b8bff"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/api/_openrouter.js": {
+    "mtime": 1792167498312.0232,
+    "hash": "e5f1b516c01ef3aa0e7e3070d9d01b37"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/api/_privacy.js": {
+    "mtime": 1792165107872.0781,
+    "hash": "5f6f763afd2dd2738035358c8ef213fb"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/api/_prompts.js": {
+    "mtime": 1792169652368.7534,
+    "hash": "f19c8bc77243aa65f361d4d78effc914"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/api/analyze-ending.js": {
+    "mtime": 1792169941959.0295,
+    "hash": "6ceb2bcf0e4d799721b6c4c066a592b5"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/api/chat-ending.js": {
+    "mtime": 1792169941964.0493,
+    "hash": "f3f6f93c6c1aec25634954d32579e356"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/api/summarize-class.js": {
+    "mtime": 1792167396699.7507,
+    "hash": "2db27dd262210297e0e2971f15e3d3ca"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/api/summarize-student.js": {
+    "mtime": 1792167395592.482,
+    "hash": "c5c585734e4f087ac53f634378bf0f30"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/build-web.ts": {
+    "mtime": 1792075120694.4429,
+    "hash": "f4841f9ea7b6e8b3e180d026a5084169"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/electrobun.config.ts": {
+    "mtime": 1792075120695.4402,
+    "hash": "b23e914c0cac4c7bb27602c46b8774f6"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/engine/core/monogatari.js": {
+    "mtime": 1792075120707.5847,
+    "hash": "f4ce29d708a76a01ce4623b078adb962"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/engine/debug/debug.js": {
+    "mtime": 1792075120729.1587,
+    "hash": "00fa1105ba14f2d9716716da1ee74430"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/engine/electrobun/index.ts": {
+    "mtime": 1792075120732.157,
+    "hash": "bda636770364a774dd45337f519bdac0"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/engine/electrobun/view.ts": {
+    "mtime": 1792075120732.157,
+    "hash": "d2e060fe00e37f901e33bc6f3d7a1a09"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/engine/electron/index.js": {
+    "mtime": 1792075120733.1565,
+    "hash": "bf0d80041e5e36df2b42a7ada5b08277"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/engine/electron/notarize.js": {
+    "mtime": 1792075120733.1565,
+    "hash": "3bac9b0c3fa02cc1363def76e8ac4a48"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/engine/electron/preload.js": {
+    "mtime": 1792075120733.1565,
+    "hash": "837f3fb83536db94ea33dc895f25fc29"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/eval/lib/harness.mjs": {
+    "mtime": 1792167418118.3645,
+    "hash": "c07b6803da6f312cf2f674d1d3544c07"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/eval/probes/payload-probe.mjs": {
+    "mtime": 1792165316903.3777,
+    "hash": "8d8fa18d190eb5f22315e29b7534b145"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/eval/probes/prompt-hash-capture.mjs": {
+    "mtime": 1792165303032.2727,
+    "hash": "5f0a1d9ba4051018b6e802273fc4ff2a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/eval/probes/telemetry-gate.mjs": {
+    "mtime": 1792167447178.3535,
+    "hash": "82edb2e9f5533992e72820da4646c706"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/eval/run-eval.mjs": {
+    "mtime": 1792167676073.3525,
+    "hash": "29783e1d5a2257b4e68980da014ccb5a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/ai-format.js": {
+    "mtime": 1792075120740.1565,
+    "hash": "d6fb3561a0b4a919138e17636fe764e6"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/analytics.js": {
+    "mtime": 1792075120740.1565,
+    "hash": "72cdbb7989e9bea0cea05a63a6e49d39"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/cloud-auth.js": {
+    "mtime": 1792075120741.157,
+    "hash": "e3d9e19b3adbf760a2f1056010cc052d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/cloud-classes.js": {
+    "mtime": 1792075120741.157,
+    "hash": "2a1f30e833cb2a4e1a4f256992dd7d69"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/cloud-client.js": {
+    "mtime": 1792075120742.1567,
+    "hash": "d3b911c5532a8ab0dbdcb9bbe4c8ad66"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/cloud-dashboard.js": {
+    "mtime": 1792075120742.1567,
+    "hash": "5746ee60d7e0942a8ca2bc893ca409c7"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/cloud-export.js": {
+    "mtime": 1792075120742.1567,
+    "hash": "26e7d7d31929a14d5539f26870b33359"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/cloud-hook.js": {
+    "mtime": 1792075120743.158,
+    "hash": "02ffb5c0444942f30260cdedbfe9ea0d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/cloud-run.js": {
+    "mtime": 1792075120743.158,
+    "hash": "b01a75f5604b7bd71d3d01a27fa99909"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/cloud-slots.js": {
+    "mtime": 1792075120743.158,
+    "hash": "5d759cc452fe0ad2cfd1839d24dfa2b8"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/cloud-sync.js": {
+    "mtime": 1792075120744.1548,
+    "hash": "0b1b361242ffba97291d93cfed3a85f8"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/main.js": {
+    "mtime": 1792075120744.1548,
+    "hash": "9ed8ebcc2dabc4090ff71f8987f2c59c"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/options.js": {
+    "mtime": 1792075120744.1548,
+    "hash": "32f081f6f67a49052a350b88e303eca1"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/script.js": {
+    "mtime": 1792075120745.1548,
+    "hash": "d9c69623fe7d8280e0da0692608934e5"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/speed-insights.js": {
+    "mtime": 1792075120745.1548,
+    "hash": "b796b0c07b7cb90ad69bd9475d192c57"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/storage.js": {
+    "mtime": 1792075120746.1545,
+    "hash": "72b9b529af1026e6126278f79b6b8fb3"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/js/supabase-config.js": {
+    "mtime": 1792075120746.1545,
+    "hash": "9765c6846247b001f6a4b9a00cfedcba"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/scripts/check-ai-guardrail-drift.mjs": {
+    "mtime": 1792174633329.9019,
+    "hash": "aedee77dfc649e22740d0ef644951c29"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/scripts/check-ai-log-hygiene.mjs": {
+    "mtime": 1792165053112.9258,
+    "hash": "19ff8f884f53d7a5475a99c290dcdc66"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/serve.ts": {
+    "mtime": 1792075120750.1594,
+    "hash": "7b88faa05e04b227ccc1627a1f46a41b"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/service-worker.js": {
+    "mtime": 1792075120750.1594,
+    "hash": "57e244796ac81905eb82312fbd9e4beb"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/AI-ATTRIBUTION.html": {
+    "mtime": 1792075120322.474,
+    "hash": "eb7a9b490e257ae03db0f1b725d59cc7"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/README.md": {
+    "mtime": 1792075120323.4734,
+    "hash": "2c6d4fbfed8f8d7c58679145974d746c"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/dashboard.html": {
+    "mtime": 1792075120695.4402,
+    "hash": "cb798388a9e2a842f6a9924c39eec42e"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/ending.html": {
+    "mtime": 1792075120696.4436,
+    "hash": "d00cb5af218f73ebedb4bffd44c41028"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/eval/rubric.md": {
+    "mtime": 1792167595002.648,
+    "hash": "bb70f52672e850379dd0f85a502037b4"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/game.html": {
+    "mtime": 1792075120739.1597,
+    "hash": "8805f77c0287c4f538c207ba8ff9561f"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/index.html": {
+    "mtime": 1792075120740.1565,
+    "hash": "dce1b9fad15392f740513cfb0d7d4104"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/login.html": {
+    "mtime": 1792075120747.1545,
+    "hash": "e97e50d8e94ed0c46cd35d265fd21750"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/report.html": {
+    "mtime": 1792075120749.155,
+    "hash": "49e4db473aa3a0baa3fd868b9cdfcc81"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/reset.html": {
+    "mtime": 1792075120749.155,
+    "hash": "00b55cec07efdc95f862828239980e1e"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/signup.html": {
+    "mtime": 1792075120750.1594,
+    "hash": "d4265b17e20f89c056f53227904403d6"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/student-dashboard.html": {
+    "mtime": 1792075120751.1545,
+    "hash": "1f8415358e757ee40c89ec2f6c862130"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Bình thường.png": {
+    "mtime": 1792075120327.475,
+    "hash": "aad200f3d01d51303a424a808f4ccd9d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Chào hỏi.png": {
+    "mtime": 1792075120328.4866,
+    "hash": "7c23c283f74d5cbaed554424857d9fca"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Dạy học 1.png": {
+    "mtime": 1792075120329.4878,
+    "hash": "1564a8634c78a99208fbbe90f309b880"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Dạy học 2.png": {
+    "mtime": 1792075120330.4912,
+    "hash": "bc3e5db6e12757c2e0238b3a4f82dda4"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Giải thích 1.png": {
+    "mtime": 1792075120331.4873,
+    "hash": "7e8382db50ba0e89b41971ee886e40ea"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Giải thích 2.png": {
+    "mtime": 1792075120332.487,
+    "hash": "29d4f6a61ff6243c8228f18196237a5f"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Làm việc.png": {
+    "mtime": 1792075120333.4885,
+    "hash": "70a97c8d4999ffc61d2374b4088c765e"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Nói chuyện.png": {
+    "mtime": 1792075120334.4868,
+    "hash": "9b6db7e476770e2954bb70fb6468b86a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Suy nghĩ.png": {
+    "mtime": 1792075120335.487,
+    "hash": "a444635d90be05b5834dad706e0d5714"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Vui vẻ.png": {
+    "mtime": 1792075120336.4866,
+    "hash": "c2d1e72e729d3ea00ab513af29c26a22"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Đi bộ.png": {
+    "mtime": 1792075120336.4866,
+    "hash": "02046f76bb84d276c362f798c499b5a2"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/CoThao/Đứng nhìn.png": {
+    "mtime": 1792075120337.4868,
+    "hash": "83c9e335dc4e0f16757a1ea1b8a94a30"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Bình thường.png": {
+    "mtime": 1792075120338.4978,
+    "hash": "25399a6d60fac43f68632a276970e9a5"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Bất ngờ.png": {
+    "mtime": 1792075120339.5,
+    "hash": "56a5f324fb95dbea12f30c30fe2af55a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Bối rối.png": {
+    "mtime": 1792075120340.4985,
+    "hash": "1402b7200a19fcc7b85be62d1cfd6f3b"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Chào hỏi.png": {
+    "mtime": 1792075120342.4968,
+    "hash": "af4a679f3b9aa19ecc3842f683f7a961"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Khó chịu.png": {
+    "mtime": 1792075120343.4973,
+    "hash": "f5d57f54c197c4497ad19237cd682dd3"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Nghi ngờ.png": {
+    "mtime": 1792075120344.5007,
+    "hash": "9117628813cd4e28aa7ca8ed841d5645"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Quyết tâm.png": {
+    "mtime": 1792075120345.4978,
+    "hash": "808345b08036fd5251ef0f7537b5322f"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Suy nghĩ.png": {
+    "mtime": 1792075120346.5005,
+    "hash": "446f280641ce35ca8024cd25780965fd"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Thắc mắc.png": {
+    "mtime": 1792075120347.4998,
+    "hash": "4e0ec6abc7ea901eea2412dd2de81e20"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Tức giận.png": {
+    "mtime": 1792075120348.4973,
+    "hash": "81c2b2959d80f8662672691c80d6afb9"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/Vui vẻ.png": {
+    "mtime": 1792075120349.5017,
+    "hash": "a072c2397bf0fc6b604249826433be1a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Bình thường.png": {
+    "mtime": 1792075120350.499,
+    "hash": "1a6faecf744852b42f945cf581951ce9"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Bất ngờ.png": {
+    "mtime": 1792075120351.497,
+    "hash": "e40286ef93886ccd5014d166074c0bf2"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Bối rối.png": {
+    "mtime": 1792075120352.4993,
+    "hash": "356cda35ff509efd85b27664ec95f09a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Chào hỏi.png": {
+    "mtime": 1792075120353.4983,
+    "hash": "e013c9c97bb4467c523ca1fc532e5763"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Hoảng hốt.png": {
+    "mtime": 1792075120355.501,
+    "hash": "7d15e4947bd13dc982926715310e10c7"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Khó chịu.png": {
+    "mtime": 1792075120356.4978,
+    "hash": "07e2391bdc8ef1e85b6917fe6ea9f3d8"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Nói chuyện 1.png": {
+    "mtime": 1792075120357.5134,
+    "hash": "4a438ca73c053c8638375e503f0e0966"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Nói chuyện 2.png": {
+    "mtime": 1792075120357.5134,
+    "hash": "360ff9b499b83b9d9cc0e3bda07636e2"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Quyết tâm.png": {
+    "mtime": 1792075120358.5283,
+    "hash": "2ef83666ab4a34e06b903f3a6a132f20"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Suy nghĩ.png": {
+    "mtime": 1792075120359.6545,
+    "hash": "cc0b5e561f42687d8a3cc74821385e0e"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Thắc mắc.png": {
+    "mtime": 1792075120360.6538,
+    "hash": "62a11993b3b660132b8518e132c8ae2d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Tức giận.png": {
+    "mtime": 1792075120361.6558,
+    "hash": "9b46f3ddfb7b563c6b83246f9a9f8501"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Tự tin.png": {
+    "mtime": 1792075120362.6528,
+    "hash": "f136e1d736d93eae64f7b424585dd779"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/Khang/bag/Vui vẻ.png": {
+    "mtime": 1792075120363.6528,
+    "hash": "4a0b67bae9ed8874ad7fa44b18e302b9"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Buồn bã.png": {
+    "mtime": 1792075120365.6533,
+    "hash": "29371e61536578479a34da041e0f4fb8"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Bình thường.png": {
+    "mtime": 1792075120366.6523,
+    "hash": "98ab0108af01abc215615933217c00f5"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Khó chịu.png": {
+    "mtime": 1792075120367.654,
+    "hash": "5c66b033e88819b96cc2f39bec164e8e"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Lo lắng.png": {
+    "mtime": 1792075120368.6543,
+    "hash": "57ca2df3bdeeea2029b2b1dff08aa050"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Nghi ngờ.png": {
+    "mtime": 1792075120369.6536,
+    "hash": "6d117e3d0f3dbb0d7c2e8a2ae1f0e94a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Nói chuyện 1.png": {
+    "mtime": 1792075120370.6587,
+    "hash": "8c8459308da357e847ffc6cc1e7dc278"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Nói chuyện 2.png": {
+    "mtime": 1792075120371.6584,
+    "hash": "7ec9eeb82987b3049c7d2e54e3706195"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Nói chuyện 3.png": {
+    "mtime": 1792075120371.6584,
+    "hash": "266d598616dc3bae1ed970228c7e600d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Thắc mắc.png": {
+    "mtime": 1792075120373.1172,
+    "hash": "123833620d8bc71ff40910cc72ade5ba"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Tự tin.png": {
+    "mtime": 1792075120374.1177,
+    "hash": "e0efed03e751b5d03b145021dafd9ba9"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Vui vẻ.png": {
+    "mtime": 1792075120375.1216,
+    "hash": "b334e121801df810c4d75176b55f98a8"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/Xem sổ.png": {
+    "mtime": 1792075120376.1162,
+    "hash": "ad33ecdd41ea1909ee8cf8b32428d476"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Buồn bã.png": {
+    "mtime": 1792075120378.1162,
+    "hash": "bd36218e07ba67ba58bf6cd87767e51b"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Bình thường.png": {
+    "mtime": 1792075120379.1162,
+    "hash": "2cdaf2459086184e60625663b9310daf"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Khó chịu.png": {
+    "mtime": 1792075120380.1167,
+    "hash": "ce383b19a0289b8c660006eb32f06973"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Lo lắng.png": {
+    "mtime": 1792075120381.1162,
+    "hash": "8e8c0bd20b6de514447100b16f34db0b"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Nghi ngờ.png": {
+    "mtime": 1792075120382.4902,
+    "hash": "89c55be8e5f661d3fa45fadc28392f08"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Nói chuyện 1.png": {
+    "mtime": 1792075120383.5034,
+    "hash": "3ac45ed846f3051dfec07fe91fc6fd30"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Nói chuyện 2.png": {
+    "mtime": 1792075120385.0076,
+    "hash": "90a0d8bd5eeff1659e2d53ea7bdc0c61"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Nói chuyện 3.png": {
+    "mtime": 1792075120386.0125,
+    "hash": "30b46d5bd707032551e7bef45bd4756a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Thắc mắc.png": {
+    "mtime": 1792075120387.0132,
+    "hash": "7e90179a65f0f06fbf4aeab821a03e05"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Tự tin.png": {
+    "mtime": 1792075120388.013,
+    "hash": "101b28bb7365f26ef7e50eb6a1bf3a21"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Vui vẻ.png": {
+    "mtime": 1792075120389.0137,
+    "hash": "2a727f0b7848dee81b62faa880e8580d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MaiAnh/bag/Xem sổ.png": {
+    "mtime": 1792075120390.0125,
+    "hash": "8bb69c2202f5282079a17965f62a3a0c"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Bất ngờ.png": {
+    "mtime": 1792075120391.0146,
+    "hash": "a7d953f9c7cb7f58492d8274b70df5f0"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Chào hỏi.png": {
+    "mtime": 1792075120392.0134,
+    "hash": "4957f3378a102927db1c62172a9b829f"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Dè chừng.png": {
+    "mtime": 1792075120393.0122,
+    "hash": "9ce523ed3b9419a7bd7441df4ab6ceed"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Hối hận.png": {
+    "mtime": 1792075120394.0127,
+    "hash": "6b045309b2162ee0591bcf905401593d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Nghi ngờ.png": {
+    "mtime": 1792075120396.0137,
+    "hash": "c632cf21a09c69018ae704feed2afdc1"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Ngại ngùng.png": {
+    "mtime": 1792075120397.0127,
+    "hash": "41249a8f43d909df8f6877c918a11943"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Nói chuyện 1.png": {
+    "mtime": 1792075120398.0132,
+    "hash": "d5c3e3f085b5fd99829fc369f9c7c784"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Nói chuyện 2.png": {
+    "mtime": 1792075120399.0154,
+    "hash": "625f87b8577597a0170d069b11518b53"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Phát hiện.png": {
+    "mtime": 1792075120399.0154,
+    "hash": "fcf78df5c4c148c33e597279ba7b741a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Tự tin.png": {
+    "mtime": 1792075120400.2673,
+    "hash": "b68a683afdbceabe374ed47332652131"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Vui vẻ.png": {
+    "mtime": 1792075120401.2815,
+    "hash": "f8593988266732a005d5dbf6eb9e301f"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/Xin lỗi.png": {
+    "mtime": 1792075120402.282,
+    "hash": "62bc69489efb6d75877c3aa9ecf6085c"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Buồn bã.png": {
+    "mtime": 1792075120404.2834,
+    "hash": "8af06791c5103ddb07cb1a109fb2f77a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Bất ngờ.png": {
+    "mtime": 1792075120405.2825,
+    "hash": "1f2f797b67ca5f0d3c35d01bece25e5e"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Dè chừng.png": {
+    "mtime": 1792075120406.283,
+    "hash": "82912eeca3a46c31c7c147829194a1e5"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Hối hận.png": {
+    "mtime": 1792075120407.281,
+    "hash": "c4a0c46506fd05734d0542a98dc50e2a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Hớn hở.png": {
+    "mtime": 1792075120408.283,
+    "hash": "9d4172fe2bcafafe06b529bcb554b440"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Nghi ngờ.png": {
+    "mtime": 1792075120409.2983,
+    "hash": "6dd159810d20c1a1970e916e88994c21"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Ngại ngùng.png": {
+    "mtime": 1792075120410.298,
+    "hash": "996d43254a384b014d5b3b6507ae3b5a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Nói chuyện 1.png": {
+    "mtime": 1792075120411.2979,
+    "hash": "84d864b9a73155b07359ec530ceb3ea0"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Nói chuyện 2.png": {
+    "mtime": 1792075120412.2993,
+    "hash": "3107b19e27a74f52c0e41df000ca9715"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Phát hiện.png": {
+    "mtime": 1792075120413.298,
+    "hash": "9f1a041cbd29f6dcd6eb038a264a10be"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Tự tin.png": {
+    "mtime": 1792075120414.2979,
+    "hash": "ee33a889627eb1b74e03864d316b4e8c"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/MyHanh/bag/Vui vẻ.png": {
+    "mtime": 1792075120415.2979,
+    "hash": "b7e9552098e72c3251d8f8828d23423d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Chào hỏi.png": {
+    "mtime": 1792075120417.3008,
+    "hash": "e5bf1c892c9d53ff652c0773963b6118"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Hoảng hốt.png": {
+    "mtime": 1792075120418.3015,
+    "hash": "e8c0a2d0ba3d4e2c8fe9eeec5be32e76"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Hối lỗi.png": {
+    "mtime": 1792075120419.298,
+    "hash": "6be4752c8a78a6a62560f9c1da75e25a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Mệt mỏi.png": {
+    "mtime": 1792075120420.2986,
+    "hash": "636450f5fda5e564cbb0125dc15cb19f"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Nghi ngờ.png": {
+    "mtime": 1792075120421.2983,
+    "hash": "5b8f07da01bb34c9be0c7bc97489eca3"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Nói chuyện.png": {
+    "mtime": 1792075120422.3037,
+    "hash": "1b082ecd786471853b0ea484e79aa609"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Trêu chọc.png": {
+    "mtime": 1792075120423.2993,
+    "hash": "8f071a415a6d4e1f1d20c1fb3d75f0c6"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Tức giận.png": {
+    "mtime": 1792075120424.2988,
+    "hash": "ea22acf5e948cb58d80a69c74f75783a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Tự tin.png": {
+    "mtime": 1792075120425.297,
+    "hash": "744058ea62d81d3a78a8aa4150705d74"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Vui vẻ.png": {
+    "mtime": 1792075120426.298,
+    "hash": "e97ddd6c288d72d056c6a48c47afce1c"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/bag/Bình thường.png": {
+    "mtime": 1792075120427.298,
+    "hash": "b5fd37a41c7cdf6b3a7f978fa090cbf6"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/bag/Chào hỏi.png": {
+    "mtime": 1792075120428.2988,
+    "hash": "02fa01e18aadf8243bde497ad8352052"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/bag/Hoảng hốt.png": {
+    "mtime": 1792075120429.2986,
+    "hash": "60d74da2e491e02468a65c68d8b6d1f7"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/bag/Mệt mỏi.png": {
+    "mtime": 1792075120431.297,
+    "hash": "f5836bdfeef4c05010f958feffa945d5"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/bag/Trêu chọc.png": {
+    "mtime": 1792075120432.2983,
+    "hash": "264ac3447e5c19c907c8e2f540c45e8b"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/bag/Tức giận.png": {
+    "mtime": 1792075120433.2986,
+    "hash": "7d7bee0dc50c80fa04f785b2807151c1"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/bag/Tự tin.png": {
+    "mtime": 1792075120434.298,
+    "hash": "903d8e2b87ff587eaaecf5cb0cf18d53"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/bag/Vui vẻ.png": {
+    "mtime": 1792075120435.298,
+    "hash": "fc67ac8d63c8dd1898375d08c641bab3"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/bag/Xin lỗi.png": {
+    "mtime": 1792075120436.2996,
+    "hash": "15f586fc249f26c33bf6aff8aeef9196"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/bag/Đứng nhìn.png": {
+    "mtime": 1792075120436.2996,
+    "hash": "e4f608d15d370bbd12fc050b4853b429"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/QuangTuan/Đứng nhìn.png": {
+    "mtime": 1792075120437.2996,
+    "hash": "c26544c8e4ad0b56446b41e0143260a1"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Buồn bã.png": {
+    "mtime": 1792075120439.298,
+    "hash": "49452aa4df72e9f3bd0cc620f99d13b0"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Chờ đợi.png": {
+    "mtime": 1792075120440.2979,
+    "hash": "5190157631a602e5ce434360d24d34d7"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Ghi chú.png": {
+    "mtime": 1792075120441.2976,
+    "hash": "6b1af31c1b10f6034841ea3af3c4451b"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Khóc lóc.png": {
+    "mtime": 1792075120442.298,
+    "hash": "fd5ec89d77fb5de074899ae09d936b3a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Ngại ngùng.png": {
+    "mtime": 1792075120443.2974,
+    "hash": "15659ee736a2f924daa5334b34cab014"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Nói chuyện 1.png": {
+    "mtime": 1792075120444.3096,
+    "hash": "290ff138c5386cfcfe3dcbe9e5cbe162"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Nói chuyện 2.png": {
+    "mtime": 1792075120445.312,
+    "hash": "964857a12389ccce00909452d658a851"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Nói chuyện 3.png": {
+    "mtime": 1792075120446.308,
+    "hash": "1c77173a45ebc8c137164df85467b255"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Thất vọng.png": {
+    "mtime": 1792075120447.308,
+    "hash": "65eaf19513ac984cc2e96412e6b80159"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Vui vẻ.png": {
+    "mtime": 1792075120448.319,
+    "hash": "f6b6d160fe4353c7bc6239e685c0c590"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Vẽ tranh.png": {
+    "mtime": 1792075120449.331,
+    "hash": "857587cd97811621daa79b6ead04b771"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Buồn bã.png": {
+    "mtime": 1792075120450.3435,
+    "hash": "d6641e200836f8706bc575ccb9b9d3cd"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Bình thường.png": {
+    "mtime": 1792075120451.3474,
+    "hash": "41227686abe93f4306ff1a3c22973303"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Khóc lóc.png": {
+    "mtime": 1792075120452.3423,
+    "hash": "117df8ad276ab5aa918f171d136299cc"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Lo lắng.png": {
+    "mtime": 1792075120454.343,
+    "hash": "6f845f2be463e722fdb18a3d6571bf76"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Ngại ngùng.png": {
+    "mtime": 1792075120455.3423,
+    "hash": "4733376c6efa29b2c1a7c0fd506f7979"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Nói chuyện.png": {
+    "mtime": 1792075120456.342,
+    "hash": "de19921368b6407a5c5c0f438da370c9"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Suy nghĩ.png": {
+    "mtime": 1792075120457.3425,
+    "hash": "f0d117ec52b5850cfe5aa741e7321f81"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Thất vọng.png": {
+    "mtime": 1792075120458.3442,
+    "hash": "6922a384b7fd44c4dbe43a2622c5dde8"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Tự tin.png": {
+    "mtime": 1792075120459.3467,
+    "hash": "c208bb715f57c1317fc54e3ed3e52e65"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Vui vẻ.png": {
+    "mtime": 1792075120460.3428,
+    "hash": "2a775b5631f61db2aebe09bae9eb4408"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Vẽ tranh.png": {
+    "mtime": 1792075120461.3572,
+    "hash": "94aacc97c52bbc3f5c6f364ae6d86ad5"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/bag/Đứng nhìn.png": {
+    "mtime": 1792075120462.371,
+    "hash": "4461a45eca5c0e9062d5565cfae647b2"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/characters/TrucLinh/Đứng nhìn.png": {
+    "mtime": 1792075120463.3806,
+    "hash": "0e9c17df8a7be5ee5352ac5f30793503"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/512x512.png": {
+    "mtime": 1792075120465.3965,
+    "hash": "20f5790517594097c9025b1e9c608333"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/Main logo.png": {
+    "mtime": 1792075120469.398,
+    "hash": "89b909c5356a052e240b670d0d87ce6a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_120x120.png": {
+    "mtime": 1792075120476.4058,
+    "hash": "d5a6607319353cedc0307aee604a81cd"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_128x128.png": {
+    "mtime": 1792075120477.4062,
+    "hash": "46d2a194121fb18456dcb81390d786b7"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_150x150.png": {
+    "mtime": 1792075120477.4062,
+    "hash": "160ccb90dfe3e34c45affbd2495c66bf"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_152x152.png": {
+    "mtime": 1792075120478.4033,
+    "hash": "59490207b3264e1446fb8f8b225347fb"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_167x167.png": {
+    "mtime": 1792075120478.4033,
+    "hash": "8ff44ac0755646b73ce295add335a2d3"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_180x180.png": {
+    "mtime": 1792075120479.4075,
+    "hash": "43be8f96f0dada39a63dc01a2f970f2a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_192x192.png": {
+    "mtime": 1792075120479.4075,
+    "hash": "f02e584a4dda439ac96a846be24cf297"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_310x310.png": {
+    "mtime": 1792075120480.4026,
+    "hash": "c00b4b936ae207edb4ec3d82f4f38743"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_48x48.png": {
+    "mtime": 1792075120480.4026,
+    "hash": "8dd23ed74aa73668d6ce979201fa51fa"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_512x512.png": {
+    "mtime": 1792075120481.4036,
+    "hash": "7263f4acda8d3790b671d648e4b0b67c"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_60x60.png": {
+    "mtime": 1792075120481.4036,
+    "hash": "7efe2def66e11cf68a1def22941c0b53"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_70x70.png": {
+    "mtime": 1792075120482.4048,
+    "hash": "e04ebeae0905fbf4063800d7f58812f1"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_76x76.png": {
+    "mtime": 1792075120482.4048,
+    "hash": "d9e1b9b2119b095ad184b36ab7e94a53"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/icon_96x96.png": {
+    "mtime": 1792075120482.4048,
+    "hash": "f599b3e1f34969b14e6e7b3931edb1ab"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/logo.png": {
+    "mtime": 1792075120486.9163,
+    "hash": "7d6763282977f90c68991e0a9dc0b79f"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/main-logo-800.png": {
+    "mtime": 1792075120487.923,
+    "hash": "3b758daaf047669c11b5bd74cd38bbbb"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/icons/mainscreen.png": {
+    "mtime": 1792075120493.9167,
+    "hash": "ca3a271a6a68a0904276c2a1cf6c0778"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-01A.png": {
+    "mtime": 1792075120504.92,
+    "hash": "f11d9103c7e39c400a9c7d7e7c78547a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-01B.png": {
+    "mtime": 1792075120513.9226,
+    "hash": "115eb3ff9fb02be5117e72c2318ab9ee"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-01C.png": {
+    "mtime": 1792075120523.9204,
+    "hash": "e4269aaad0f89f94d09a67981c7d2a4d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-01D.png": {
+    "mtime": 1792075120532.9197,
+    "hash": "817cadb09ce916f9d1c94e38242d3c17"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-02A.png": {
+    "mtime": 1792075120539.9695,
+    "hash": "e4f39f8bb0c7bc1eb719dd9f057658ed"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-02B.png": {
+    "mtime": 1792075120545.9668,
+    "hash": "863499b826ca71b2c45f8d416ee4a590"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-03A.png": {
+    "mtime": 1792075120552.0188,
+    "hash": "5e92dc5f85c8e15ada23015bd78d4f0a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-03B.png": {
+    "mtime": 1792075120558.0178,
+    "hash": "db57cdbacb62588ced0e2be1e42a946a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-03C.png": {
+    "mtime": 1792075120565.019,
+    "hash": "30cc58b1948092108a8e90c44d91a50b"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-03D.png": {
+    "mtime": 1792075120571.1687,
+    "hash": "be5c28552e49680d050b9dc52968daec"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-04-800.jpg": {
+    "mtime": 1792075120572.172,
+    "hash": "0317832374d3190e43543c9038460e5d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-04.png": {
+    "mtime": 1792075120579.1677,
+    "hash": "4971623a9b60654a7930a81827db12bb"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-05A-1600.jpg": {
+    "mtime": 1792075120581.17,
+    "hash": "4b6dcfc112c5ad9d2249f41c35548239"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-05A-800.jpg": {
+    "mtime": 1792075120581.17,
+    "hash": "bb4ca56d93c79ef4fb15c9956726165c"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-05A.png": {
+    "mtime": 1792075120590.7046,
+    "hash": "84a44462458cbcdf4ac50af3fa26f508"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-05B.png": {
+    "mtime": 1792075120598.7002,
+    "hash": "42ca4e931df40e6b9696fa078a3b1d9f"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-05C.png": {
+    "mtime": 1792075120607.6992,
+    "hash": "1e3e81e3f08566c1b4c0ba18d74a1ba5"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-06A.png": {
+    "mtime": 1792075120614.7002,
+    "hash": "50237c53561c8563b246cfc45ad8006a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-06B.png": {
+    "mtime": 1792075120620.7,
+    "hash": "53b498a2d4930a9c0d5c67fe788d3fc7"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-07A.png": {
+    "mtime": 1792075120626.7,
+    "hash": "39d25cedfe8ff476fa986f7a1735c493"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-07B.png": {
+    "mtime": 1792075120633.701,
+    "hash": "f08ba2effaef6d213bb9792688666100"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-08A.png": {
+    "mtime": 1792075120638.7017,
+    "hash": "de7276ccff39000967b894ceb97f08cf"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-08B.png": {
+    "mtime": 1792075120643.7896,
+    "hash": "16e5bf0ee81749e8aa96b225fd8b08dd"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-09A.png": {
+    "mtime": 1792075120649.8027,
+    "hash": "fad102b8180bdc770088590a2b3d74bf"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-09B.png": {
+    "mtime": 1792075120659.159,
+    "hash": "82d4e312b90cd9bf4f23dadba6980264"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-10.png": {
+    "mtime": 1792075120665.161,
+    "hash": "c9bea1e7235364db18f737ebe4b3ff53"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-11-800.jpg": {
+    "mtime": 1792075120665.161,
+    "hash": "f8a8d93baed7fd86c79ef6cbffa57de6"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/scenes/BG-11.png": {
+    "mtime": 1792075120671.163,
+    "hash": "50f8a6d440c417cc42b191e84f00e92a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/sounds/bicycle-fall.mp3": {
+    "mtime": 1792075120675.161,
+    "hash": "9413a9d1c7374f1f907dbc706dc7e468"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/sounds/book.mp3": {
+    "mtime": 1792075120677.1643,
+    "hash": "5869846e0ecd58ea53b3e5f41dd15883"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/sounds/clap.mp3": {
+    "mtime": 1792075120678.162,
+    "hash": "f5a1d34e8dc44ccb64c695c767607d8d"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/sounds/heel-walk.mp3": {
+    "mtime": 1792075120680.1633,
+    "hash": "1fdca385c8eeeb2cd9137b5e1c10381a"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/sounds/notification.mp3": {
+    "mtime": 1792075120681.1643,
+    "hash": "ee0d06710d697cf11ac3c2b904f1fce4"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/sounds/notificationv2.mp3": {
+    "mtime": 1792075120681.1643,
+    "hash": "c69cdb3e45acac093a297aa9e78ef79b"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/sounds/school-bell.mp3": {
+    "mtime": 1792075120685.1624,
+    "hash": "72cf78fd6c6ddc5071a6079fabb1dbe3"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/sounds/school-bell2.mp3": {
+    "mtime": 1792075120685.1624,
+    "hash": "cc3f8a08eff3e82758b9e466fcea89bf"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/assets/sounds/school.mp3": {
+    "mtime": 1792075120692.4395,
+    "hash": "87bb920f989fd6c95c26c43d99df58f8"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/.github/ISSUE_TEMPLATE/bug_report.md": {
+    "mtime": 1792075120321.4724,
+    "hash": "188fd8a11f28f0e50dc7cb27a22af1eb"
+  },
+  "C:/Users/henry/Documents/project/Web-novel/.github/ISSUE_TEMPLATE/feature_request.md": {
+    "mtime": 1792075120322.474,
+    "hash": "2c95cb00ebd7546ccec06638cd813767"
+  }
+}

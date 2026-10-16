@@ -1,0 +1,32 @@
+{
+  "id": "f-edge-unsupported-source-ids",
+  "suite": "edge-cases",
+  "suiteTag": "edge-cases",
+  "suites": ["edge-cases", "full"],
+  "scenario": "Edge case: ending content whose derived tags do not match any KB source IDs, exercising the insufficient-evidence refusal path with empty citations[].",
+  "playerName": "H\u1ecdc sinh t\u1eb7c hi\u1ec7n \u0111\u1ea1i",
+  "choices": [
+    "Ch\u1eddi game th\u01b0\u1eddng",
+    "\u0110i ng\u1eeb h\u1ecdc"
+  ],
+  "stats": [
+    { "key": "empathy", "value": 10 },
+    { "key": "awareness", "value": 10 },
+    { "key": "safe", "value": 10 }
+  ],
+  "route": [
+    { "chapter": 1, "scene": "Ph\u00f2ng m\u00e1y t\u00ednh", "context": "Ch\u1eddi game \u0111\u00f4n gi\u1ea3n kh\u00f4ng li\u00ean quan \u0111\u1ebfn x\u00e3 h\u1ed9i", "choice": "Ch\u1eddi game th\u01b0\u1eddng" }
+  ],
+  "ending": {
+    "name": "K\u1ebft qu\u1ea3 ch\u1eddi game \u0111\u01a1n gi\u1ea3n",
+    "description": "H\u1ecdc sinh ch\u1ec9 ch\u1eddi game kh\u00f4ng th\u01b0\u1edfm gia v\u1edbi c\u00e1c v\u00e2n \u00f4 x\u00e3 h\u1ed9i."
+  },
+  "question": "T\u00f4i n\u00ean thay \u0111\u1ed5i g\u00ec?",
+  "history": [],
+  "teacher": {
+    "studentId": "stub-student-edge-2",
+    "classId": "stub-class-edge-2",
+    "classRow": { "name": "Edge Case Class 2", "code": "EDGE-2" },
+    "headers": {}
+  }
+}

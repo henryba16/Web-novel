@@ -1,0 +1,23 @@
+{
+  "id": "f-edge-insufficient-evidence",
+  "suite": "edge-cases",
+  "suiteTag": "edge-cases",
+  "suites": ["edge-cases", "full"],
+  "scenario": "Edge case: ending with no meaningful content to derive tags from, ensuring the handler returns insufficient_evidence without crashing.",
+  "playerName": "",
+  "choices": [],
+  "stats": [],
+  "route": [],
+  "ending": {
+    "name": "",
+    "description": ""
+  },
+  "question": "",
+  "history": [],
+  "teacher": {
+    "studentId": "stub-student-edge-3",
+    "classId": "stub-class-edge-3",
+    "classRow": { "name": "Edge Case Class 3", "code": "EDGE-3" },
+    "headers": {}
+  }
+}

@@ -77,12 +77,36 @@
 		return { key: 'good', label: 'Good' };
 	}
 
+	/* Citation rendering (Phase 02): text-only, HTML-escaped. Never innerHTML. */
+	function renderCitations(citationIds, sources) {
+		var ids = Array.isArray(citationIds) ? citationIds : [];
+		var src = Array.isArray(sources) ? sources : [];
+		var byId = {};
+		src.forEach(function (s) {
+			if (s && s.id) byId[String(s.id)] = s;
+		});
+		var lines = [];
+		ids.forEach(function (id) {
+			var s = byId[String(id)];
+			if (!s) return;
+			var title = escapeHtml(String(s.title || s.id || ''));
+			var sourceTitle = s.sourceTitle ? escapeHtml(String(s.sourceTitle)) : '';
+			var sourceUrl = s.sourceUrl ? escapeHtml(String(s.sourceUrl)) : '';
+			var line = '[' + escapeHtml(String(id)) + '] ' + title;
+			if (sourceTitle) line += ' — ' + sourceTitle;
+			if (sourceUrl) line += ' (' + sourceUrl + ')';
+			lines.push(line);
+		});
+		return lines.join('\n');
+	}
+
 	window.AIFormat = {
 		escapeHtml: escapeHtml,
 		stripCJK: stripCJK,
 		renderMarkdown: renderMarkdown,
 		stripMarkdown: stripMarkdown,
-		overallLevel: overallLevel
+		overallLevel: overallLevel,
+		renderCitations: renderCitations
 	};
 	/* Legacy globals (ending.html originally defined these inline). */
 	window.escapeHtml = escapeHtml;

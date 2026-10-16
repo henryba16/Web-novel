@@ -325,6 +325,15 @@
     white-space: pre-line;
     }
 
+    #ai-citations {
+    margin-top: 0.7rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 0.5rem;
+    white-space: pre-line;
+    }
+
     .ai-retry {
         display: none;
         margin-top: 0.9rem;
@@ -505,6 +514,7 @@
             <div class="ai-placeholder" id="ai-analysis-content">
                 <p>Phần này sẽ hiển thị nhận xét từ AI về cách bạn phản ứng trước từng tình huống, dựa trên các lựa chọn và chỉ số ở trên.</p>
             </div>
+            <div class="ai-citations" id="ai-citations" hidden></div>
             <div class="ai-retry" id="ai-retry">
                 <p>Không thể kết nối tới AI lúc này. Câu chuyện, điểm số và lựa chọn của bạn ở trên vẫn hiển thị bình thường.</p>
                 <button type="button" class="btn btn-ghost" id="ai-retry-btn">Thử lại</button>
@@ -856,11 +866,19 @@
                 }
 
                 var reply = result.reply || "Không có câu trả lời.";
+                const citations = Array.isArray(result.citations) ? result.citations : [];
+                const sources = Array.isArray(result.sources) ? result.sources : [];
                 waiting.textContent = "";
 
                 typewriter(waiting, reply, {
                     format: true,
                     onDone: function () {
+                        var citEl = document.getElementById("ai-citations");
+                        if (citEl && window.AIFormat && window.AIFormat.renderCitations) {
+                            var html = window.AIFormat.renderCitations(citations, sources);
+                            citEl.textContent = html;
+                            citEl.hidden = !html;
+                        }
                         chatHistory.push({ role: "assistant", content: reply });
                         if (chatHistory.length > 11) {
                             chatHistory = chatHistory.slice(-11);
@@ -936,6 +954,8 @@
 
                 const reflection =
                     result.analysis || 'Không có kết quả phân tích.';
+                const citations = Array.isArray(result.citations) ? result.citations : [];
+                const sources = Array.isArray(result.sources) ? result.sources : [];
 
                 document.getElementById("ai-loading").classList.remove("active");
                 aiElement.style.display = "block";
@@ -943,6 +963,12 @@
                 typewriter(aiElement, reflection, {
                     format: true,
                     onDone: function () {
+                        var citEl = document.getElementById("ai-citations");
+                        if (citEl && window.AIFormat && window.AIFormat.renderCitations) {
+                            var html = window.AIFormat.renderCitations(citations, sources);
+                            citEl.textContent = html;
+                            citEl.hidden = !html;
+                        }
                         openChat(reflection);
                     }
                 });
