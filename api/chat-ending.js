@@ -1,4 +1,7 @@
 import { callOpenRouter } from './_openrouter.js';
+import { NEUTRAL_PLAYER_LABEL } from './_privacy.js';
+import { buildChatPrompt, VERSION_CHAT } from './_prompts.js';
+import { GUARDRAIL_BLOCK } from './_guardrails.js';
 
 export default async function handler(req, res) {
     console.log("=== CHAT AI API CALLED ===");
@@ -10,31 +13,26 @@ export default async function handler(req, res) {
     }
 
     try {
-        console.log(
-            "API KEY:",
-            process.env.OPENROUTER_API_KEY
-                ? "FOUND"
-                : "NOT FOUND"
-        );
-
         const {
             endingData,
             history,
             question
         } = req.body;
 
-        // SYNC: guardrail block mirrors api/analyze-ending.js — any guardrail
-        // edit must be mirrored in both files before the change is called done.
+        // Guardrail SYNC (ai-request-contract §4): the shared guardrail block
+        // lives in api/_guardrails.js and is imported by exactly 3 handlers —
+        // this file, summarize-student, summarize-class. analyze-ending.js is
+        // a named pinned-hash exception (intentional divergence, NOTE 26-09-26).
         const safeQuestion = typeof question === 'string'
             ? question.slice(0, 500)
             : '';
 
-        // Player name is user-controlled (typed at game start): single line,
-        // 50 chars max — kills multi-line prompt-injection payloads. The
-        // question/history guards above stay unchanged.
-        const safePlayerName = typeof endingData?.playerName === 'string'
-            ? endingData.playerName.replace(/[\r\n]+/g, ' ').trim().slice(0, 50) || 'Người chơi'
-            : 'Người chơi';
+        // A2 pseudonymization (ai-request-contract §2.2): the learner-typed
+        // playerName is never forwarded to the provider — it is replaced by
+        // the one constant neutral label at every prompt occurrence.
+        const safePlayerName = NEUTRAL_PLAYER_LABEL;
+        const playerNameProvided =
+            typeof endingData?.playerName === 'string' && endingData.playerName.trim().length > 0;
 
         if (!safeQuestion.trim()) {
             return res.status(400).json({
@@ -56,7 +54,8 @@ export default async function handler(req, res) {
                 .slice(-10)
             : [];
 
-        console.log("PLAYER:", endingData?.playerName);
+        console.log("PLAYER NAME PROVIDED:", playerNameProvided);
+        console.log("PLAYER NAME LENGTH:", playerNameProvided ? String(endingData.playerName).trim().length : 0);
         console.log("ENDING:", endingData?.ending);
         console.log("HISTORY TURNS:", safeHistory.length);
         console.log("QUESTION LENGTH:", safeQuestion.length);
@@ -87,53 +86,7 @@ Lựa chọn ${index + 1}:
             )
             .join('\n');
 
-        const prompt = `
-Bạn là AI trò chuyện cho SchoolShield,
-một visual novel giáo dục về sự cô lập xã hội,
-định kiến, bắt nạt học đường và vai trò của người chứng kiến.
-
-Người chơi vừa nhận phần nhận xét đầu tiên
-về quá trình ra quyết định của mình
-và giờ đang hỏi tiếp trong cùng cuộc trò chuyện.
-
-Tên người chơi:
-${safePlayerName}
-
-ENDING:
-${endingData?.ending?.name || 'Không rõ'}
-
-MÔ TẢ ENDING:
-${endingData?.ending?.description || 'Không có'}
-
-CHỈ SỐ:
-- Đồng cảm: ${empathy}/100
-- Nhận diện: ${awareness}/100
-- An toàn: ${safe}/100
-
-LỊCH SỬ LỰA CHỌN:
-${routeText}
-
-ĐOẠN HỘI THOẠI TRƯỚC ĐÓ:
-${transcriptText || '(chưa có — đây là câu hỏi đầu tiên)'}
-
-CÂU HỎI MỚI CỦA NGƯỜI CHƠI:
-${safeQuestion}
-
-Hãy trả lời bằng tiếng Việt,
-khoảng 80-150 từ,
-gắn với ending, các lựa chọn
-và đoạn hội thoại trên của chính người chơi này.
-
-YÊU CẦU:
-
-- Không chẩn đoán tâm lý.
-- Không gán nhãn tính cách.
-- Không phán xét người chơi.
-- Không gọi người chơi là "tốt" hoặc "xấu".
-- Không thay đổi hoặc phủ nhận ending của game.
-- Không nói rằng một lựa chọn duy nhất quyết định con người của người chơi.
-- Phản hồi mang tính giáo dục và khuyến khích tự suy ngẫm.
-- Chỉ dùng chữ Latin (tiếng Việt có dấu); tuyệt đối không dùng ký tự Trung/Nhật/Hàn.`;
+        const prompt = buildChatPrompt({ safePlayerName, endingData, empathy, awareness, safe, routeText, transcriptText, safeQuestion });
 
         const result = await callOpenRouter({
             messages: [
@@ -142,7 +95,8 @@ YÊU CẦU:
                     content: prompt
                 }
             ],
-            maxTokens: 400
+            maxTokens: 400,
+            endpoint: 'chat-ending'
         });
 
         if (!result.ok) {

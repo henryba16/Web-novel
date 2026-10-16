@@ -1,4 +1,7 @@
 import { callOpenRouter } from './_openrouter.js';
+import { classPromptLabel } from './_privacy.js';
+import { buildStudentPrompt, VERSION_STUDENT } from './_prompts.js';
+import { GUARDRAIL_BLOCK } from './_guardrails.js';
 
 export default async function handler(req, res) {
     console.log("=== SUMMARIZE STUDENT API CALLED ===");
@@ -10,13 +13,6 @@ export default async function handler(req, res) {
     }
 
     try {
-        console.log(
-            "API KEY:",
-            process.env.OPENROUTER_API_KEY
-                ? "FOUND"
-                : "NOT FOUND"
-        );
-
         var SUPABASE_URL = process.env.SUPABASE_URL || '';
         var PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || '';
 
@@ -138,6 +134,11 @@ export default async function handler(req, res) {
             });
         }
 
+        // A2 minimization (ai-request-contract §2.2): the class NAME is the
+        // stable non-secret class label; classes.code (the
+        // rpc/join_class_by_code credential) never enters the prompt.
+        var className = classPromptLabel(classRow.name);
+
         // Student must be an active member of this class.
         var memberRes = await sbGet('memberships', {
             select: 'student_id,status',
@@ -222,52 +223,11 @@ export default async function handler(req, res) {
             return r && r.status !== 'finished';
         }).length;
 
-        // SYNC: guardrail block mirrors api/chat-ending.js — any guardrail
-        // edit must be mirrored in both files before the change is called done.
-        const prompt = `
-Bạn là AI ghi chú cho giáo viên SchoolShield,
-một visual novel giáo dục về sự cô lập xã hội,
-định kiến, bắt nạt học đường và vai trò của người chứng kiến.
-
-Hãy mô tả QUÁ TRÌNH CHƠI của một học sinh từ số liệu dưới đây.
-Chỉ mô tả lựa chọn trong game, không suy đoán ngoài game.
-
-Lớp:
-${clamp(classRow.name || 'Lớp học', 120)} (${clamp(classRow.code || '', 20)})
-
-LỊCH SỬ LƯỢT CHƠI (đã hoàn thành: ${finished.length}, chưa xong: ${unfinishedCount}):
-${historyLines || '(chưa có)'}
-
-LƯỢT MỚI NHẤT:
-- Đồng cảm: ${(latest && latest.empathy !== undefined ? latest.empathy : '—')}/100
-- Nhận diện: ${(latest && latest.awareness !== undefined ? latest.awareness : '—')}/100
-- An toàn: ${(latest && latest.safe !== undefined ? latest.safe : '—')}/100
-- Kết: ${clamp((latest && latest.ending_name) || 'chưa có kết', 120)}
-
-LỰA CHỌN TRONG LƯỢT MỚI NHẤT:
-${latestChoices || '(chưa có)'}
-
-Hãy viết một ghi chú bằng tiếng Việt,
-khoảng 100-200 từ.
-
-Tập trung vào:
-
-1. Em thường chú ý đến điều gì trong các lựa chọn?
-2. Em có xu hướng ưu tiên đồng cảm,
-   nhận diện vấn đề hay an toàn?
-3. Một vài lựa chọn đáng chú ý.
-4. Một điều giáo viên có thể trò chuyện thêm cùng em.
-
-YÊU CẦU:
-
-- Không chẩn đoán tâm lý.
-- Không gán nhãn tính cách.
-- Không phán xét người chơi.
-- Không gọi người chơi là "tốt" hoặc "xấu".
-- Không thay đổi hoặc phủ nhận ending của game.
-- Không nói rằng một lựa chọn duy nhất quyết định con người của người chơi.
-- Phản hồi mang tính giáo dục và khuyến khích tự suy ngẫm.
-- Chỉ dùng chữ Latin (tiếng Việt có dấu); tuyệt đối không dùng ký tự Trung/Nhật/Hàn.`;
+        // Guardrail SYNC (ai-request-contract §4): the shared guardrail block
+        // lives in api/_guardrails.js and is imported by exactly 3 handlers —
+        // chat-ending, this file, summarize-class. analyze-ending.js is a
+        // named pinned-hash exception (intentional divergence, NOTE 26-09-26).
+        const prompt = buildStudentPrompt({ className, finished, unfinishedCount, historyLines, latest, latestChoices });
 
         const result = await callOpenRouter({
             messages: [
@@ -276,7 +236,8 @@ YÊU CẦU:
                     content: prompt
                 }
             ],
-            maxTokens: 600
+            maxTokens: 600,
+            endpoint: 'summarize-student'
         });
 
         if (!result.ok) {
