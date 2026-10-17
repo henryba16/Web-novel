@@ -58,13 +58,19 @@ export default async function handler(req, res) {
         const transcriptText = safeHistory
             .map((turn) =>
                 turn.role === 'user'
-                    ? 'Ngưi chơi hỏi: ' + turn.content
+                    ? 'Người chơi hỏi: ' + turn.content
                     : 'AI đã trả lời: ' + turn.content)
             .join('\n');
 
-        const empathy = endingData?.stats?.find(s => s.key === 'empathy')?.value ?? 0;
-        const awareness = endingData?.stats?.find(s => s.key === 'awareness')?.value ?? 0;
-        const safe = endingData?.stats?.find(s => s.key === 'safe')?.value ?? 0;
+        // B7: stats values coerced to finite numbers (defense-in-depth; the v2 chat prompt does not assemble them).
+        const __statValue = (key) => {
+            const raw = (Array.isArray(endingData?.stats) ? endingData.stats : []).find(s => s.key === key)?.value;
+            const n = Number(raw);
+            return Number.isFinite(n) ? n : 0;
+        };
+        const empathy = __statValue('empathy');
+        const awareness = __statValue('awareness');
+        const safe = __statValue('safe');
 
         // Phase 02: tag-based deterministic retrieval (no embeddings), reviewed-only.
         const __providedTags = __tags(endingData || {}, safeQuestion, safeHistory);
@@ -81,10 +87,14 @@ export default async function handler(req, res) {
         let model = undefined;
 
         if (__hasSources) {
+            // B7: clamp the client-controlled ending name before assembly (analyze v2 parity: <=160 chars).
+            const __safeEndingName = typeof endingData?.ending?.name === 'string'
+                ? endingData.ending.name.slice(0, 160)
+                : (endingData?.ending?.name != null ? String(endingData.ending.name).slice(0, 160) : undefined);
             const prompt = buildChatPromptGrounded({
                 safePlayerName,
                 safeQuestion,
-                endingData: endingData || {},
+                endingData: { ending: { name: __safeEndingName } },
                 transcriptText: transcriptText || '',
                 sources: __retrieved.snippets
             });
@@ -124,14 +134,14 @@ export default async function handler(req, res) {
             }
         } else {
             status = 'insufficient_evidence';
-            reply = 'Chưa đủ nguồn đã xem xét để trả lời có căn cứ. Gợi ý trung tính: bạn cancellation một câu nhẹ nhàng về hoàn cảnh của câu hỏi này.';
+            reply = 'Chưa đủ nguồn đã xem xét để trả lời có căn cứ. Gợi ý trung tính: bạn có thể hỏi một câu nhẹ nhàng hơn về hoàn cảnh này.';
             citations = [];
             limitationNote = 'eligible=' + __retrieved.eligibleCount + '; min=' + __retrieved.minEvidence;
             console.log('CHAT GROUNDING INSUFFICIENT', JSON.stringify({ tagCount: __providedTags.length, eligible: __retrieved.eligibleCount, min: __retrieved.minEvidence }));
         }
 
         if (status === 'insufficient_evidence' && !reply) {
-            reply = 'Chưa đủ nguồn để trả lời có căn cứ. Một neutral reflection prompt: Which part of this reflection felt most relevant to your choices?';
+            reply = 'Chưa đủ nguồn để trả lời có căn cứ. Một câu hỏi gợi mở trung lập: phần nào của nhận xét này bạn thấy liên quan nhất đến các lựa chọn của mình?';
         }
 
         if (status === 'insufficient_evidence') {

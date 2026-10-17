@@ -163,15 +163,17 @@ ${GUARDRAIL_BLOCK}`;
 }
 
 // --- Phase 02 (fast demo) v2 builders + change notes + citation ID list ---
-export const VERSION_ANALYZE_V2 = "analyze-ending-grounded-2026-10-17.1";
-export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-17.2";
+export const VERSION_ANALYZE_V2 = "analyze-ending-grounded-2026-10-17.2";
+export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-17.3";
 
 const CHANGE_NOTES_V2 = [
   { version: 'analyze-ending-grounded-2026-10-16.1', date: '2026-10-16', note: 'Grounded reflection response from curated KB + citable source IDs; insufficient-evidence refusal; no behavior change from base prompt except input contract.' },
   { version: 'chat-ending-grounded-2026-10-16.1', date: '2026-10-16', note: 'Grounded follow-up chat from provided source metadata only.' },
-  { version: VERSION_ANALYZE_V2, date: '2026-10-17', note: 'Fix: source blocks now include full content/scope/limitations/source line so the model has citable evidence text (was IDs+topics+title only, causing blanket insufficient_evidence).' },
+  { version: 'analyze-ending-grounded-2026-10-17.1', date: '2026-10-17', note: 'Fix: source blocks now include full content/scope/limitations/source line so the model has citable evidence text (was IDs+topics+title only, causing blanket insufficient_evidence).' },
   { version: 'chat-ending-grounded-2026-10-17.1', date: '2026-10-17', note: 'Fix: same source-content inclusion as analyze v2; chat can now ground on snippet text.' },
-  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Fix: embed the pseudonymized neutral player label in the grounded chat prompt (Người chơi: Học sinh). Restores learner-label parity with analyze v2 and satisfies the A4 payload-probe positive control for chat.' },
+  { version: 'chat-ending-grounded-2026-10-17.2', date: '2026-10-17', note: 'Fix: embed the pseudonymized neutral player label in the grounded chat prompt (Người chơi: Học sinh). Restores learner-label parity with analyze v2 and satisfies the A4 payload-probe positive control for chat.' },
+  { version: VERSION_ANALYZE_V2, date: '2026-10-17', note: 'B8: owner-authored safety principles restored, covering every canonical rule (no diagnosis; no personality labels; no judgment; no "tot/xau" calling; no ending change or denial; no single-choice determinism; educational + reflection; Latin-only). B7: clamp values enforced before assembly — ending.name<=160, ending.description<=400, route<=10 items with scene<=160 / context<=240 / choice<=240, stats coerced to finite numbers. The AI-request-contract fixes no bound for these fields, so conservative bounds are recorded here (B7 fallback clause). Rule mapping + residual deltas: phase-02-guardrail-consolidation_NOTE_17-10-26.md' },
+  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'B8: canonical GUARDRAIL_BLOCK embedded in the grounded chat prompt (v1 parity restored; chat is a SYNC handler). B7: ending.name clamped to <=160 before assembly (question<=500 and history<=1000x10 were already contract-specified); stats coerced to finite numbers. Conversation transcript (previously computed, clamped, and passed but never assembled) restored to the prompt — follow-up chat now sees the prior turns. Vietnamese fallback copy fixed (no corrupted tokens).' },
 ];
 
 export function buildAnalyzePromptGrounded({ safePlayerName, ending, empathy, awareness, safe, routeText, sources }) {
@@ -187,6 +189,8 @@ ${routeText}
 
 Output JSON: {"status":"grounded"|"insufficient_evidence"|"generation_failure","text":"...","citations":["kb-id"],"limitationNote":"..."}.
 Chỉ trích dẫn IDs từ danh sách nguồn đã cung cấp. Nếu không đủ nguồn → citations=[] và text giải thích hạn chế + một câu hỏi trung lập.
+
+NGUYÊN TẮC AN TOÀN (bắt buộc): Bạn KHÔNG phải nhà tâm lý (không chẩn đoán tâm lý); không gán nhãn tính cách; không phán xét người chơi; không gọi người chơi là "tốt" hay "xấu"; không thay đổi hoặc phủ nhận ending của game; không nói rằng một lựa chọn duy nhất quyết định con người của người chơi; không kết luận tính cách ngoài đời từ lựa chọn trong game; phản hồi mang tính giáo dục và khuyến khích tự suy ngẫm; chỉ dùng chữ Latin (tiếng Việt có dấu), tuyệt đối không dùng ký tự Trung/Nhật/Hàn.
 `;
 }
 
@@ -198,12 +202,18 @@ NGUỒN ĐỦ ĐIỀU KIỆN:
 ${src}
 
 Người chơi: ${safePlayerName}
-Câu hỏi: ${safeQuestion}
 Ending: ${endingData?.ending?.name || 'Không rõ'}
+
+LỊCH SỬ HỘI THOẠI:
+${transcriptText || '(chưa có — đây là câu hỏi đầu tiên)'}
+
+CÂU HỎI MỚI CỦA NGƯỜI CHƠI:
+${safeQuestion}
 
 Output JSON: {"status":"grounded"|"insufficient_evidence"|"generation_failure","text":"...","citations":["kb-id"],"limitationNote":"..."}.
 Nếu status = insufficient_evidence: text giải thích thiếu nguồn + một câu hỏi trung lập, không chẩn đoán.
-`;
+
+${GUARDRAIL_BLOCK}`;
 }
 
 function _formatSources(sources) {

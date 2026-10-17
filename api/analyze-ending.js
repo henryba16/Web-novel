@@ -46,23 +46,20 @@ export default async function handler(req, res) {
         console.log("STATS:", stats);
         console.log("ROUTE LENGTH:", route?.length);
 
-		const routeText = (route || [])
-			.map((item, index) => `
-Lựa chọn ${index + 1}:
-- Tình huống: ${item.scene || 'Không rõ'}
-- Bối cảnh: ${item.context || 'Không có'}
-- Lựa chọn: ${item.choice || 'Không rõ'}
-`)
-			.join('\n');
+		// B7: routeText now assembles from the clamped route fields (__safeRoute) further below.
 
-		const empathy =
-			stats?.find(s => s.key === 'empathy')?.value ?? 0;
+		// B7: stats values are coerced to finite numbers before assembly (no unbounded client text reaches the prompt).
+		const __statValue = (key) => {
+			const raw = (Array.isArray(stats) ? stats : []).find(s => s.key === key)?.value;
+			const n = Number(raw);
+			return Number.isFinite(n) ? n : 0;
+		};
 
-		const awareness =
-			stats?.find(s => s.key === 'awareness')?.value ?? 0;
+		const empathy = __statValue('empathy');
 
-		const safe =
-			stats?.find(s => s.key === 'safe')?.value ?? 0;
+		const awareness = __statValue('awareness');
+
+		const safe = __statValue('safe');
 
 // --- Phase 02 retrieval-first (deterministic, reviewed-only) ---
 		function __ew(txt) { return (txt || '').toString().split(/[\s,.;:!?]+/).map(w => w.trim().toLowerCase()).filter(w => w.length >= 3); }
@@ -82,9 +79,18 @@ Lựa chọn ${index + 1}:
 		const __safeRoute = Array.isArray(route) ? route.slice(0, 10).map((it) => ({
 			chapter: typeof it?.chapter === 'number' ? it.chapter : null,
 			scene: typeof it?.scene === 'string' ? it.scene.slice(0, 160) : (it?.scene != null ? String(it.scene).slice(0, 160) : null),
-			context: typeof it?.context === 'string' ? it.context.slice(0, 240) : undefined,
-			choice: typeof it?.choice === 'string' ? it.choice.slice(0, 240) : undefined
+			context: typeof it?.context === 'string' ? it.context.slice(0, 240) : (it?.context != null ? String(it.context).slice(0, 240) : null),
+			choice: typeof it?.choice === 'string' ? it.choice.slice(0, 240) : (it?.choice != null ? String(it.choice).slice(0, 240) : null)
 		})) : [];
+		// B7: routeText assembles only from the clamped fields above (raw route never reaches the prompt).
+		const routeText = __safeRoute
+			.map((item, index) => `
+Lựa chọn ${index + 1}:
+- Tình huống: ${item.scene || 'Không rõ'}
+- Bối cảnh: ${item.context || 'Không có'}
+- Lựa chọn: ${item.choice || 'Không rõ'}
+`)
+			.join('\n');
 		const __providedTags = ['analyze-ending', 'chat-ending', 'social-isolation', 'bullying', 'empathy', 'reflection', 'loneliness', 'help-seeking', 'analyze', 'chat', 'ending', 'game', 'choice', 'scene', 'context', 'stats', 'empathy', 'awareness', 'safe', 'route', 'history', 'question', 'transcript', 'player', 'reflection', 'limitation', 'citation', 'source', 'kb', 'knowledge', 'grounded', 'insufficient', 'evidence', 'generation', 'failure', 'status', 'text', 'model', 'provider', 'call', 'stub', 'fixture', 'capture', 'flow', 'body', 'headers', 'env', 'withEnv', 'installFetchStub', 'invokeHandler', 'loadHandlers', 'buildFlows', 'CAPTURE_FIXTURE', 'RETRIEVAL', 'RESPONSE', 'GROUNDING', 'INSUFFICIENT', 'CHAT', 'ANALYZE', 'ENDING', 'PROMPT', 'BUILDER', 'VERSION', 'CHANGE', 'NOTES', 'V2', 'V1', 'PHASE', '02', 'FAST', 'DEMO', 'CURATED', 'KB', 'DETERMINISTIC', 'RETRIEVAL', 'TAG', 'INTERSECTION', 'KEYWORD', 'STRATEGY', 'ENDING', 'CHOICES', 'RELEVANT', 'STATS', 'NO', 'EMBEDDINGS', 'VECTOR', 'DATABASE', 'EXTERNAL', 'RUNTIME', 'SERVICE', 'V1', 'DETERMINISTIC', 'OUTPUT', 'SAME', 'INPUT', 'KB', 'VERSION', 'BOUNDED', 'NUMBER', 'SNIPPETS', 'REQUEST', 'MINIMUM', 'EVIDENCE', 'THRESHOLD', 'CONFIGURABLE', 'NAMED', 'CONSTANT', 'NO', 'ELIGIBLE', 'SOURCE', 'MEETS', 'THRESHOLD', 'RETURN', 'INSUFFICIENT', 'EVIDENCE', 'PATH', 'NEVER', 'TREAT', 'PLAYER', 'SIMULATED', 'GAME', 'CHOICES', 'PROOF', 'REAL', 'WORLD', 'PSYCHOLOGICAL', 'TRAITS', 'DIAGNOSES'];
 		const __retrieved = retrieveKnowledge({ tags: __providedTags, minEvidence: 1, maxK: 3, requireReviewed: true });
 		const __hasSources = __retrieved.status === 'grounded' && Array.isArray(__retrieved.snippets) && __retrieved.snippets.length > 0;
