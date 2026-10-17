@@ -139,10 +139,13 @@ Lựa chọn ${index + 1}:
 
 		if (status === 'insufficient_evidence' && !analysis) {
 			analysis = 'No reviewed sources available to verify a grounded reflection. Neutral consideration prompt for the learner: Which choice do you remember most, and how did it affect the story?';
-			// B4: End‑point refusal record
+		}
+
+		if (status === 'insufficient_evidence') {
+			// B4: Endpoint refusal record (supplemented schema: reason no_supported_snippet | insufficient_support)
 			console.log(JSON.stringify({
 				event: 'refusal_limitation',
-				reason: 'insufficient evidence',
+				reason: __hasSources ? 'insufficient_support' : 'no_supported_snippet',
 				ts: Date.now(),
 				endpoint: 'analyze-ending',
 				request_id: (req.headers['x-request-id'] || req.headers['request-id'] || 'unknown')

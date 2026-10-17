@@ -7,12 +7,15 @@ import { GUARDRAIL_BLOCK } from './_guardrails.js';
 function __ew(txt) { return (txt || '').toString().split(/[\s,.;:!?]+/).map(w => w.trim().toLowerCase()).filter(w => w.length >= 3); }
 function __tags(ed, q, hist) {
   const s = new Set();
+  // Endpoint tag FIRST: it is the guaranteed retrieval anchor for the reviewed
+  // KB record. The slice(0, 12) cap must never drop it — realistic ending text
+  // fills 12+ tags before a trailing add would survive.
+  s.add('chat-ending');
   for (const w of __ew(ed?.ending?.name)) s.add(w);
   for (const w of __ew(ed?.ending?.description)) s.add(w);
   for (const w of __ew(q)) s.add(w);
   if (Array.isArray(ed?.stats)) for (const st of ed.stats) if (typeof st?.key === 'string') s.add(st.key.toLowerCase());
   if (Array.isArray(hist)) for (const t of (hist || []).slice(-3)) if (typeof t?.content === 'string') __ew(t.content).forEach(w => s.add(w));
-  s.add('chat-ending');
   return Array.from(s).slice(0, 12);
 }
 
@@ -129,6 +132,17 @@ export default async function handler(req, res) {
 
         if (status === 'insufficient_evidence' && !reply) {
             reply = 'Chưa đủ nguồn để trả lời có căn cứ. Một neutral reflection prompt: Which part of this reflection felt most relevant to your choices?';
+        }
+
+        if (status === 'insufficient_evidence') {
+            // B4: Endpoint refusal record (parity with analyze-ending; supplemented schema: no_supported_snippet | insufficient_support)
+            console.log(JSON.stringify({
+                event: 'refusal_limitation',
+                reason: __hasSources ? 'insufficient_support' : 'no_supported_snippet',
+                ts: Date.now(),
+                endpoint: 'chat-ending',
+                request_id: (req.headers['x-request-id'] || req.headers['request-id'] || 'unknown')
+            }));
         }
 
         console.log('RESPONSE STATUS chat:', status, 'citations:', citations.length, 'model:', model, 'KB_VERSION:', KB_VERSION);
