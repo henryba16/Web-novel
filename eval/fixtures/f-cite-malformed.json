@@ -1,0 +1,46 @@
+{
+  "id": "f-cite-malformed",
+  "suite": "citations",
+  "suiteTag": "citations",
+  "suites": ["citations", "full"],
+  "scenario": "Edge case: ending content that matches the KB entry but the model is forced to emit an unsupported citation ID — exercises the refusal/limitation path and the B4 refusal record.",
+  "playerName": "Hoc sinh test citation",
+  "choices": [
+    "Ask the second student to sit with the group",
+    "Keep the rumor to yourself"
+  ],
+  "stats": [
+    { "key": "empathy", "value": 61 },
+    { "key": "awareness", "value": 57 },
+    { "key": "safe", "value": 46 }
+  ],
+  "route": [
+    {
+      "chapter": 1,
+      "scene": "School garden after class",
+      "context": "A classmate is sitting alone while others whisper",
+      "choice": "Ask the second student to sit with the group"
+    },
+    {
+      "chapter": 2,
+      "scene": "Classroom hallway",
+      "context": "A fast-spreading rumor about a classmate reaches you",
+      "choice": "Keep the rumor to yourself"
+    }
+  ],
+  "ending": {
+    "name": "Ket C - On dinh",
+    "description": "The learner balanced care for others with caution in several situations."
+  },
+  "question": "What did my choices show about how I handle group conflict?",
+  "history": [
+    { "role": "user", "content": "Why did my safe score stay moderate?" },
+    { "role": "assistant", "content": "Your choices showed care for others while still taking some risks." }
+  ],
+  "teacher": {
+    "studentId": "stub-student-cite-malformed",
+    "classId": "stub-class-cite-malformed",
+    "classRow": { "name": "Citation Malformed Class", "code": "CITE-MAL" },
+    "headers": {}
+  }
+}
