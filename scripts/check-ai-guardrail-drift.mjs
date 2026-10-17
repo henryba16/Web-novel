@@ -21,7 +21,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const PINNED_GUARDRAIL_SHA256 = '7cc057618e173f6a8325bb4563e5ab91985c8acdc2d156ae1543204aa32fd11e';
+// Re-pinned 2026-10-17 (owner directive): the shared GUARDRAIL_BLOCK was
+// de-clinicalized — 'Không chẩn đoán tâm lý.' and 'Không gán nhãn tính cách.'
+// removed, because the player-facing AI must not use mental-health terms. The
+// teacher AI keeps its own clinical guardrails in buildStudentPrompt /
+// buildClassPrompt. Evidence: api/_guardrails.js + check-ai-prompt-integrity B8.
+const PINNED_GUARDRAIL_SHA256 = 'fb1d9005c402bca26833d6c47919c8bba83cd6d7b2419dece39f6d95f1577324';
 // Re-pinned 2026-10-17 (Phase 02 KB expansion): analyze retrieval tags are now
 // derived from the real ending/stats/route vocabulary instead of a fixed placeholder
 // list, so the assembled grounding snippets (and therefore this sha) changed by

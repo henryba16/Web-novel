@@ -7,8 +7,6 @@
 
 export const GUARDRAIL_BLOCK = `YÊU CẦU:
 
-- Không chẩn đoán tâm lý.
-- Không gán nhãn tính cách.
 - Không phán xét người chơi.
 - Không gọi người chơi là "tốt" hoặc "xấu".
 - Không thay đổi hoặc phủ nhận ending của game.
