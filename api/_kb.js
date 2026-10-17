@@ -1,13 +1,16 @@
-// api/_kb.js — Phase 02 (fast demo) curated KB + deterministic tag/intersection retrieval.
+// api/_kb.js — Phase 02 curated KB + deterministic tag/intersection retrieval.
 // Rules per ai-request-contract_REF: JSON format, stable IDs, scope/limitations,
 // source title+url/traceable ref, status (reviewed|draft), no embeddings/vector/DB.
-export const KB_VERSION = 'kb-v1-draft-2026-10-16';
+//
+// Expansion 2026-10-17: reviewed library grown from 1 to 12 entries (all sources
+// URL-resolution verified — see phase-02-kb-expansion_NOTE_17-10-26.md), retrieval
+// now ranks by number of matching tags (still deterministic: score desc, id asc),
+// and analyze-ending passes tags derived from the real ending/route/stats.
+export const KB_VERSION = 'kb-v1-2026-10-17';
 
-// Seed records are ALL `status: 'draft'` on purpose: no verified published
-// source was supplied which grounds them. This keeps Phase 02's demo strictly
-// honest (insufficient-evidence when no reviewed source qualifies to tags) and
-// prevents fabrication of URLs/claims. A operator-verified key can be promoted
-// to `reviewed` later (everything below is non-breaking addition).
+// `reviewed` = passed the curation checklist in phase-02-kb-curation-rules_REF_17-10-26.md
+// (structure + traceable source + resolution check recorded). Draft entries are never
+// served (requireReviewed). Only non-breaking additions; any content change bumps KB_VERSION.
 export const KNOWLEDGE_RECORDS = [
   {
     id: 'kb_bullying_prevention_reviewed',
@@ -19,6 +22,138 @@ export const KNOWLEDGE_RECORDS = [
     scope: 'Educational awareness for game-based reflection; not a clinical tool',
     limitations: 'Not a diagnostic instrument. Game choices are simulated scenarios, not real-world behavioral assessments.',
     reviewedBy: 'Phase 02 fast-demo operator'
+  },
+
+  {
+    id: 'kb_what_is_bullying',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'bullying', 'bắt', 'nạt', 'trêu', 'chọc', 'nhận', 'diện', 'dấu', 'hiệu', 'awareness', 'bạn', 'bè'],
+    title: 'What counts as bullying: repeated harm and imbalance of power',
+    content: 'Bullying is unwanted, repeated aggressive behavior that involves a real or perceived imbalance of power. It can be physical (hitting), verbal (teasing, threats), or social (exclusion, spreading rumors), and it can happen in person or online. Recognizing the pattern — repetition plus power imbalance — helps separate bullying from one-time conflict so support and reporting can be targeted. Educational description, not a clinical assessment.',
+    source: { title: 'StopBullying.gov - What Is Bullying', url: 'https://www.stopbullying.gov/bullying/what-is-bullying', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a diagnostic tool',
+    limitations: 'Not a diagnostic instrument and not a risk-scoring method. Simulated scenarios only.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
+  },
+
+  {
+    id: 'kb_cyberbullying',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'cyberbullying', 'mạng', 'chia', 'sẻ', 'lan', 'truyền', 'nội', 'dung', 'bài', 'viết', 'ảnh', 'bình', 'luận', 'online', 'an', 'toàn'],
+    title: 'Cyberbullying: hurtful content spreads fast online',
+    content: 'Cyberbullying happens on digital platforms — social media, messaging, games and forums. It can be persistent, public, and hard for adults to notice. Examples include posting hurtful content, spreading rumors, sharing embarrassing images, exclusion, and impersonation. Educational responses: do not engage or retaliate, save evidence, use block and report tools, and tell a trusted adult. Do not amplify harmful content; support the person targeted.',
+    source: { title: 'StopBullying.gov - What Is Cyberbullying', url: 'https://www.stopbullying.gov/cyberbullying/what-is-it', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not legal or clinical advice',
+    limitations: 'Not a diagnostic instrument. Platform-specific policies vary; not legal advice.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
+  },
+
+  {
+    id: 'kb_help_seeking_trusted_adults',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'help-seeking', 'giúp', 'hỗ', 'trợ', 'người', 'lớn', 'tin', 'cậy', 'thầy', 'giáo', 'báo', 'phản', 'ánh', 'cần', 'chia'],
+    title: 'Asking for help: telling a trusted adult',
+    content: 'Telling a trusted adult — a parent, teacher or school counsellor — is one of the most effective steps when bullying or distress happens. Asking for help is a sign of strength, not weakness. Adults can support safety, talk through options, and connect to further help. If there is immediate danger, contact local emergency services. Learners should be encouraged to keep talking to adults until they feel safe and heard.',
+    source: { title: 'StopBullying.gov - Get Help Now', url: 'https://www.stopbullying.gov/resources/get-help-now', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a crisis service',
+    limitations: 'Not a crisis line and not a diagnostic tool. In an emergency, use local emergency services.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
+  },
+
+  {
+    id: 'kb_community_prevention',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'cộng', 'đồng', 'phòng', 'ngăn', 'môi', 'trường', 'an', 'toàn', 'quan', 'tâm', 'hoạt', 'động', 'mentoring', 'support'],
+    title: 'Community prevention: safe environments and positive activities',
+    content: 'Prevention works better when the whole community is involved. Safe, supervised environments, positive activities and mentoring, clear behaviour expectations, and adults who model respect all reduce the conditions where bullying takes hold. Community programmes can reach youth who are isolated and give bystanders safe, supported ways to help. Educational prevention strategies; not a guarantee of outcomes.',
+    source: { title: 'StopBullying.gov - Prevention in the Community', url: 'https://www.stopbullying.gov/prevention/in-the-community', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not an intervention plan',
+    limitations: 'General educational guidance; outcomes depend on local implementation. Not a diagnostic tool.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
+  },
+
+  {
+    id: 'kb_digital_citizenship',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'digital', 'citizenship', 'mạng', 'an', 'toàn', 'số', 'ứng', 'xử', 'trách', 'nhiệm', 'tôn', 'trọng', 'thông', 'tin', 'online', 'safe'],
+    title: 'Digital citizenship: responsible and respectful online behaviour',
+    content: 'Digital citizenship means using technology responsibly, respectfully and critically. Think before sharing: content can spread quickly and last. Respect other people\u2019s privacy and dignity, check information before passing it on, recognise harmful or misleading content, and treat people online as you would in person. Educational guidance for reflecting on online behaviour; not a technical or legal standard.',
+    source: { title: 'UNESCO - Digital education', url: 'https://www.unesco.org/en/digital-education', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not legal or technical advice',
+    limitations: 'Not a legal standard and not a diagnostic tool. Platform rules vary.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
+  },
+
+  {
+    id: 'kb_online_safety_actions',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'cyberbullying', 'mạng', 'an', 'toàn', 'bình', 'tĩnh', 'bằng', 'chứng', 'lưu', 'báo', 'cáo', 'chặn', 'giúp', 'đỡ', 'bạn', 'online'],
+    title: 'What to do about online harm: practical, safe actions',
+    content: 'If you or a friend is being treated badly online: stay calm and do not retaliate, save screenshots as evidence, use the platform\u2019s block and report tools, and tell a trusted adult. Be kind and stand up for others when it is safe to do so. Check in on the person affected — being believed and supported matters. If someone is in danger or being threatened, involve an adult or emergency services right away.',
+    source: { title: 'UNICEF - How to stop cyberbullying', url: 'https://www.unicef.org/stories/how-to-stop-cyberbullying', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a crisis service',
+    limitations: 'Not a crisis line and not a diagnostic tool. In an emergency, use local emergency services.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
+  },
+
+  {
+    id: 'kb_supporting_a_friend',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'bạn', 'bè', 'bên', 'cạnh', 'lắng', 'nghe', 'quan', 'tâm', 'hỏi', 'ổn', 'không', 'đồng', 'hành', 'ủng', 'hộ', 'empathy'],
+    title: 'Supporting a friend who is being hurt',
+    content: 'If a friend is being bullied: listen without judging, take it seriously, and remind them it is not their fault. Ask what kind of help they want, stay connected, and encourage them to tell a trusted adult — offer to go with them. Avoid confronting the person who is bullying in ways that could escalate or risk harm, and avoid gossip that spreads the situation further. Support reduces isolation.',
+    source: { title: 'American Psychological Association - Bullying', url: 'https://www.apa.org/topics/bullying', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a clinical tool',
+    limitations: 'Not a clinical or diagnostic instrument. Simulated scenarios only.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
+  },
+
+  {
+    id: 'kb_safe_bystander_action',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'bystander', 'chứng', 'kiến', 'đứng', 'ngoài', 'hành', 'động', 'giúp', 'đỡ', 'không', 'hùa', 'cười', 'bạn', 'cô', 'lập', 'an', 'toàn'],
+    title: 'Safe bystander action: small steps that reduce harm',
+    content: 'When you witness bullying, safety comes first. Safe options include not laughing or joining in, supporting the person privately, and telling a trusted adult what you saw. Directly confronting the person could escalate the situation — choose an action that keeps everyone safe. Small actions — checking in, sitting with someone, inviting them into a group — can reduce isolation and signal that the behaviour is not acceptable.',
+    source: { title: 'StopBullying.gov - Prevention at School', url: 'https://www.stopbullying.gov/prevention/at-school', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not an intervention protocol',
+    limitations: 'Not a safety protocol for real incidents. Prioritize safety and involve trusted adults.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
+  },
+
+  {
+    id: 'kb_resilience_self_care',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'resilience', 'kiên', 'cường', 'sức', 'khỏe', 'tinh', 'thần', 'cân', 'bằng', 'nghỉ', 'chăm', 'sóc', 'bản', 'thân', 'tựa', 'vào', 'lo', 'lắng'],
+    title: 'Resilience and self-care: supporting yourself while supporting others',
+    content: 'Resilience is the capacity to cope and adapt in the face of stress and adversity; it is built, not fixed. Supportive relationships, a sense of control over one\u2019s life, adaptive skills, and chances to help others all contribute. Taking care of your own needs is part of being able to support others — resting, asking for support and setting limits are healthy, not selfish. Educational guidance, not a clinical claim.',
+    source: { title: 'Harvard Center on the Developing Child - Resilience guide', url: 'https://developingchild.harvard.edu/resource-guides/guide-resilience/', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a clinical tool',
+    limitations: 'Not a clinical or diagnostic instrument; no psychological-diagnostic claims.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
+  },
+
+  {
+    id: 'kb_youth_violence_prevention_skills',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'bạo', 'lực', 'phòng', 'ngăn', 'kỹ', 'năng', 'giải', 'quyết', 'vấn', 'đề', 'cảm', 'xúc', 'bình', 'tĩnh', 'bạn', 'lớn', 'youth'],
+    title: 'Preventing violence: skills and protective environments',
+    content: 'Youth violence is preventable. Prevention approaches build protective skills — problem-solving, emotional and impulse control, healthy communication — and improve environments: a positive school climate, strong connections to caring adults, and family and community support. Skills are learnable and practice helps. If violence is imminent, prioritize safety and involve trusted adults or emergency services. Educational summary; not a risk-scoring or diagnostic tool.',
+    source: { title: 'CDC - About Youth Violence', url: 'https://www.cdc.gov/youth-violence/about/index.html', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a clinical or risk tool',
+    limitations: 'Not a risk-scoring or diagnostic instrument. Prioritize safety in real situations.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
+  },
+
+  {
+    id: 'kb_school_reporting_support',
+    status: 'reviewed',
+    topics: ['analyze-ending', 'chat-ending', 'trường', 'học', 'báo', 'cáo', 'xử', 'lý', 'giáo', 'viên', 'thầy', 'cô', 'lớp', 'nhà', 'quan', 'sát', 'hỗ', 'trợ', 'school'],
+    title: 'School responses: reporting, support and follow-up',
+    content: 'Schools can prevent and address bullying through clear reporting procedures, consistent responses, supervision in less-monitored areas, and social-emotional learning. Students should be told how to report and what will happen next; reports should be taken seriously and handled promptly. Adults help most when they listen, separate facts from assumptions, and follow up. Educational strategies for a safer school climate.',
+    source: { title: 'StopBullying.gov - Prevention at School', url: 'https://www.stopbullying.gov/prevention/at-school', traceable: true },
+    scope: 'Educational awareness for game-based reflection; not a school policy template',
+    limitations: 'General educational guidance; actual procedures follow each school\u2019s policy.',
+    reviewedBy: 'Phase 02 KB expansion (operator-directed, 2026-10-17)'
   },
 
   {
@@ -39,7 +174,9 @@ const DEFAULT_TOP_K = 3;
 
 /**
  * Deterministic tag/intersection retrieval (no embeddings / vector / DB).
- * Always returns the same set for the same (tags, available, tuning).
+ * Candidates are ranked by number of matching tags (score desc), then by id,
+ * so theme-specific records outrank broad ones; the result is stable for the
+ * same (tags, available, tuning).
  */
 export function retrieveKnowledge({
   tags = [],
@@ -64,17 +201,25 @@ export function retrieveKnowledge({
 
   const eligible = (Array.isArray(available) ? available : [])
     .filter(isEligible)
-    .map(rec => ({
-      id: rec.id,
-      topics: rec.topics,
-      title: rec.title || rec.id,
-      sourceTitle: rec.source && rec.source.title || null,
-      sourceUrl: rec.source && rec.source.url || null,
-      scope: rec.scope || '',
-      limitations: rec.limitations || '',
-      content: rec.content || ''
-    }))
-    .sort((a, b) => a.id < b.id ? -1 : (a.id > b.id ? 1 : 0));
+    .map(rec => {
+      const recordTopics = new Set(rec.topics.map(s => String(s).toLowerCase()));
+      const score = normalizedTags.reduce((n, t) => n + (recordTopics.has(t) ? 1 : 0), 0);
+      return {
+        score,
+        out: {
+          id: rec.id,
+          topics: rec.topics,
+          title: rec.title || rec.id,
+          sourceTitle: rec.source && rec.source.title || null,
+          sourceUrl: rec.source && rec.source.url || null,
+          scope: rec.scope || '',
+          limitations: rec.limitations || '',
+          content: rec.content || ''
+        }
+      };
+    })
+    .sort((a, b) => (b.score - a.score) || (a.out.id < b.out.id ? -1 : (a.out.id > b.out.id ? 1 : 0)))
+    .map(e => e.out);
 
   const cut = eligible.slice(0, Math.max(0, Math.min(maxK || DEFAULT_TOP_K, eligible.length)));
   const sufficient = eligible.length >= (minEvidence || DEFAULT_MIN_EVIDENCE);

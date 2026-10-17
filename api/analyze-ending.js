@@ -71,13 +71,20 @@ export default async function handler(req, res) {
 		function __ew(txt) { return (txt || '').toString().split(/[\s,.;:!?]+/).map(w => w.trim().toLowerCase()).filter(w => w.length >= 3); }
 		function __tags(ending, route, stats) {
 			const s = new Set();
-			for (const w of __ew(ending && ending.name)) s.add(w);
-			for (const w of __ew(ending && ending.description)) s.add(w);
-			if (Array.isArray(route)) for (const it of route.slice(0, 10)) for (const w of __ew(it && it.context)) s.add(w);
-			if (Array.isArray(route)) for (const it of route.slice(0, 10)) for (const w of __ew(it && it.choice)) s.add(w);
-			for (const row of (Array.isArray(stats) ? stats : [])) if (typeof row?.key === 'string') s.add(row.key.toLowerCase());
+			// Deterministic retrieval tag set (INTERNAL only: tags select reviewed KB
+			// records and are never sent to the provider — only matched snippet text
+			// enters the prompt). The endpoint anchor is added first, then per-field
+			// budgets keep every signal represented: a long Vietnamese description can
+			// no longer starve the route (situation/choice) signals out of the set.
 			s.add('analyze-ending');
-			return Array.from(s).slice(0, 12);
+			if (Array.isArray(stats)) for (const row of stats) if (typeof row?.key === 'string') s.add(row.key.toLowerCase());
+			for (const w of __ew(ending && ending.name).slice(0, 4)) s.add(w);
+			for (const w of __ew(ending && ending.description).slice(0, 8)) s.add(w);
+			if (Array.isArray(route)) for (const it of route.slice(0, 6)) {
+				for (const w of __ew(it && it.context).slice(0, 4)) s.add(w);
+				for (const w of __ew(it && it.choice).slice(0, 4)) s.add(w);
+			}
+			return Array.from(s).slice(0, 48);
 		}
 		const __safeEnding = ending && typeof ending === 'object'
 			? { name: typeof ending.name === 'string' ? ending.name.slice(0,160) : '', description: typeof ending.description === 'string' ? ending.description.slice(0,400) : '' }
@@ -97,7 +104,9 @@ Lựa chọn ${index + 1}:
 - Lựa chọn: ${item.choice || 'Không rõ'}
 `)
 			.join('\n');
-		const __providedTags = ['analyze-ending', 'chat-ending', 'social-isolation', 'bullying', 'empathy', 'reflection', 'loneliness', 'help-seeking', 'analyze', 'chat', 'ending', 'game', 'choice', 'scene', 'context', 'stats', 'empathy', 'awareness', 'safe', 'route', 'history', 'question', 'transcript', 'player', 'reflection', 'limitation', 'citation', 'source', 'kb', 'knowledge', 'grounded', 'insufficient', 'evidence', 'generation', 'failure', 'status', 'text', 'model', 'provider', 'call', 'stub', 'fixture', 'capture', 'flow', 'body', 'headers', 'env', 'withEnv', 'installFetchStub', 'invokeHandler', 'loadHandlers', 'buildFlows', 'CAPTURE_FIXTURE', 'RETRIEVAL', 'RESPONSE', 'GROUNDING', 'INSUFFICIENT', 'CHAT', 'ANALYZE', 'ENDING', 'PROMPT', 'BUILDER', 'VERSION', 'CHANGE', 'NOTES', 'V2', 'V1', 'PHASE', '02', 'FAST', 'DEMO', 'CURATED', 'KB', 'DETERMINISTIC', 'RETRIEVAL', 'TAG', 'INTERSECTION', 'KEYWORD', 'STRATEGY', 'ENDING', 'CHOICES', 'RELEVANT', 'STATS', 'NO', 'EMBEDDINGS', 'VECTOR', 'DATABASE', 'EXTERNAL', 'RUNTIME', 'SERVICE', 'V1', 'DETERMINISTIC', 'OUTPUT', 'SAME', 'INPUT', 'KB', 'VERSION', 'BOUNDED', 'NUMBER', 'SNIPPETS', 'REQUEST', 'MINIMUM', 'EVIDENCE', 'THRESHOLD', 'CONFIGURABLE', 'NAMED', 'CONSTANT', 'NO', 'ELIGIBLE', 'SOURCE', 'MEETS', 'THRESHOLD', 'RETURN', 'INSUFFICIENT', 'EVIDENCE', 'PATH', 'NEVER', 'TREAT', 'PLAYER', 'SIMULATED', 'GAME', 'CHOICES', 'PROOF', 'REAL', 'WORLD', 'PSYCHOLOGICAL', 'TRAITS', 'DIAGNOSES'];
+		// 2026-10-17: tags derived from the actual ending/route/stats (chat parity).
+		// The previous fixed placeholder list made analyze retrieval ending-independent.
+		const __providedTags = __tags(__safeEnding, __safeRoute, stats);
 		const __retrieved = retrieveKnowledge({ tags: __providedTags, minEvidence: 1, maxK: 3, requireReviewed: true });
 		const __hasSources = __retrieved.status === 'grounded' && Array.isArray(__retrieved.snippets) && __retrieved.snippets.length > 0;
 		console.log('RETRIEVAL analyze:', JSON.stringify({ tags: __providedTags, eligible: __retrieved.eligibleCount, snippets: __retrieved.citationIds, status: __retrieved.status }));

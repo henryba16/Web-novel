@@ -22,7 +22,12 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const PINNED_GUARDRAIL_SHA256 = '7cc057618e173f6a8325bb4563e5ab91985c8acdc2d156ae1543204aa32fd11e';
-const PINNED_ANALYZE_PROMPT_SHA256 = '489a1cbeeacda31c7322346121f6458f12abd8b26c3a03acfbe31038994d751c';
+// Re-pinned 2026-10-17 (Phase 02 KB expansion): analyze retrieval tags are now
+// derived from the real ending/stats/route vocabulary instead of a fixed placeholder
+// list, so the assembled grounding snippets (and therefore this sha) changed by
+// design. Evidence: phase-02-kb-expansion_NOTE_17-10-26.md (prompt dump + 21/21
+// KB probe). Any further change here must be deliberate and recorded the same way.
+const PINNED_ANALYZE_PROMPT_SHA256 = 'ea80a63296872281fcf0738a4698c39e6a8cc7a26895a41a66de68df6f8c69c8';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');

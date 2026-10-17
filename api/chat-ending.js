@@ -13,16 +13,18 @@ const META_COMMENTARY_RE = /câu hỏi cụ thể|no specific question/i;
 function __ew(txt) { return (txt || '').toString().split(/[\s,.;:!?]+/).map(w => w.trim().toLowerCase()).filter(w => w.length >= 3); }
 function __tags(ed, q, hist) {
   const s = new Set();
-  // Endpoint tag FIRST: it is the guaranteed retrieval anchor for the reviewed
-  // KB record. The slice(0, 12) cap must never drop it — realistic ending text
-  // fills 12+ tags before a trailing add would survive.
+  // Deterministic retrieval tag set (INTERNAL only: tags merely select reviewed KB
+  // records — they are never sent to the provider; only matched snippet text enters
+  // the prompt). The endpoint anchor and the player QUESTION come first so the cap
+  // can never drop them, and per-field budgets stop a long ending text from pushing
+  // the question/history out of the tag set.
   s.add('chat-ending');
-  for (const w of __ew(ed?.ending?.name)) s.add(w);
-  for (const w of __ew(ed?.ending?.description)) s.add(w);
-  for (const w of __ew(q)) s.add(w);
+  for (const w of __ew(q).slice(0, 12)) s.add(w);
   if (Array.isArray(ed?.stats)) for (const st of ed.stats) if (typeof st?.key === 'string') s.add(st.key.toLowerCase());
-  if (Array.isArray(hist)) for (const t of (hist || []).slice(-3)) if (typeof t?.content === 'string') __ew(t.content).forEach(w => s.add(w));
-  return Array.from(s).slice(0, 12);
+  for (const w of __ew(ed?.ending?.name).slice(0, 4)) s.add(w);
+  for (const w of __ew(ed?.ending?.description).slice(0, 6)) s.add(w);
+  if (Array.isArray(hist)) for (const t of (hist || []).slice(-3)) if (typeof t?.content === 'string') for (const w of __ew(t.content).slice(0, 6)) s.add(w);
+  return Array.from(s).slice(0, 32);
 }
 
 export default async function handler(req, res) {
