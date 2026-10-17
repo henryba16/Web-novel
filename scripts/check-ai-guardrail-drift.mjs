@@ -27,7 +27,14 @@ const PINNED_GUARDRAIL_SHA256 = '7cc057618e173f6a8325bb4563e5ab91985c8acdc2d156a
 // list, so the assembled grounding snippets (and therefore this sha) changed by
 // design. Evidence: phase-02-kb-expansion_NOTE_17-10-26.md (prompt dump + 21/21
 // KB probe). Any further change here must be deliberate and recorded the same way.
-const PINNED_ANALYZE_PROMPT_SHA256 = 'ea80a63296872281fcf0738a4698c39e6a8cc7a26895a41a66de68df6f8c69c8';
+//
+// Re-pinned 2026-10-17 (owner directive): the player-facing analyze prompt was
+// de-clinicalized — no psychologist/diagnosis/personality-label wording; the AI is a
+// companion that helps the student reflect on their game choices. The assembled
+// prompt changed by design. Evidence: api/_prompts.js VERSION_ANALYZE_V2
+// (analyze-ending-grounded-2026-10-17.4) + check-ai-prompt-integrity B8 (the
+// NGUYEN TẮC AN TOÀN header and the Latin-only rule are still present).
+const PINNED_ANALYZE_PROMPT_SHA256 = '3f660da9a1003c0e91cf06aadad20cac740a09a3dfa9e12c75fe3bb588b23041';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');
