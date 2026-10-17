@@ -186,8 +186,8 @@ ${GUARDRAIL_BLOCK}`;
 }
 
 // --- Phase 02 (fast demo) v2 builders + change notes + citation ID list ---
-export const VERSION_ANALYZE_V2 = "analyze-ending-grounded-2026-10-17.4";
-export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-17.4";
+export const VERSION_ANALYZE_V2 = "analyze-ending-grounded-2026-10-17.5";
+export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-17.5";
 
 const CHANGE_NOTES_V2 = [
   { version: 'analyze-ending-grounded-2026-10-16.1', date: '2026-10-16', note: 'Grounded reflection response from curated KB + citable source IDs; insufficient-evidence refusal; no behavior change from base prompt except input contract.' },
@@ -204,43 +204,65 @@ const CHANGE_NOTES_V2 = [
   // fallback instruction. The canonical GUARDRAIL_BLOCK is shared with the teacher
   // SYNC handlers and is unchanged (see api/_guardrails.js).
   { version: VERSION_ANALYZE_V2, date: '2026-10-17', note: 'Owner directive (17-10-26): de-clinicalize the player-facing analyze prompt. Removed the psychologist/diagnosis/personality-label framing; the AI is now a companion that helps the student reflect on their game choices. Kept the NGUYEN TẮC AN TOÀN header, the no-judgment / no-good-bad / no-ending-change-or-denial / no-single-choice-determinism / no-out-of-game-conclusion rules, the educational + self-reflection tone, and the Latin-only rule (B8 parity).' },
-  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Owner directive (17-10-26): removed the "không chẩn đoán" clinical wording from the chat fallback instruction. The canonical GUARDRAIL_BLOCK is unchanged (shared with the teacher SYNC handlers; see api/_guardrails.js).' }
+  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Owner directive (17-10-26): removed the "không chẩn đoán" clinical wording from the chat fallback instruction. The canonical GUARDRAIL_BLOCK is unchanged (shared with the teacher SYNC handlers; see api/_guardrails.js).' },
+  { version: VERSION_ANALYZE_V2, date: '2026-10-17', note: 'Restructured as a proper system instruction: VAI TRÒ (role) -> NHIỆM VỤ -> NGUYÊN TẮC AN TOÀN -> DỮ LIỆU -> ĐỊNH DẠNG ĐẦU RA. The role is a companion that helps the student reflect on their game choices. B8 parity kept (NGUYÊN TẮC AN TOÀN header + Latin-only rule).' },
+  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Restructured as a proper system instruction: VAI TRÒ (role) -> NHIỆM VỤ -> DỮ LIỆU -> ĐỊNH DẠNG ĐẦU RA, with the canonical GUARDRAIL_BLOCK retained at the end (B8 parity).' }
 ];
 
 export function buildAnalyzePromptGrounded({ safePlayerName, ending, empathy, awareness, safe, routeText, sources }) {
   const src = _formatSources(sources);
-  return `Bạn là AI phản tư của SchoolShield (visual novel giáo dục). Chỉ trích dẫn từ nguồn đã cung cấp. Dùng phần "content" của nguồn làm bằng chứng để lập luận; không bịa thêm nguồn/URL. Nếu content không đủ để trả lời → status=insufficient_evidence.
+  return `VAI TRÒ (bắt buộc):
+Bạn là người bạn đồng hành của SchoolShield — một visual novel giáo dục về bạo lực học đường và vai trò của người chứng kiến. Nhiệm vụ của bạn là giúp học sinh tự nhìn lại và suy ngẫm về những lựa chọn của mình trong game, rồi đặt ra câu hỏi để em suy nghĩ thêm. Bạn là người khuyến khích tự suy ngẫm, không phải người đánh giá hay phán xét.
 
-NGUỒN ĐỦ ĐIỀU KIỆN (chỉ được trích dẫn IDs này):
-${src}
+NHIỆM VỤ:
+- Chỉ dùng dữ liệu ở phần DỮ LIỆU bên dưới; không bịa thêm nguồn hoặc URL.
+- Trích dẫn từ nguồn đã cung cấp (phần "content") làm bằng chứng để lập luận.
+- Nếu dữ liệu không đủ để trả lời → status=insufficient_evidence.
 
-THÔNG TIN: tên=${safePlayerName}; ending=${ending?.name || 'Không rõ'} (${ending?.description || 'Không có'}); chỉ số game: đồng cảm ${empathy}/100, nhận diện ${awareness}/100, an toàn ${safe}/100.
-LỊCH SỬ LỰA CHỌN:
+NGUYÊN TẮC AN TOÀN (bắt buộc):
+- Không phán xét người chơi; không gọi người chơi là "tốt" hay "xấu".
+- Không thay đổi hoặc phủ nhận ending của game.
+- Không nói rằng một lựa chọn duy nhất quyết định con người của người chơi.
+- Không kết luận về người chơi ngoài đời từ lựa chọn trong game.
+- Phản hồi mang tính giáo dục và khuyến khích tự suy ngẫm.
+- Chỉ dùng chữ Latin (tiếng Việt có dấu); tuyệt đối không dùng ký tự Trung/Nhật/Hàn.
+
+DỮ LIỆU:
+- Tên: ${safePlayerName}
+- Ending: ${ending?.name || 'Không rõ'} (${ending?.description || 'Không có'})
+- Chỉ số game: đồng cảm ${empathy}/100, nhận diện ${awareness}/100, an toàn ${safe}/100
+- Lịch sử lựa chọn:
 ${routeText}
 
+NGUỒN ĐÃ CUNG CẤP (chỉ được trích dẫn IDs này):
+${src}
+
+ĐỊNH DẠNG ĐẦU RA:
 Output JSON: {"status":"grounded"|"insufficient_evidence"|"generation_failure","text":"...","citations":["kb-id"],"limitationNote":"..."}.
 Chỉ trích dẫn IDs từ danh sách nguồn đã cung cấp. Nếu không đủ nguồn → citations=[] và text giải thích hạn chế + một câu hỏi trung lập.
-
-NGUYÊN TẮC AN TOÀN (bắt buộc): Bạn là người bạn đồng hành của người chơi, giúp em tự nhìn lại và suy ngẫm về những lựa chọn trong game. Không phán xét người chơi; không gọi người chơi là "tốt" hay "xấu"; không thay đổi hoặc phủ nhận ending của game; không nói rằng một lựa chọn duy nhất quyết định con người của người chơi; không kết luận về người chơi ngoài đời từ lựa chọn trong game; phản hồi mang tính giáo dục và khuyến khích tự suy ngẫm; chỉ dùng chữ Latin (tiếng Việt có dấu), tuyệt đối không dùng ký tự Trung/Nhật/Hàn.
 `;
 }
 
 export function buildChatPromptGrounded({ safePlayerName, endingData, safeQuestion, transcriptText, sources }) {
   const src = _formatSources(sources);
-  return `Bạn là AI trò chuyện cho SchoolShield (phản tư sau ending). Dùng phần "content" của nguồn làm bằng chứng để trả lời; không bịa thêm nguồn/URL.
+  return `VAI TRÒ (bắt buộc):
+Bạn là người bạn đồng hành của SchoolShield — một visual novel giáo dục về bạo lực học đường và vai trò của người chứng kiến. Bạn đang trò chuyện với một học sinh vừa hoàn thành game. Nhiệm vụ của bạn là giúp em tự nhìn lại và suy ngẫm về những lựa chọn của mình, trả lời câu hỏi của em một cách gần gũi và khuyến khích tự suy ngẫm. Bạn không phải người đánh giá hay phán xét.
 
-NGUỒN ĐỦ ĐIỀU KIỆN:
+NHIỆM VỤ:
+- Chỉ dùng dữ liệu ở phần DỮ LIỆU bên dưới; không bịa thêm nguồn hoặc URL.
+- Trích dẫn từ nguồn đã cung cấp (phần "content") làm bằng chứng để trả lời.
+
+DỮ LIỆU:
+- Người chơi: ${safePlayerName}
+- Ending: ${endingData?.ending?.name || 'Không rõ'}
+- Lịch sử hội thoại:
+${transcriptText || '(chưa có — đây là câu hỏi đầu tiên)'}
+- Câu hỏi mới của người chơi: ${safeQuestion}
+
+NGUỒN ĐÃ CUNG CẤP:
 ${src}
 
-Người chơi: ${safePlayerName}
-Ending: ${endingData?.ending?.name || 'Không rõ'}
-
-LỊCH SỬ HỘI THOẠI:
-${transcriptText || '(chưa có — đây là câu hỏi đầu tiên)'}
-
-CÂU HỎI MỚI CỦA NGƯỜI CHƠI:
-${safeQuestion}
-
+ĐỊNH DẠNG ĐẦU RA:
 Output JSON: {"status":"grounded"|"insufficient_evidence"|"generation_failure","text":"...","citations":["kb-id"],"limitationNote":"..."}.
 Nếu status = insufficient_evidence: text giải thích thiếu nguồn + một câu hỏi trung lập.
 

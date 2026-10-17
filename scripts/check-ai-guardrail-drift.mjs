@@ -39,7 +39,12 @@ const PINNED_GUARDRAIL_SHA256 = 'fb1d9005c402bca26833d6c47919c8bba83cd6d7b2419de
 // prompt changed by design. Evidence: api/_prompts.js VERSION_ANALYZE_V2
 // (analyze-ending-grounded-2026-10-17.4) + check-ai-prompt-integrity B8 (the
 // NGUYEN TẮC AN TOÀN header and the Latin-only rule are still present).
-const PINNED_ANALYZE_PROMPT_SHA256 = '3f660da9a1003c0e91cf06aadad20cac740a09a3dfa9e12c75fe3bb588b23041';
+// Re-pinned 2026-10-17 (owner directive): the player-facing prompts were
+// restructured as a proper system instruction (VAI TRÒ / NHIỆM VỤ / NGUYÊN TẮC AN
+// TOÀN / DỮ LIỆU / ĐỊNH DẠNG ĐẦU RA). The assembled prompt changed by design.
+// Evidence: api/_prompts.js VERSION_ANALYZE_V2 (analyze-ending-grounded-2026-10-17.5)
+// + check-ai-prompt-integrity B8 (header + Latin-only rule still present).
+const PINNED_ANALYZE_PROMPT_SHA256 = 'c0accbaa5831dc38133b28ccaeb19a24db0fa97772e69c4643affa832ddfe95c';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');
