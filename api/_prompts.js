@@ -163,17 +163,19 @@ ${GUARDRAIL_BLOCK}`;
 }
 
 // --- Phase 02 (fast demo) v2 builders + change notes + citation ID list ---
-export const VERSION_ANALYZE_V2 = "analyze-ending-grounded-2026-10-16.1";
-export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-16.1";
+export const VERSION_ANALYZE_V2 = "analyze-ending-grounded-2026-10-17.1";
+export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-17.1";
 
 const CHANGE_NOTES_V2 = [
-  { version: VERSION_ANALYZE_V2, date: '2026-10-16', note: 'Grounded reflection response from curated KB + citable source IDs; insufficient-evidence refusal; no behavior change from base prompt except input contract.' },
-  { version: VERSION_CHAT_V2, date: '2026-10-16', note: 'Grounded follow-up chat from provided source metadata only.' },
+  { version: 'analyze-ending-grounded-2026-10-16.1', date: '2026-10-16', note: 'Grounded reflection response from curated KB + citable source IDs; insufficient-evidence refusal; no behavior change from base prompt except input contract.' },
+  { version: 'chat-ending-grounded-2026-10-16.1', date: '2026-10-16', note: 'Grounded follow-up chat from provided source metadata only.' },
+  { version: VERSION_ANALYZE_V2, date: '2026-10-17', note: 'Fix: source blocks now include full content/scope/limitations/source line so the model has citable evidence text (was IDs+topics+title only, causing blanket insufficient_evidence).' },
+  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Fix: same source-content inclusion as analyze v2; chat can now ground on snippet text.' },
 ];
 
 export function buildAnalyzePromptGrounded({ safePlayerName, ending, empathy, awareness, safe, routeText, sources }) {
   const src = _formatSources(sources);
-  return `Bạn là AI phản tư của SchoolShield (visual novel giáo dục). Chỉ trích dẫn từ nguồn đã cung cấp. Nếu không đủ nguồn → status=insufficient_evidence.
+  return `Bạn là AI phản tư của SchoolShield (visual novel giáo dục). Chỉ trích dẫn từ nguồn đã cung cấp. Dùng phần "content" của nguồn làm bằng chứng để lập luận; không bịa thêm nguồn/URL. Nếu content không đủ để trả lời → status=insufficient_evidence.
 
 NGUỒN ĐỦ ĐIỀU KIỆN (chỉ được trích dẫn IDs này):
 ${src}
@@ -189,7 +191,7 @@ Chỉ trích dẫn IDs từ danh sách nguồn đã cung cấp. Nếu không đ�
 
 export function buildChatPromptGrounded({ safePlayerName, endingData, safeQuestion, transcriptText, sources }) {
   const src = _formatSources(sources);
-  return `Bạn là AI trò chuyện cho SchoolShield (phản tư sau ending).
+  return `Bạn là AI trò chuyện cho SchoolShield (phản tư sau ending). Dùng phần "content" của nguồn làm bằng chứng để trả lời; không bịa thêm nguồn/URL.
 
 NGUỒN ĐỦ ĐIỀU KIỆN:
 ${src}
@@ -205,6 +207,12 @@ Nếu status = insufficient_evidence: text giải thích thiếu nguồn + một
 function _formatSources(sources) {
   const arr = Array.isArray(sources) ? sources : [];
   if (!arr.length) return '(NO VERIFIED SOURCES SUPPLIED).';
-  return arr.map(s => 'ID=' + s.id + ' -- topics=' + (s.topics || []).join(',') + ' -- title=' + (s.title || ''))
-    .join('\n');
+  return arr.map(s => {
+    const lines = ['ID=' + s.id + ' -- title=' + (s.title || s.id || '')];
+    if (s.content) lines.push('  content: ' + String(s.content).replace(/\s+/g, ' ').trim().slice(0, 500));
+    if (s.sourceTitle) lines.push('  source: ' + s.sourceTitle + (s.sourceUrl ? ' (' + s.sourceUrl + ')' : ''));
+    if (s.scope) lines.push('  scope: ' + String(s.scope).slice(0, 200));
+    if (s.limitations) lines.push('  limitations: ' + String(s.limitations).slice(0, 200));
+    return lines.join('\n');
+  }).join('\n');
 }
