@@ -23,14 +23,20 @@
 (function () {
 	var LOW_BAND = 45;
 
+	/* "Too empathy" threshold (owner directive 17-10-26): a student whose latest
+	 * run shows very high empathy may have experienced something that made them
+	 * more empathetic and withdrawn — flag for a conversation, never a label. */
+	var HIGH_EMPATHY = 90;
+
 	/* Phase 03 B4a — teacher pilot rollback lever (single client-side switch).
-	 * false (default): the dashboard renders WITHOUT the teacher AI blocks —
-	 *   the class summary section is hidden and the per-student AI block is
-	 *   not created; no console errors, no AI calls.
+	 * false: the dashboard renders WITHOUT the teacher AI blocks — the class
+	 *   summary section is hidden and the per-student AI block is not created.
 	 * true: both AI blocks return, labeled experimental (PILOT_LABEL_TEXT).
-	 * Enable only after the Phase 03 terms-review artifact exists (A1 gate).
-	 * There is no server-side env var for this lever. */
-	var TEACHER_PILOT_ENABLED = false;
+	 * Enabled 2026-10-17 (owner directive) for the demo: the summary button and
+	 * the class/student AI blocks are now visible so the teacher flow can be
+	 * exercised end-to-end. Production rollout still awaits the A1/A4/C2 gates
+	 * (terms review, RLS dashboard check, expert review). */
+	var TEACHER_PILOT_ENABLED = true;
 
 	/* Phase 03 B3 — experimental label for the teacher AI blocks (plain
 	 * Vietnamese; must stay visible in normal and print views). */
@@ -186,6 +192,13 @@
 				flags.push({
 					kind: 'low_band',
 					text: 'Điểm thấp trong lượt chơi mới nhất (' + low.label + ': ' + low.value + '/100, dưới 45). Nên trò chuyện với em để tìm hiểu thêm.'
+				});
+			}
+			var emp = e.latest ? Number(e.latest.empathy) : NaN;
+			if (isFinite(emp) && emp >= HIGH_EMPATHY) {
+				flags.push({
+					kind: 'high_empathy',
+					text: 'Điểm đồng cảm rất cao trong lượt chơi mới nhất (Đồng cảm: ' + Math.round(emp) + '/100). Điểm đồng cảm cao bất thường có thể là dấu hiệu em đã trải qua điều gì đó — nên trò chuyện và quan sát thêm.'
 				});
 			}
 			var unfinished = (e.runs || []).filter(function (r) {
