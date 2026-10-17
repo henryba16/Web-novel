@@ -4,6 +4,12 @@ import { buildChatPrompt, VERSION_CHAT, buildChatPromptGrounded, VERSION_CHAT_V2
 import { retrieveKnowledge, KB_VERSION } from './_kb.js';
 import { GUARDRAIL_BLOCK } from './_guardrails.js';
 
+// 17-10-26 display guard (second sighting): free models sometimes answer with
+// meta-commentary about needing a "specific question" instead of the required
+// output contract. Never displayable, even inside valid JSON — treated as a
+// contract failure by the textOk gate below.
+const META_COMMENTARY_RE = /câu hỏi cụ thể|no specific question/i;
+
 function __ew(txt) { return (txt || '').toString().split(/[\s,.;:!?]+/).map(w => w.trim().toLowerCase()).filter(w => w.length >= 3); }
 function __tags(ed, q, hist) {
   const s = new Set();
@@ -120,13 +126,14 @@ export default async function handler(req, res) {
                 if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
                     // Contract guard (17-10-26): only a non-empty string text field is displayable;
                     // raw / non-text model output is never shown (kept in limitationNote only).
-                    const textOk = typeof parsed.text === 'string' && parsed.text.trim().length > 0;
+                    const textOk = typeof parsed.text === 'string' && parsed.text.trim().length > 0 && !META_COMMENTARY_RE.test(parsed.text);
                     reply = textOk ? parsed.text : '';
                     const invalid = (Array.isArray(parsed.citations) ? parsed.citations : []).some(c => !prov.includes(String(c)));
                     citations = Array.isArray(parsed.citations) ? parsed.citations.filter(c => prov.includes(String(c))) : [];
                     status = (!textOk || invalid || parsed.status !== 'grounded') ? 'insufficient_evidence' : 'grounded';
                     if (status === 'insufficient_evidence') citations = [];
-                    limitationNote = typeof parsed.limitationNote === 'string' ? parsed.limitationNote.slice(0, 300) : null;
+                    const suppressed = (!textOk && typeof parsed.text === 'string' && parsed.text.trim()) ? parsed.text.trim().slice(0, 300) : null;
+                    limitationNote = typeof parsed.limitationNote === 'string' ? parsed.limitationNote.slice(0, 300) : suppressed;
                 } else {
                     status = 'insufficient_evidence';
                     // Contract failure (non-JSON model output): never display raw text; keep it in limitationNote only.

@@ -13,6 +13,9 @@
 //   B. JSON with grounded text     → displayed verbatim (control; the guard
 //      must not over-block a well-formed answer)
 //   C. JSON without a usable text  → same safe-copy behavior as A
+//   D. valid JSON whose `text` is the reported model meta-commentary
+//      ("no specific question...") → never displayed either; same safe copy
+//      (second sighting, 17-10-26); suppressed text kept in limitationNote
 //
 // Usage: node eval/probes/provider-contract-guard-check.mjs [--out=<file>]
 // Exit 1 on any violation.
@@ -107,6 +110,17 @@ for (const endpoint of ['analyze-ending', 'chat-ending']) {
 		check(endpoint + ' C2 status classed insufficient_evidence', d.payload.status === 'insufficient_evidence', 'status=' + d.payload.status);
 		check(endpoint + ' C3 raw JSON NOT displayed', d.displayed.length > 0 && !d.displayed.includes('"status"'), JSON.stringify(d.displayed));
 		check(endpoint + ' C4 exact safe fallback copy displayed', d.displayed === SAFE_COPY[endpoint], JSON.stringify(d.displayed));
+	}
+
+	// D. Valid JSON whose text IS the reported meta-commentary (second sighting).
+	{
+		const content = JSON.stringify({ status: 'insufficient_evidence', text: META_COMMENTARY, citations: [] });
+		const d = await drive(endpoint, { type: 'ok', content });
+		check(endpoint + ' D1 http 200, no throw', !d.result.threw && d.result.status === 200, 'status=' + d.result.status + (d.result.threw ? ' threw=' + d.result.threw.message : ''));
+		check(endpoint + ' D2 status classed insufficient_evidence', d.payload.status === 'insufficient_evidence', 'status=' + d.payload.status);
+		check(endpoint + ' D3 meta commentary NOT displayed', d.displayed.length > 0 && !d.displayed.includes(META_COMMENTARY), JSON.stringify(d.displayed));
+		check(endpoint + ' D4 exact safe fallback copy displayed', d.displayed === SAFE_COPY[endpoint], JSON.stringify(d.displayed));
+		check(endpoint + ' D5 suppressed text retained in limitationNote (debug only)', typeof d.payload.limitationNote === 'string' && d.payload.limitationNote.includes('Không có câu hỏi cụ thể'), JSON.stringify(d.payload.limitationNote));
 	}
 }
 
