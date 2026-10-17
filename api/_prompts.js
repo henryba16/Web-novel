@@ -186,8 +186,8 @@ ${GUARDRAIL_BLOCK}`;
 }
 
 // --- Phase 02 (fast demo) v2 builders + change notes + citation ID list ---
-export const VERSION_ANALYZE_V2 = "analyze-ending-grounded-2026-10-17.5";
-export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-17.5";
+export const VERSION_ANALYZE_V2 = "analyze-ending-grounded-2026-10-17.6";
+export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-17.6";
 
 const CHANGE_NOTES_V2 = [
   { version: 'analyze-ending-grounded-2026-10-16.1', date: '2026-10-16', note: 'Grounded reflection response from curated KB + citable source IDs; insufficient-evidence refusal; no behavior change from base prompt except input contract.' },
@@ -206,7 +206,9 @@ const CHANGE_NOTES_V2 = [
   { version: VERSION_ANALYZE_V2, date: '2026-10-17', note: 'Owner directive (17-10-26): de-clinicalize the player-facing analyze prompt. Removed the psychologist/diagnosis/personality-label framing; the AI is now a companion that helps the student reflect on their game choices. Kept the NGUYEN TẮC AN TOÀN header, the no-judgment / no-good-bad / no-ending-change-or-denial / no-single-choice-determinism / no-out-of-game-conclusion rules, the educational + self-reflection tone, and the Latin-only rule (B8 parity).' },
   { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Owner directive (17-10-26): removed the "không chẩn đoán" clinical wording from the chat fallback instruction. The canonical GUARDRAIL_BLOCK is unchanged (shared with the teacher SYNC handlers; see api/_guardrails.js).' },
   { version: VERSION_ANALYZE_V2, date: '2026-10-17', note: 'Restructured as a proper system instruction: VAI TRÒ (role) -> NHIỆM VỤ -> NGUYÊN TẮC AN TOÀN -> DỮ LIỆU -> ĐỊNH DẠNG ĐẦU RA. The role is a companion that helps the student reflect on their game choices. B8 parity kept (NGUYÊN TẮC AN TOÀN header + Latin-only rule).' },
-  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Restructured as a proper system instruction: VAI TRÒ (role) -> NHIỆM VỤ -> DỮ LIỆU -> ĐỊNH DẠNG ĐẦU RA, with the canonical GUARDRAIL_BLOCK retained at the end (B8 parity).' }
+  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Restructured as a proper system instruction: VAI TRÒ (role) -> NHIỆM VỤ -> DỮ LIỆU -> ĐỊNH DẠNG ĐẦU RA, with the canonical GUARDRAIL_BLOCK retained at the end (B8 parity).' },
+  { version: VERSION_ANALYZE_V2, date: '2026-10-17', note: 'Citation style fix: the output instruction now forbids inline source references in the text (no kb_xxx IDs, no source names). Citations go ONLY in the citations field; the text reads as natural companion speech. Triggered by a live output that said "điều được nhấn mạnh trong tài liệu hỗ trợ bạn bè (kb_supporting_a_friend)".' },
+  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Citation style fix: same rule as analyze — no inline kb_xxx IDs or source names in the text; citations go only in the citations field.' }
 ];
 
 export function buildAnalyzePromptGrounded({ safePlayerName, ending, empathy, awareness, safe, routeText, sources }) {
@@ -239,7 +241,8 @@ ${src}
 
 ĐỊNH DẠNG ĐẦU RA:
 Output JSON: {"status":"grounded"|"insufficient_evidence"|"generation_failure","text":"...","citations":["kb-id"],"limitationNote":"..."}.
-Chỉ trích dẫn IDs từ danh sách nguồn đã cung cấp. Nếu không đủ nguồn → citations=[] và text giải thích hạn chế + một câu hỏi trung lập.
+- Viết text tự nhiên, gần gũi, như một lời phản hồi giữa hai người bạn. KHÔNG đưa ID nguồn (vd: kb_xxx) hay tên nguồn vào trong text.
+- Chỉ điền IDs nguồn đã dùng vào mục citations. Nếu không đủ nguồn → citations=[] và text giải thích hạn chế + một câu hỏi trung lập.
 `;
 }
 
@@ -264,7 +267,8 @@ ${src}
 
 ĐỊNH DẠNG ĐẦU RA:
 Output JSON: {"status":"grounded"|"insufficient_evidence"|"generation_failure","text":"...","citations":["kb-id"],"limitationNote":"..."}.
-Nếu status = insufficient_evidence: text giải thích thiếu nguồn + một câu hỏi trung lập.
+- Viết text tự nhiên, gần gũi. KHÔNG đưa ID nguồn (vd: kb_xxx) hay tên nguồn vào trong text.
+- Chỉ điền IDs nguồn đã dùng vào mục citations. Nếu status = insufficient_evidence: text giải thích thiếu nguồn + một câu hỏi trung lập.
 
 ${GUARDRAIL_BLOCK}`;
 }

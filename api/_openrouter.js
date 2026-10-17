@@ -75,7 +75,16 @@ function modelList() {
 
 	// Client loop may exceed 3 models; each individual request's native
 	// `models` array is sliced to 3 at send time (OpenRouter max).
-	return [primary, ...fallbacks].slice(0, MAX_ATTEMPTS);
+	const chain = [primary, ...fallbacks].slice(0, MAX_ATTEMPTS);
+
+	// Owner directive (17-10-26): FREE MODELS ONLY, for now. Cost control —
+	// never let a paid model id (or an env override pointing at one) reach the
+	// provider. Keep `:free` ids and the free router; drop anything else. If
+	// filtering would empty the chain, fall back to the default free chain.
+	const freeOnly = chain.filter(
+		(m) => m.endsWith(':free') || m === 'openrouter/free'
+	);
+	return freeOnly.length > 0 ? freeOnly : [DEFAULT_PRIMARY, ...DEFAULT_FALLBACKS];
 }
 
 // Statuses worth trying the NEXT model for.
