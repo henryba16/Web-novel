@@ -10,6 +10,46 @@ import { GUARDRAIL_BLOCK } from './_guardrails.js';
 // contract failure by the textOk gate below.
 const META_COMMENTARY_RE = /câu hỏi cụ thể|no specific question/i;
 
+// 17-10-26 contract recovery: `openrouter/free` routing sometimes returns reasoning
+// prose followed by the contract object ("The user wants me to ..." then {...}). The
+// naive JSON.parse(raw) then threw, so every such call degraded to insufficient_evidence
+// even though a valid object was present. Recover the first balanced {...} object
+// (string-aware) instead. Pure prose with no object still yields null, so the existing
+// guard path (safe copy displayed + raw kept only in limitationNote) is unchanged.
+function __parseModelJson(text) {
+  const s = String(text == null ? '' : text).trim();
+  if (!s) return null;
+  let direct = null;
+  try { direct = JSON.parse(s); } catch (e) { direct = null; }
+  if (direct && typeof direct === 'object' && !Array.isArray(direct)) return direct;
+  const start = s.indexOf('{');
+  if (start === -1) return null;
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  for (let i = start; i < s.length; i++) {
+    const c = s[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === '\\') esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') { inStr = true; continue; }
+    if (c === '{') depth++;
+    else if (c === '}') {
+      depth--;
+      if (depth === 0) {
+        try {
+          const candidate = JSON.parse(s.slice(start, i + 1));
+          return (candidate && typeof candidate === 'object' && !Array.isArray(candidate)) ? candidate : null;
+        } catch (e) { return null; }
+      }
+    }
+  }
+  return null;
+}
+
 function __ew(txt) { return (txt || '').toString().split(/[\s,.;:!?]+/).map(w => w.trim().toLowerCase()).filter(w => w.length >= 3); }
 function __tags(ed, q, hist) {
   const s = new Set();
@@ -122,8 +162,7 @@ export default async function handler(req, res) {
             } else {
                 const data = result.data;
                 const raw = String(data?.choices?.[0]?.message?.content || '').trim();
-                let parsed = null;
-                try { parsed = JSON.parse(raw); } catch { parsed = null; }
+                const parsed = __parseModelJson(raw);
                 const prov = Array.isArray(__retrieved.citationIds) ? __retrieved.citationIds : [];
                 if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
                     // Contract guard (17-10-26): only a non-empty string text field is displayable;

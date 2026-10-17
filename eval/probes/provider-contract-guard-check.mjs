@@ -122,6 +122,26 @@ for (const endpoint of ['analyze-ending', 'chat-ending']) {
 		check(endpoint + ' D4 exact safe fallback copy displayed', d.displayed === SAFE_COPY[endpoint], JSON.stringify(d.displayed));
 		check(endpoint + ' D5 suppressed text retained in limitationNote (debug only)', typeof d.payload.limitationNote === 'string' && d.payload.limitationNote.includes('Không có câu hỏi cụ thể'), JSON.stringify(d.payload.limitationNote));
 	}
+
+	// E. Reasoning prose WRAPPING a valid contract object (live 17-10-26: free-model
+	//    routing returned "The user wants me to ..." followed by the JSON object). The
+	//    recovery must extract the object and display the grounded text, NOT degrade.
+	{
+		const content = 'The user wants me to act as an AI companion for SchoolShield.\n' + JSON.stringify({ status: 'grounded', text: GROUNDED_MARKER, citations: [] });
+		const d = await drive(endpoint, { type: 'ok', content });
+		check(endpoint + ' E1 http 200, no throw', !d.result.threw && d.result.status === 200, 'status=' + d.result.status + (d.result.threw ? ' threw=' + d.result.threw.message : ''));
+		check(endpoint + ' E2 contract object recovered from prose (status grounded)', d.payload.status === 'grounded', 'status=' + d.payload.status);
+		check(endpoint + ' E3 grounded text displayed verbatim', d.displayed === GROUNDED_MARKER, JSON.stringify(d.displayed));
+	}
+
+	// F. Reasoning prose with NO contract object → still the safe fallback (the
+	//    recovery must never invent a contract).
+	{
+		const content = 'The user wants me to act as an AI companion. I will not comply.';
+		const d = await drive(endpoint, { type: 'ok', content });
+		check(endpoint + ' F1 status classed insufficient_evidence', d.payload.status === 'insufficient_evidence', 'status=' + d.payload.status);
+		check(endpoint + ' F2 exact safe fallback copy displayed', d.displayed === SAFE_COPY[endpoint], JSON.stringify(d.displayed));
+	}
 }
 
 const pass = checks.filter((c) => c.ok).length;
