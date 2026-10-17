@@ -118,15 +118,19 @@ export default async function handler(req, res) {
                 try { parsed = JSON.parse(raw); } catch { parsed = null; }
                 const prov = Array.isArray(__retrieved.citationIds) ? __retrieved.citationIds : [];
                 if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-                    reply = typeof parsed.text === 'string' ? parsed.text : raw;
+                    // Contract guard (17-10-26): only a non-empty string text field is displayable;
+                    // raw / non-text model output is never shown (kept in limitationNote only).
+                    const textOk = typeof parsed.text === 'string' && parsed.text.trim().length > 0;
+                    reply = textOk ? parsed.text : '';
                     const invalid = (Array.isArray(parsed.citations) ? parsed.citations : []).some(c => !prov.includes(String(c)));
                     citations = Array.isArray(parsed.citations) ? parsed.citations.filter(c => prov.includes(String(c))) : [];
-                    status = (invalid || parsed.status !== 'grounded') ? 'insufficient_evidence' : 'grounded';
+                    status = (!textOk || invalid || parsed.status !== 'grounded') ? 'insufficient_evidence' : 'grounded';
                     if (status === 'insufficient_evidence') citations = [];
                     limitationNote = typeof parsed.limitationNote === 'string' ? parsed.limitationNote.slice(0, 300) : null;
                 } else {
                     status = 'insufficient_evidence';
-                    reply = raw || '';
+                    // Contract failure (non-JSON model output): never display raw text; keep it in limitationNote only.
+                    reply = '';
                     citations = [];
                     limitationNote = raw ? raw.slice(0, 300) : null;
                 }

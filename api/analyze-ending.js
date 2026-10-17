@@ -125,14 +125,18 @@ Lựa chọn ${index + 1}:
 				try { parsed = JSON.parse(raw); } catch (e) { parsed = null; }
 				const prov = Array.isArray(__retrieved.citationIds) ? __retrieved.citationIds : [];
 				if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-					analysis = typeof parsed.text === 'string' ? parsed.text : raw;
+					// Contract guard (17-10-26): display text must be a non-empty string text field;
+					// raw / non-text model output is never displayed (kept in limitationNote only).
+					const textOk = typeof parsed.text === 'string' && parsed.text.trim().length > 0;
+					analysis = textOk ? parsed.text : '';
 					const invalid = Array.isArray(parsed.citations) && parsed.citations.some(c => !prov.includes(String(c)));
 					citations = Array.isArray(parsed.citations) ? parsed.citations.filter(c => prov.includes(String(c))) : [];
-					if (invalid) { status = 'insufficient_evidence'; citations = []; }
+					if (invalid || !textOk) { status = 'insufficient_evidence'; citations = []; }
 					else { status = (parsed.status === 'grounded') ? 'grounded' : 'insufficient_evidence'; }
 					limitationNote = typeof parsed.limitationNote === 'string' ? parsed.limitationNote.slice(0, 300) : null;
 				} else {
-					status = 'insufficient_evidence'; analysis = raw || ''; citations = []; limitationNote = raw ? raw.slice(0, 300) : null;
+					// Contract failure (non-JSON model output): never display raw text; keep it in limitationNote only.
+					status = 'insufficient_evidence'; analysis = ''; citations = []; limitationNote = raw ? raw.slice(0, 300) : null;
 				}
 				model = result.model || undefined;
 			}
@@ -144,7 +148,8 @@ Lựa chọn ${index + 1}:
 		}
 
 		if (status === 'insufficient_evidence' && !analysis) {
-			analysis = 'No reviewed sources available to verify a grounded reflection. Neutral consideration prompt for the learner: Which choice do you remember most, and how did it affect the story?';
+			// Vietnamese fallback (17-10-26): covers the no-source path AND the contract-failure path above.
+			analysis = 'Chưa thể tạo nhận xét có căn cứ từ dữ liệu hiện có. Một câu hỏi trung lập để bạn tự suy ngẫm: lựa chọn nào trong câu chuyện khiến bạn nhớ nhất, và vì sao?';
 		}
 
 		if (status === 'insufficient_evidence') {
