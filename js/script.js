@@ -934,7 +934,7 @@ monogatari.script ({
 		'show character ma bt at left with fadeIn',
 		'show character tl tti at right with fadeIn',
 		'"{{player.name}} nhìn Linh với vẻ mặt hoài nghi cho dù vậy Linh vẫn im lặng không nói nửa lời."',
-		'play school-bell2',
+		'play sound school-bell2',
 		'ma Nào, hai người, đừng nhìn nhau nữa. Chúng ta cùng về lớp nào.',
 		'tl ...',
 		'<h5>🔇 Im lặng</h5><br>Mặc dù bạn đã nhận ra điểm bất thường từ Linh nhưng vẫn chọn tiếp tục quan sát.<br>Sự im lặng kéo dài sẽ khiến bất kỳ người nào kể cả bạn thân của bạn cũng sẽ cảm thấy khó chịu<br>Thay vào đó ta có thể  bắt đầu cuộc trò chuyện bằng một vài thứ gần gũi.',

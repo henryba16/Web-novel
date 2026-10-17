@@ -25,77 +25,93 @@
 <link rel="apple-touch-icon" href="assets/icons/icon_180x180.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1a1a2e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <script src="js/analytics.js"></script>
 <script src="js/speed-insights.js" defer></script>
 <style>
-body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 900px; margin: 2rem auto; padding: 0 1rem; color: #222; }
-h1 { font-size: 1.4rem; }
-h2 { font-size: 1.15rem; margin-top: 2rem; }
-table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.92rem; }
-th, td { border: 1px solid #999; padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
-th { background: #f0f0f0; }
-.note { background: #fff8e1; border-left: 4px solid #e6a700; padding: 0.8rem 1rem; margin: 1rem 0; }
-.fill { color: #b00020; font-weight: bold; }
+    :root {
+        --paper: #fffaf3; --ink: #2d2d2d; --muted: #706d63;
+        --line: #d6baa1; --sage-dark: #596c58;
+        --serif: "Noto Serif", Georgia, "Palatino Linotype", "Book Antiqua", "DejaVu Serif", "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    .topnav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-bottom: 2rem; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
+    .topnav a { color: var(--sage-dark); font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+    .card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 2rem; margin-bottom: 2rem; }
+    @media (max-width: 480px) {
+        .wrap { padding: 1.5rem 1rem 3rem; }
+        .card { padding: 1.5rem; }
+    }
+    h1 { font-size: 1.6rem; margin: 0 0 0.5rem; }
+    h2 { font-size: 1.2rem; margin-top: 1.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--line); padding-bottom: 0.3rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.92rem; }
+    th, td { border: 1px solid var(--line); padding: 0.6rem 0.8rem; text-align: left; vertical-align: top; }
+    th { background: #f4ece1; }
+    .note { background: #fbf6ec; border-left: 4px solid var(--sage-dark); padding: 0.9rem 1.1rem; margin: 1rem 0; border-radius: 4px; font-size: 0.95rem; }
+    ul { padding-left: 1.25rem; }
+    li { margin-bottom: 0.5rem; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--sage-dark); outline-offset: 2px; border-radius: 6px; }
 </style>
 </head>
 <body>
 
-<p><a href="index.html">← Về trang chủ SchoolShield</a></p>
+<div class="wrap">
+    <nav class="topnav">
+        <a href="index.html">← Trang chủ SchoolShield</a>
+        <a href="game.html">Chơi ngay (khách)</a>
+    </nav>
 
-<h1>Phụ lục: Công cụ AI và nguồn lực sử dụng trong SchoolShield</h1>
+    <div class="card">
+        <h1>Phụ lục: Công cụ AI và nguồn lực sử dụng trong SchoolShield</h1>
+        <div class="note">
+            Mọi thông tin dưới đây là báo cáo trung thực về quá trình sử dụng AI, API, thư viện và mã nguồn mở trong dự án.
+        </div>
 
-<div class="note">
-Mọi thông tin dưới đây là báo cáo trung thực về quá trình sử dụng AI,
-API, thư viện và mã nguồn mở trong dự án.
+        <h2>1. Công cụ AI tham gia phát triển</h2>
+        <table>
+        <tr><th>Công cụ</th><th>Nhà cung cấp</th><th>Dùng cho</th><th>Ghi chú kiểm chứng</th></tr>
+        <tr><td>OpenCode (OmniRoute <code>auto/coding</code>)</td><td>OpenCode / OmniRoute</td><td>Hỗ trợ lập trình agentic, thiết lập harness RIPER-5, tối ưu kiến trúc AI hai tầng, tích hợp Knowledge Base (KB v2) và cơ chế bảo mật ranh giới</td><td>Hệ thống coding agent chạy qua OmniRoute trong môi trường phát triển OpenCode</td></tr>
+        <tr><td>ChatGPT</td><td>OpenAI</td><td>Phác thảo storyboard, gợi ý thoại và nhánh lựa chọn, debug code, giải thích tài liệu kỹ thuật</td><td>Dùng luân phiên tùy thời điểm</td></tr>
+        <tr><td>Claude</td><td>Anthropic</td><td>Rà soát code, kiểm tra logic game (storage, API ending), hỗ trợ viết tài liệu quy chuẩn</td><td>Đối chiếu các mốc tiến độ dự án</td></tr>
+        <tr><td>Gemini / Grok</td><td>Google / xAI</td><td>Dự phòng kiểm tra logic nhánh truyện, tài liệu và debug kỹ thuật</td><td>Chuỗi dự phòng khi cần thiết</td></tr>
+        <tr><td>Dreamina / Gemini Nano</td><td>ByteDance / Google</td><td>Tạo và nâng chất lượng (enhance) sprite nhân vật</td><td>Xử lý hình ảnh trong thư mục <code>assets/</code></td></tr>
+        </table>
+        <p>Quy tắc ghi công trung thực: storyboard và phần lớn code do bạn tự viết — các AI trên hỗ trợ trong các khâu kỹ thuật, kịch bản và testing; quyết định thiết kế và nội dung cuối cùng luôn thuộc về bạn.</p>
+
+        <h2>2. API AI trong sản phẩm (runtime)</h2>
+        <table>
+        <tr><th>API</th><th>Nhà cung cấp</th><th>Dùng cho</th><th>Cấu hình</th></tr>
+        <tr><td>OpenRouter (<code>openrouter/free</code>)</td><td>OpenRouter</td><td><code>api/analyze-ending.js</code> (phản tư học sinh), <code>api/chat-ending.js</code> (trò chuyện đồng hành), <code>api/summarize-class.js</code> & <code>api/summarize-student.js</code> (tóm tắt giáo viên)</td><td><code>OPENROUTER_API_KEY</code> (server-side, Vercel env, không commit)</td></tr>
+        </table>
+
+        <h2>3. Thư viện và framework</h2>
+        <table>
+        <tr><th>Thư viện</th><th>Phiên bản</th><th>Dùng cho</th></tr>
+        <tr><td>Monogatari (vendored, <code>engine/</code>)</td><td>Bundled (không qua npm)</td><td>Visual novel engine</td></tr>
+        <tr><td>Electron / Electrobun</td><td>^42.4.0 / ^1.18.1</td><td>Vỏ ứng dụng desktop đa nền tảng</td></tr>
+        <tr><td>Supabase JS Client</td><td>Bundled</td><td>Xác thực học sinh/giáo viên và đồng bộ dữ liệu lớp học qua RLS</td></tr>
+        <tr><td>@vercel/analytics / speed-insights</td><td>^2.0.1 / ^2.0.0</td><td>Phân tích và đo hiệu năng web</td></tr>
+        </table>
+
+        <h2>4. Dữ liệu và Bản quyền</h2>
+        <ul>
+        <li><strong>Kịch bản & Lựa chọn</strong>: Do nhóm tự viết trong <code>js/script.js</code>, có sự hỗ trợ của các công cụ AI trong việc phác thảo và kiểm tra logic.</li>
+        <li><strong>Asset hình/âm (<code>assets/</code>)</strong>: Xử lý theo quy trình kết hợp công cụ AI (phi thương mại) và chỉnh sửa thủ công trong GIMP.</li>
+        <li><strong>Cơ sở tri thức (KB v2)</strong>: 17 mục nghiên cứu khoa học quốc tế đã qua thẩm duyệt, trích dẫn minh bạch cho học sinh và giáo viên.</li>
+        </ul>
+
+        <h2>5. Mã nguồn</h2>
+        <ul>
+        <li>Repo dự án: <a href="https://github.com/henryba16/Web-novel.git" target="_blank" rel="noopener">GitHub Repository</a></li>
+        <li>Engine Monogatari: Mã nguồn mở, giấy phép MIT, bản quyền Diana Islas Ocampo (xem <code>engine/LICENSE</code>).</li>
+        <li>Giấy phép dự án: MIT (khai báo trong <code>package.json</code>).</li>
+        </ul>
+    </div>
 </div>
-
-<h2>1. Công cụ AI tham gia phát triển</h2>
-<table>
-<tr><th>Công cụ</th><th>Nhà cung cấp</th><th>Dùng cho</th><th>Ghi chú kiểm chứng</th></tr>
-<tr><td>OpenCode agent (Muse Spark)</td><td>OpenCode / Meta</td><td>Thiết lập harness, redesign landing page, chatbot ending, làm mới game shell, kiểm tra sprite, tài liệu README</td><td>Lịch sử làm việc trong phiên phát triển; các commit sau <code>18d068c</code></td></tr>
-<tr><td>ChatGPT</td><td>OpenAI</td><td>Công cụ chính: phác thảo storyboard, gợi ý thoại và nhánh lựa chọn, debug code, giải thích tài liệu kỹ thuật</td><td>Dùng luân phiên với các AI dưới đây tùy thời điểm</td></tr>
-<tr><td>Claude</td><td>Anthropic</td><td>Rà soát code, kiểm tra logic game (storage, API ending), hỗ trợ viết tài liệu</td><td>Đối chiếu commit <code>bedb1b6</code> trở đi</td></tr>
-<tr><td>Gemini</td><td>Google</td><td>Dự phòng khi Grok quá tải: cùng storyboard, kiểm tra logic nhánh truyện, tài liệu</td><td>Chuỗi dự phòng: ChatGPT → Grok → Gemini</td></tr>
-<tr><td>Grok</td><td>xAI</td><td>Dự phòng khi ChatGPT quá tải: tiếp tục cùng storyboard, debug, hỏi đáp kỹ thuật</td><td>Chuỗi dự phòng: ChatGPT → Grok → Gemini</td></tr>
-<tr><td>Dreamina</td><td>CapCut / ByteDance</td><td>Tạo 1 ảnh tổng hợp chứa toàn bộ sprite của mỗi nhân vật</td><td>File gốc trong <code>assets/</code> trước khi cắt</td></tr>
-<tr><td>Gemini Nano Banana</td><td>Google</td><td>Nâng chất lượng (enhance) từng sprite sau khi cắt</td><td>Chạy trên ảnh sprite đơn</td></tr>
-<tr><td>GIMP</td><td>GNU (miễn phí)</td><td>Chỉnh sửa, căn cắt sprite thủ công sau enhance</td><td>File PNG cuối trong <code>assets/characters/</code></td></tr>
-</table>
-<p>Quy tắc ghi công trung thực: storyboard và phần lớn code do bạn tự viết — các AI trên dùng luân phiên cho cùng các khâu (kịch bản, hình ảnh, code, testing) tùy công cụ nào khả dụng lúc đó; AI chỉ hỗ trợ, quyết định cuối cùng là của bạn.</p>
-
-<h2>2. API AI trong sản phẩm (runtime)</h2>
-<table>
-<tr><th>API</th><th>Nhà cung cấp</th><th>Dùng cho</th><th>Key</th></tr>
-<tr><td>OpenRouter (<code>openrouter/free</code>)</td><td>OpenRouter</td><td><code>api/analyze-ending.js</code>: phân tích ending; <code>api/chat-ending.js</code>: chatbot follow-up</td><td><code>OPENROUTER_API_KEY</code> (server-side, Vercel env, không commit)</td></tr>
-</table>
-
-<h2>3. Thư viện và framework</h2>
-<table>
-<tr><th>Thư viện</th><th>Phiên bản</th><th>Dùng cho</th></tr>
-<tr><td>Monogatari (vendored, <code>engine/</code>)</td><td>Bundled (không qua npm)</td><td>Visual novel engine</td></tr>
-<tr><td>Electron</td><td>^42.4.0</td><td>Vỏ desktop (<code>engine/electron/</code>)</td></tr>
-<tr><td>electron-builder</td><td>^26.15.3</td><td>Đóng gói Win/Mac/Linux</td></tr>
-<tr><td>@electron/notarize</td><td>^3.1.1</td><td>Notarize bản macOS</td></tr>
-<tr><td>Electrobun</td><td>^1.18.1</td><td>Vỏ desktop thay thế</td></tr>
-<tr><td>@vercel/analytics</td><td>^2.0.1</td><td>Phân tích lượt dùng web</td></tr>
-<tr><td>@vercel/speed-insights</td><td>^2.0.0</td><td>Đo hiệu năng web</td></tr>
-<tr><td>dotenv (dev)</td><td>^16.4.5</td><td>Biến môi trường dev</td></tr>
-<tr><td>Bun / Vercel</td><td>(môi trường)</td><td>Dev server, build web, deploy + serverless <code>api/</code></td></tr>
-</table>
-
-<h2>4. Dữ liệu</h2>
-<ul>
-<li>Kịch bản, thoại, nhánh lựa chọn: nhóm tự viết trong <code>js/script.js</code>, có sự hỗ trợ luân phiên của ChatGPT/Grok/Gemini/Claude ở khâu phác thảo, gợi ý thoại và debug.</li>
-<li>Asset hình/âm (<code>assets/</code>): vẽ tay kết hợp AI theo quy trình — Dreamina tạo 1 ảnh tổng hợp toàn bộ sprite của mỗi nhân vật, cắt thành từng sprite đơn, enhance bằng Gemini Nano Banana, chỉnh sửa cuối trong GIMP. <span>Quyền sử dụng: asset do nhóm tự tạo (MIT); asset AI tuân theo điều khoản của nhà cung cấp (Dreamina/Google) và dự án chỉ dùng phi thương mại.</span></li>
-<li>Không dùng dataset huấn luyện hay dữ liệu người dùng thật; chỉ số game chỉ phản ánh lựa chọn mô phỏng.</li>
-</ul>
-
-<h2>5. Mã nguồn</h2>
-<ul>
-<li>Repo dự án: https://github.com/henryba16/Web-novel.git</li>
-<li>Engine Monogatari: mã nguồn mở, giấy phép MIT, bản quyền Diana Islas Ocampo (xem <code>engine/LICENSE</code>); <code>engine/core/</code> và <code>engine/debug/</code> giữ nguyên.</li>
-<li>Giấy phép dự án: MIT (khai báo trong <code>package.json</code>).</li>
-</ul>
 
 </body>
 </html>

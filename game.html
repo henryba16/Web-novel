@@ -98,6 +98,25 @@
 		<script defer src="./js/cloud-auth.js"></script>
 		<script defer src="./js/cloud-hook.js"></script>
 		<style>
+			html, body {
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				position: fixed;
+				touch-action: manipulation;
+			}
+			#monogatari {
+				width: 100vw;
+				height: 100vh;
+				max-width: 100vw;
+				max-height: 100vh;
+				overflow: hidden;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
 			.cloud-menu-entry { display: flex; justify-content: center; margin-top: 0.9rem; }
 			.cloud-menu-entry button { white-space: nowrap; max-width: 100%; }
 			.cloud-save-sync {

@@ -14,51 +14,52 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --paper: #fffaf3; --ink: #2d2d2d; --muted: #706d63;
-            --line: #d6baa1; --sage-dark: #596c58; --sage-light: #eef1e8;
-            --serif: "Noto Serif", Georgia, "Palatino Linotype", "Book Antiqua", "DejaVu Serif", "Times New Roman", serif;
+            --paper: #ffffff; --ink: #1e242b; --muted: #64748b;
+            --line: #e2e8f0; --sage-dark: #2f4f4f; --sage-light: #f1f5f9;
+            --accent: #0f766e; --card-bg: #ffffff;
+            --serif: "Noto Serif", Georgia, serif;
         }
         * { box-sizing: border-box; }
-        body { font-family: var(--serif); background: #f7f0e8; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.7; }
-        .wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
-        .topnav { display: flex; gap: 0.5rem 1.25rem; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 1rem; }
-        .topnav a, .topnav button.linklike { color: var(--sage-dark); font-weight: 700; text-decoration: none; font-size: 0.9rem; background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
-        .card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 2rem; margin-bottom: 2rem; }
+        body { font-family: var(--serif); background: #f8fafc; color: var(--ink); margin: 0; min-height: 100vh; line-height: 1.6; }
+        .wrap { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+        .topnav { display: flex; gap: 0.5rem 1.5rem; align-items: center; margin-bottom: 2.5rem; flex-wrap: wrap; background: #fff; padding: 1rem 1.5rem; border-radius: 12px; border: 1px solid var(--line); }
+        .topnav a, .topnav button.linklike { color: var(--accent); font-weight: 700; text-decoration: none; font-size: 0.9rem; background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
+        .card { background: var(--card-bg); border: 1px solid var(--line); border-radius: 16px; padding: 2.5rem; margin-bottom: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02); }
         @media (max-width: 480px) {
-            .wrap { padding: 1.5rem 1rem 3rem; }
-            .card { padding: 1.5rem; }
+            .wrap { padding: 1rem; }
+            .card { padding: 1.25rem; }
         }
-        h1 { font-size: 1.6rem; margin: 0 0 0.5rem; line-height: 1.4; text-wrap: balance; }
-        h2 { font-size: 1.15rem; margin: 0 0 1.25rem; line-height: 1.45; }
-        .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1rem; }
-        label { display: block; font-size: 0.85rem; font-weight: 700; margin: 0.75rem 0 0.25rem; }
-        input, select { width: 100%; padding: 0.7rem 0.8rem; font-size: 1rem; font-family: inherit; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
-        button.action { display: inline-block; margin-top: 1rem; padding: 0.7rem 1.4rem; font-size: 0.9rem; font-weight: 700; font-family: inherit; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; cursor: pointer; }
-        button.action:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
+        h1 { font-size: 1.8rem; margin: 0 0 0.5rem; letter-spacing: -0.02em; }
+        h2 { font-size: 1.25rem; margin: 0 0 1.25rem; letter-spacing: -0.01em; color: #0f172a; border-bottom: 2px solid var(--sage-light); padding-bottom: 0.5rem; }
+        .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1.25rem; }
+        label { display: block; font-size: 0.85rem; font-weight: 700; margin: 0.75rem 0 0.35rem; color: #334155; }
+        input, select { width: 100%; padding: 0.75rem 1rem; font-size: 0.95rem; font-family: inherit; border: 1px solid var(--line); border-radius: 8px; background: #f8fafc; color: var(--ink); transition: all 0.2s; }
+        input:focus, select:focus { outline: none; border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1); }
+        button.action { display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; font-size: 0.9rem; font-weight: 700; font-family: inherit; color: #fff; background: var(--accent); border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        button.action:hover { background: #115e59; transform: translateY(-1px); }
         button.action[disabled] { opacity: 0.55; cursor: wait; }
-        button.mini, a.mini { margin: 0.25rem 0.5rem 0.25rem 0; padding: 0.35rem 0.9rem; font-size: 0.8rem; }
-        a.mini { text-decoration: none; display: inline-block; color: var(--paper); background: var(--ink); border: 1px solid var(--ink); border-radius: 999px; font-weight: 700; font-family: inherit; }
-        a.mini:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
-        /* Quiet anchor-row mininav (replaces the pill bar): plain anchors
-           on a hairline rule. All section ids unchanged. */
-        .dash-mininav { background: transparent; border: none; border-bottom: 1px solid var(--line); border-radius: 0; padding: 0.25rem 0 0.75rem; margin-bottom: 1rem; display: flex; gap: 0.5rem 1.5rem; flex-wrap: wrap; font-size: 0.85rem; }
-        .dash-mininav a { color: var(--sage-dark); font-weight: 700; text-decoration: none; }
-        .dash-mininav a:hover { text-decoration: underline; text-underline-offset: 3px; }
+        button.mini, a.mini { margin: 0.25rem 0.5rem 0.25rem 0; padding: 0.4rem 1rem; font-size: 0.8rem; }
+        a.mini { text-decoration: none; display: inline-block; color: #fff; background: var(--accent); border: none; border-radius: 6px; font-weight: 700; font-family: inherit; }
+        a.mini:hover { background: #115e59; }
+        /* Clean Modern Mininav */
+        .dash-mininav { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 0.75rem 1.25rem; margin-bottom: 2rem; display: flex; gap: 1rem 2rem; flex-wrap: wrap; font-size: 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .dash-mininav a { color: var(--accent); font-weight: 700; text-decoration: none; transition: color 0.2s; }
+        .dash-mininav a:hover { color: #115e59; text-decoration: underline; text-underline-offset: 4px; }
         .table-scroll { overflow-x: auto; }
-        details.roster-collapse { margin-top: 1rem; }
+        details.roster-collapse { margin-top: 1.5rem; border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.25rem; background: #fafafa; }
         details.roster-collapse > summary {
-            cursor: pointer; font-weight: 700; font-size: 1rem; color: var(--ink);
+            cursor: pointer; font-weight: 700; font-size: 1rem; color: var(--ink); outline: none;
         }
         details.roster-collapse #roster-list {
-            max-height: 320px; overflow-y: auto; padding-right: 0.25rem;
+            max-height: 320px; overflow-y: auto; padding-right: 0.25rem; margin-top: 0.75rem;
         }
-        .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; }
-        .status.ok { color: var(--sage-dark); }
-        .status.err { color: #9c3b2e; }
+        .status { margin-top: 0.9rem; font-size: 0.88rem; min-height: 1.4em; padding: 0.5rem; border-radius: 6px; }
+        .status.ok { color: #065f46; background: #d1fae5; }
+        .status.err { color: #991b1b; background: #fee2e2; }
 
         /* Global a11y one-liners: visible focus, press feedback, stable numerals. */
         a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
-            outline: 3px solid #596c58;
+            outline: 3px solid var(--accent);
             outline-offset: 2px;
             border-radius: 6px;
         }
@@ -69,40 +70,38 @@
         @media (prefers-reduced-motion: reduce) {
             .stat-fill, .skeleton { transition: none !important; animation: none !important; }
         }
-        .classrow { border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; background: var(--sage-light); }
-        .classrow h3 { margin: 0 0 0.25rem; font-size: 1.05rem; }
-        .code { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.2em; }
-        .member { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; padding: 0.4rem 0; border-top: 1px dashed var(--line); font-size: 0.88rem; flex-wrap: wrap; }
-        .empty { border: 1px dashed var(--line); border-radius: 12px; padding: 1.5rem; text-align: center; color: var(--muted); margin-top: 1rem; }
-        .student-box { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; }
-        .row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: end; }
-        .row > div { flex: 1 1 200px; }
-        h3 { font-size: 1rem; margin: 2rem 0 0.75rem; line-height: 1.45; }
-        /* Ending-style bars (visual parity with ending.html .stat-*):
-           translucent track, sage fill, tag + value per row. No chart lib. */
-        .stat-row { margin-bottom: 1.1rem; }
+        .classrow { border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem; margin-top: 1rem; background: var(--sage-light); box-shadow: 0 1px 2px rgba(0,0,0,0.01); }
+        .classrow h3 { margin: 0 0 0.5rem; font-size: 1.1rem; color: #0f172a; }
+        .code { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.15em; color: var(--accent); }
+        .member { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; padding: 0.5rem 0; border-top: 1px dashed var(--line); font-size: 0.9rem; flex-wrap: wrap; }
+        .empty { border: 2px dashed var(--line); border-radius: 12px; padding: 2rem; text-align: center; color: var(--muted); margin-top: 1rem; background: #fafafa; }
+        .student-box { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem; margin-top: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: end; }
+        .row > div { flex: 1 1 220px; }
+        h3 { font-size: 1.1rem; margin: 1.75rem 0 0.75rem; color: #1e293b; }
+        /* Ending-style bars */
+        .stat-row { margin-bottom: 1.25rem; }
         .stat-row:last-child { margin-bottom: 0; }
-        .stat-top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-bottom: 0.4rem; font-size: 0.88rem; }
-        .stat-name { font-weight: 700; }
-        .stat-tag { color: var(--sage-dark); font-size: 0.78rem; margin-left: auto; }
-        .stat-value { color: var(--muted); font-size: 0.82rem; }
-        .stat-track { height: 10px; border-radius: 999px; background: var(--sage-light); border: 1px solid var(--line); overflow: visible; position: relative; }
-        .stat-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #909f8f, var(--sage-dark)); }
-        .stat-mean { position: absolute; top: -3px; bottom: -3px; width: 3px; border-radius: 2px; background: #7b604a; }
-        .roster-row { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; padding: 0.6rem 0; border-top: 1px dashed var(--line); font-size: 0.88rem; flex-wrap: wrap; }
-        .roster-name { font-weight: 700; }
-        .roster-meta { color: var(--muted); font-size: 0.82rem; }
-        /* Direction A fold-in: square stamp pills — 4px radius,
-           uppercase, letterspaced. Class name unchanged. */
-        .pill { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 4px; padding: 0.15rem 0.6rem; background: var(--sage-light); color: var(--sage-dark); }
-        .flag { border: 1px solid var(--line); border-left: 4px solid var(--sage-dark); border-radius: 10px; padding: 0.6rem 0.9rem; margin-top: 0.6rem; background: #fff; font-size: 0.88rem; }
+        .stat-top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-bottom: 0.4rem; font-size: 0.9rem; }
+        .stat-name { font-weight: 700; color: #334155; }
+        .stat-tag { color: var(--accent); font-size: 0.8rem; margin-left: auto; font-weight: 600; }
+        .stat-value { color: var(--muted); font-size: 0.85rem; }
+        .stat-track { height: 12px; border-radius: 999px; background: #e2e8f0; overflow: visible; position: relative; }
+        .stat-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #14b8a6, var(--accent)); }
+        .stat-mean { position: absolute; top: -3px; bottom: -3px; width: 4px; border-radius: 2px; background: #f59e0b; box-shadow: 0 0 4px rgba(245, 158, 11, 0.5); }
+        .roster-row { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; padding: 0.75rem 0.5rem; border-top: 1px solid var(--line); font-size: 0.9rem; flex-wrap: wrap; transition: background 0.15s; border-radius: 6px; }
+        .roster-row:hover { background: #f8fafc; padding-left: 0.75rem; padding-right: 0.75rem; }
+        .roster-name { font-weight: 700; color: #0f172a; }
+        .roster-meta { color: var(--muted); font-size: 0.85rem; }
+        .pill { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 6px; padding: 0.2rem 0.65rem; background: #ccfbf1; color: #0f766e; }
+        .flag { border: 1px solid var(--line); border-left: 4px solid #f59e0b; border-radius: 10px; padding: 0.85rem 1rem; margin-top: 0.75rem; background: #fffbeb; font-size: 0.9rem; box-shadow: 0 1px 2px rgba(0,0,0,0.01); }
         .choice-list { list-style: none; margin: 0; padding: 0; }
-        .choice-list li { padding: 0.6rem 0; border-bottom: 1px solid var(--line); font-size: 0.86rem; }
+        .choice-list li { padding: 0.75rem 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
         .choice-list li:last-child { border-bottom: none; padding-bottom: 0; }
-        .choice-scene { color: var(--muted); font-size: 0.78rem; display: block; margin-bottom: 0.2rem; }
-        table.hist { width: 100%; border-collapse: collapse; font-size: 0.84rem; margin-top: 0.75rem; border-top: 1px solid var(--line); }
-        table.hist th, table.hist td { text-align: left; padding: 0.5rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
-        table.hist th { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+        .choice-scene { color: var(--muted); font-size: 0.8rem; display: block; margin-bottom: 0.2rem; font-weight: 500; }
+        table.hist { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 1rem; border-top: 1px solid var(--line); }
+        table.hist th, table.hist td { text-align: left; padding: 0.75rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+        table.hist th { font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); background: #f8fafc; }
     </style>
 </head>
 <body>
@@ -772,7 +771,7 @@
                      * is off (default), no AI block is created at all. */
                     if (window.CloudDashboard.TEACHER_PILOT_ENABLED) {
                         var aiH = document.createElement('h3');
-                        aiH.textContent = 'Ghi chú AI';
+                        aiH.textContent = 'Phân tích học sinh';
                         mount.appendChild(aiH);
                         var aiLbl = document.createElement('p');
                         aiLbl.className = 'sub pilot-note';
@@ -781,13 +780,13 @@
                         var aiBtn = document.createElement('button');
                         aiBtn.className = 'action mini';
                         aiBtn.type = 'button';
-                        aiBtn.textContent = 'Tạo ghi chú AI';
+                        aiBtn.textContent = 'Tạo phân tích học sinh';
                         var aiStatus = document.createElement('p');
                         aiStatus.className = 'status';
                         var aiOut = document.createElement('div');
                         var aiInit = document.createElement('p');
                         aiInit.className = 'sub';
-                        aiInit.textContent = 'Chưa tạo ghi chú.';
+                        aiInit.textContent = 'Chưa tạo phân tích học sinh.';
                         aiOut.appendChild(aiInit);
                         mount.appendChild(aiBtn);
                         mount.appendChild(aiStatus);
@@ -797,7 +796,7 @@
                             var cid = dashSelect.value;
                             if (!sid || !cid) {
                                 aiStatus.className = 'status err';
-                                aiStatus.textContent = 'Hãy chọn lớp và học sinh trước khi tạo ghi chú.';
+                                aiStatus.textContent = 'Hãy chọn lớp và học sinh trước khi tạo phân tích.';
                                 return;
                             }
                             if (!window.CloudDashboard.hasMinimumData(runs)) {

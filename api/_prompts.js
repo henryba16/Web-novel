@@ -132,6 +132,7 @@ khoảng 150-250 từ, theo đúng 4 mục sau:
    1-2 câu hỏi gợi mở để giáo viên trò chuyện thêm với em.
 
 Giọng văn trung lập, tôn trọng học sinh.
+TUYỆT ĐỐI KHÔNG xuất quá trình suy nghĩ (chain-of-thought), KHÔNG giải thích, KHÔNG viết lời dẫn; đi thẳng vào 4 mục yêu cầu.
 
 ${GUARDRAIL_BLOCK}`;
 }
@@ -189,6 +190,7 @@ Bắt buộc phải có 4 mục sau theo đúng thứ tự (có thể thêm các
 (Mô hình có thể bổ sung thêm mục khác nếu cần, ví dụ: 5. GỢI Ý TRÒ CHUYỆN để đề xuất chủ đề thảo luận SEL cho lớp).
 
 Giọng văn trung lập, tôn trọng học sinh.
+TUYỆT ĐỐI KHÔNG xuất quá trình suy nghĩ (chain-of-thought), KHÔNG giải thích, KHÔNG viết lời dẫn; đi thẳng vào 4 mục yêu cầu.
 
 ${GUARDRAIL_BLOCK}`;
 }
@@ -284,10 +286,10 @@ DỮ LIỆU (tham khảo, không bắt buộc phải dùng hết):
 export function buildChatPromptGrounded({ safePlayerName, endingData, safeQuestion, transcriptText, sources }) {
   const src = _formatSources(sources);
   return `VAI TRÒ (bắt buộc):
-Bạn là người bạn đồng hành của SchoolShield — một visual novel giáo dục về bạo lực học đường và vai trò của người chứng kiến. Bạn đang trò chuyện với một học sinh vừa hoàn thành game. Nhiệm vụ của bạn là giúp em tự nhìn lại và suy ngẫm về những lựa chọn của mình, trả lời câu hỏi của em một cách gần gũi và khuyến khích tự suy ngẫm. Bạn không phải người đánh giá hay phán xét.
+Bạn là người bạn đồng hành của SchoolShield — một visual novel giáo dục về bạo lực học đường và vai trò của người chứng kiến. Bạn đang trò chuyện với một học sinh vừa hoàn thành game. Nhiệm vụ của bạn là giải đáp câu hỏi của em (ví dụ: khi em hỏi "tại sao mình đã gặp bạn đâu?" hoặc thắc mắc về các tình huống, nhân vật trong câu chuyện) một cách gần gũi, thực tế và gắn liền với bối cảnh của visual novel ("Vệt nắng cuối hành lang"). Bạn không phải người đánh giá hay phán xét.
 
 NHIỆM VỤ:
-- Chỉ dùng dữ liệu ở phần DỮ LIỆU bên dưới; không bịa thêm nguồn hoặc URL.
+- Chỉ dùng dữ liệu ở phần DỮ LIỆU và NGUỒN ĐÃ CUNG CẤP bên dưới để trả lời đúng trọng tâm câu hỏi của người chơi ("${safeQuestion}"). Không bịa thêm thông tin ngoài lề không có căn cứ.
 - Trích dẫn từ nguồn đã cung cấp (phần "content") làm bằng chứng để trả lời.
 
 DỮ LIỆU:
@@ -302,7 +304,7 @@ ${src}
 
 ĐỊNH DẠNG ĐẦU RA:
 Output JSON: {"status":"grounded"|"insufficient_evidence"|"generation_failure","text":"...","citations":["kb-id"],"limitationNote":"..."}.
-- Viết text tự nhiên, gần gũi. KHÔNG đưa ID nguồn (vd: kb_xxx) hay tên nguồn vào trong text.
+- Viết text tự nhiên, gần gũi, trực tiếp trả lời câu hỏi của người chơi. KHÔNG đưa ID nguồn (vd: kb_xxx) hay tên nguồn vào trong text.
 - Chỉ điền IDs nguồn đã dùng vào mục citations. Nếu status = insufficient_evidence: text giải thích thiếu nguồn + một câu hỏi trung lập.
 
 ${GUARDRAIL_BLOCK}`;

@@ -251,38 +251,63 @@
 		return isFinite(t) ? t : -1;
 	}
 
-	/* Upload local slots whose date differs from the last push. */
+	/* Upload local slots whose date differs from the last push, or delete cloud slots whose local counterpart was removed. */
 	async function pushChanged(profile) {
 		var pushed = loadPushed();
 		var found = await readLocalSlots();
-		var keys = Object.keys(found.slots);
-		if (!found.db || !keys.length) {
-			return { uploaded: 0 };
-		}
 		var creds = await credentials(profile);
-		if (!creds) {
+		if (!creds || !found.db) {
 			return { uploaded: 0 };
 		}
 		var token = creds.token;
 		var studentId = creds.studentId;
 		var uploaded = 0;
-		for (var i = 0; i < keys.length; i++) {
-			var rec = found.slots[keys[i]];
-			if (pushed[keys[i]] === rec.date) {
+
+		var localKeys = Object.keys(found.slots);
+		var localKeySet = {};
+		for (var k = 0; k < localKeys.length; k++) {
+			localKeySet[localKeys[k]] = true;
+		}
+
+		// 1. Check for deleted slots: any slot previously pushed that no longer exists locally
+		var pushedKeys = Object.keys(pushed);
+		for (var p = 0; p < pushedKeys.length; p++) {
+			var slotKey = pushedKeys[p];
+			if (!localKeySet[slotKey]) {
+				// Local slot was deleted! Delete it from cloud save_slots table
+				try {
+					await window.CloudClient.rest('save_slots', {
+						method: 'DELETE',
+						params: { student_id: 'eq.' + studentId, slot_key: 'eq.' + slotKey },
+						token: token
+					});
+				} catch (e) {
+					/* ignore network/delete error silently */
+				}
+				delete pushed[slotKey];
+				uploaded += 1;
+			}
+		}
+
+		// 2. Push created or modified slots
+		for (var i = 0; i < localKeys.length; i++) {
+			var sKey = localKeys[i];
+			var rec = found.slots[sKey];
+			if (pushed[sKey] === rec.date) {
 				continue;
 			}
 			await window.CloudClient.rest('save_slots', {
 				method: 'POST',
 				body: {
 					student_id: studentId,
-					slot_key: keys[i],
+					slot_key: sKey,
 					data: rec,
 					updated_at: new Date().toISOString()
 				},
 				prefer: 'resolution=merge-duplicates,return=minimal',
 				token: token
 			});
-			pushed[keys[i]] = rec.date;
+			pushed[sKey] = rec.date;
 			uploaded += 1;
 		}
 		storePushed(pushed);
