@@ -176,7 +176,9 @@
             </details>
             <h3>Tổng hợp cả lớp</h3>
             <div id="agg-box"><p class="sub">Chưa tải số liệu.</p></div>
+            <div id="ai-class-block">
             <h3>Tóm tắt AI cả lớp</h3>
+            <p class="sub pilot-note" id="ai-class-pilot" hidden></p>
             <p class="sub">Tóm tắt xu hướng cả lớp bằng tiếng Việt (cần ít nhất 1 lượt chơi hoàn thành).</p>
             <div class="row">
                 <div style="flex: 0 0 auto;">
@@ -186,6 +188,7 @@
             </div>
             <p class="status" id="ai-class-status" role="status" aria-live="polite"></p>
             <div id="ai-class-out"><p class="sub">Chưa tạo tóm tắt.</p></div>
+            </div>
             <h3>Chi tiết học sinh</h3>
             <div id="student-detail"><p class="sub">Chọn một học sinh trong danh sách để xem chi tiết.</p></div>
         </section>
@@ -764,56 +767,64 @@
                         });
                         mount.appendChild(cul);
                     }
-                    /* Phase 4: on-demand per-student AI note (min-data gate). */
-                    var aiH = document.createElement('h3');
-                    aiH.textContent = 'Ghi chú AI';
-                    mount.appendChild(aiH);
-                    var aiBtn = document.createElement('button');
-                    aiBtn.className = 'action mini';
-                    aiBtn.type = 'button';
-                    aiBtn.textContent = 'Tạo ghi chú AI';
-                    var aiStatus = document.createElement('p');
-                    aiStatus.className = 'status';
-                    var aiOut = document.createElement('div');
-                    var aiInit = document.createElement('p');
-                    aiInit.className = 'sub';
-                    aiInit.textContent = 'Chưa tạo ghi chú.';
-                    aiOut.appendChild(aiInit);
-                    mount.appendChild(aiBtn);
-                    mount.appendChild(aiStatus);
-                    mount.appendChild(aiOut);
-                    aiBtn.addEventListener('click', async function () {
-                        var sid = entry.member && entry.member.student_id;
-                        var cid = dashSelect.value;
-                        if (!sid || !cid) {
-                            aiStatus.className = 'status err';
-                            aiStatus.textContent = 'Hãy chọn lớp và học sinh trước khi tạo ghi chú.';
-                            return;
-                        }
-                        if (!window.CloudDashboard.hasMinimumData(runs)) {
-                            aiStatus.className = 'status';
-                            aiStatus.textContent = window.CloudDashboard.MIN_DATA_TEXT;
-                            return;
-                        }
-                        aiBtn.disabled = true;
+                    /* Phase 4: on-demand per-student AI note (min-data gate).
+                     * Phase 03 B3/B4a: pilot lever — when TEACHER_PILOT_ENABLED
+                     * is off (default), no AI block is created at all. */
+                    if (window.CloudDashboard.TEACHER_PILOT_ENABLED) {
+                        var aiH = document.createElement('h3');
+                        aiH.textContent = 'Ghi chú AI';
+                        mount.appendChild(aiH);
+                        var aiLbl = document.createElement('p');
+                        aiLbl.className = 'sub pilot-note';
+                        aiLbl.textContent = window.CloudDashboard.PILOT_LABEL_TEXT;
+                        mount.appendChild(aiLbl);
+                        var aiBtn = document.createElement('button');
+                        aiBtn.className = 'action mini';
+                        aiBtn.type = 'button';
+                        aiBtn.textContent = 'Tạo ghi chú AI';
+                        var aiStatus = document.createElement('p');
                         aiStatus.className = 'status';
-                        aiStatus.textContent = 'Đang tạo ghi chú…';
-                        try {
-                            var note = await window.CloudDashboard.summarizeStudent(sid, cid);
-                            aiOut.innerHTML = '';
-                            var np = document.createElement('p');
-                            np.innerHTML = window.AIFormat.renderMarkdown(note);
-                            np.style.whiteSpace = 'pre-wrap';
-                            aiOut.appendChild(np);
-                            aiStatus.className = 'status ok';
-                            aiStatus.textContent = 'Đã tạo ghi chú.';
-                        } catch (err2) {
-                            aiStatus.className = 'status err';
-                            aiStatus.textContent = (err2 && err2.message) || 'Tạo ghi chú thất bại.';
-                        } finally {
-                            aiBtn.disabled = false;
-                        }
-                    });
+                        var aiOut = document.createElement('div');
+                        var aiInit = document.createElement('p');
+                        aiInit.className = 'sub';
+                        aiInit.textContent = 'Chưa tạo ghi chú.';
+                        aiOut.appendChild(aiInit);
+                        mount.appendChild(aiBtn);
+                        mount.appendChild(aiStatus);
+                        mount.appendChild(aiOut);
+                        aiBtn.addEventListener('click', async function () {
+                            var sid = entry.member && entry.member.student_id;
+                            var cid = dashSelect.value;
+                            if (!sid || !cid) {
+                                aiStatus.className = 'status err';
+                                aiStatus.textContent = 'Hãy chọn lớp và học sinh trước khi tạo ghi chú.';
+                                return;
+                            }
+                            if (!window.CloudDashboard.hasMinimumData(runs)) {
+                                aiStatus.className = 'status';
+                                aiStatus.textContent = window.CloudDashboard.MIN_DATA_TEXT;
+                                return;
+                            }
+                            aiBtn.disabled = true;
+                            aiStatus.className = 'status';
+                            aiStatus.textContent = 'Đang tạo ghi chú…';
+                            try {
+                                var note = await window.CloudDashboard.summarizeStudent(sid, cid);
+                                aiOut.innerHTML = '';
+                                var np = document.createElement('p');
+                                np.innerHTML = window.AIFormat.renderMarkdown(note);
+                                np.style.whiteSpace = 'pre-wrap';
+                                aiOut.appendChild(np);
+                                aiStatus.className = 'status ok';
+                                aiStatus.textContent = 'Đã tạo ghi chú.';
+                            } catch (err2) {
+                                aiStatus.className = 'status err';
+                                aiStatus.textContent = (err2 && err2.message) || 'Tạo ghi chú thất bại.';
+                            } finally {
+                                aiBtn.disabled = false;
+                            }
+                        });
+                    }
                 } catch (err) {
                     mount.innerHTML = '';
                     mount.appendChild(h);
@@ -884,6 +895,28 @@
             dashSelect.addEventListener('change', function () {
                 renderDashboard();
             });
+
+            /* ---- Phase 03 B3/B4a: teacher pilot rollback lever (class block) ----
+             * Single client-side switch in js/cloud-dashboard.js
+             * (TEACHER_PILOT_ENABLED; default OFF). Off: the class AI section
+             * is hidden and the page renders without errors. On: the section
+             * returns with the experimental label. Enable only after the
+             * Phase 03 terms-review artifact exists (A1 gate). */
+            (function applyPilotLever() {
+                var block = document.getElementById('ai-class-block');
+                var pilotLabel = document.getElementById('ai-class-pilot');
+                if (!block) {
+                    return;
+                }
+                if (window.CloudDashboard.TEACHER_PILOT_ENABLED) {
+                    if (pilotLabel) {
+                        pilotLabel.textContent = window.CloudDashboard.PILOT_LABEL_TEXT;
+                        pilotLabel.hidden = false;
+                    }
+                } else {
+                    block.hidden = true;
+                }
+            })();
 
             /* ---- Phase 4: on-demand class AI summary (teacher JWT, min-data gate) ---- */
 

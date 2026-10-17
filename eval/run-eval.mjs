@@ -1,13 +1,26 @@
 #!/usr/bin/env node
+// eval/run-eval.mjs — offline/stub eval runner.
+//
+// Phase 03 C3a hardening (2026-10-17):
+//   - asserts the REAL handler status. The harness returns `{ status, payload,
+//     threw }`; the runner previously checked `result.statusCode` (undefined),
+//     so the OK test degenerated to "did not throw" — non-200 responses were
+//     silently counted as clean.
+//   - expects HTTP 200 per flow by default, with per-fixture `expect` overrides
+//     for intended negative paths (e.g. min-data 400s).
+//   - serves fixture-aware teacher rows via the harness fetch stub
+//     (`installFetchStub` + per-flow `stubOptions`), so teacher flows actually
+//     execute end-to-end. The previous local stub returned one synthetic
+//     non-array object for every /rest/v1/* call, which made both teacher
+//     handlers exit 403 before any provider call.
+// "clean" now means: every flow returned its expected status and threw nothing.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { installFetchStub, buildFlows, invokeHandler, withEnv, loadHandlers } from './lib/harness.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FIXTURES_DIR = path.resolve(ROOT, 'eval', 'fixtures');
-
-const STUB_SUPABASE_URL = 'https://stub-schoolshield.supabase.test';
-const STUB_SUPABASE_KEY = 'stub-harness-publishable-key';
 const STUB_TEACHER_ID = 'stub-teacher-0001';
 const STUB_TEACHER_JWT = 'stub-teacher-jwt';
 
@@ -35,38 +48,46 @@ function loadFixtures() {
 }
 
 function normalizeFixture(f) {
-  const s = (f && f.session) ? f.session : f;
+  // Merge both fixture shapes: `session` fields win, top-level fields fill gaps
+  // (legacy fixtures keep playerName/ending/stats/route/question at top level).
+  const s = (f && f.session) ? Object.assign({}, f, f.session) : f;
   const t = (f && f.teacher) ? f.teacher : {};
-  const baseTeacher = {
-    studentId: t.studentId || ('stub-student-' + (f.id || 0)),
-    classId: t.classId || ('stub-class-' + (f.id || 0)),
-    classRow: t.classRow || { name: 'Synthetic class stub', code: 'CODE-' + (f.id || 0) },
-    headers: t.headers || {}
-  };
+  const tag = (f && f.id) || 0;
+  const studentId = t.studentId || ('stub-student-' + tag);
+  const classId = t.classId || ('stub-class-' + tag);
+  // Teacher rows: fixture-provided rows win; conservative synthetic defaults
+  // make the happy path exercise real 200s under the stub.
+  const classRow = Object.assign(
+    { id: classId, name: 'Synthetic class stub', code: 'CODE-' + tag, teacher_id: STUB_TEACHER_ID },
+    t.classRow || {}
+  );
+  const memberRows = Array.isArray(t.memberRows) ? t.memberRows : [{ student_id: studentId, status: 'active' }];
+  const runRows = Array.isArray(t.runRows) ? t.runRows : [{
+    id: 'stub-run-' + tag,
+    student_id: studentId,
+    class_id: classId,
+    status: 'finished',
+    empathy: 50,
+    awareness: 50,
+    safe: 50,
+    ending_name: 'Ending stub',
+    updated_at: '2026-10-01T08:00:00.000Z',
+    finished_at: '2026-10-01T08:00:00.000Z',
+    choices: []
+  }];
   return {
     session: {
       playerName: s && s.playerName ? s.playerName : 'Synthetic learner',
       ending: (s && s.ending) ? s.ending : { name: 'Ending stub', description: 'synthetic' },
       stats: (s && s.stats) ? s.stats : [{ key: 'empathy', value: 50 }],
-      route: (s && s.route) ? s.route : [{ choice: 'stub' }]
+      route: (s && s.route) ? s.route : [{ choice: 'stub' }],
+      // Chat flow inputs: without a question the handler correctly rejects with
+      // 400; fixtures predate the chat endpoint and carry none, so supply a
+      // neutral synthetic question (fixture-provided values always win).
+      question: (s && typeof s.question === 'string') ? s.question : 'Mình có thể hiểu thêm gì về các lựa chọn của mình trong lượt chơi này?',
+      history: (s && Array.isArray(s.history)) ? s.history : []
     },
-    teacher: baseTeacher
-  };
-}
-
-function makeStubFetch() {
-  return async (urlIn) => {
-    const url = String(urlIn);
-    if (url.includes('/auth/v1/user')) {
-      return { ok: true, status: 200, headers: { get: () => 'application/json' }, async text() { return '{}'; }, async json() { return { id: STUB_TEACHER_ID }; } };
-    }
-    if (url.includes('/rest/v1/')) {
-      const body = JSON.stringify({ name: 'Synthetic Class', code: 'CODE-STUB', teacher_id: STUB_TEACHER_ID });
-      return { ok: true, status: 200, headers: { get: () => 'application/json' }, async text() { return body; }, async json() { return JSON.parse(body); } };
-    }
-    const content = 'Pinned stub response text for deterministic scenarios.';
-    const body = JSON.stringify({ model: 'stub/model-x', choices: [{ message: { content } }], note: 'stub (synthetic)' });
-    return { ok: true, status: 200, headers: { get: () => 'application/json' }, async text() { return body; }, async json() { return JSON.parse(body); } };
+    teacher: { studentId, classId, classRow, memberRows, runRows, headers: t.headers || {} }
   };
 }
 
@@ -89,34 +110,44 @@ const candidates = allFixtures.filter(f => suite === 'full' || f.suite === suite
 if (candidates.length === 0) { console.error('no fixtures matched suite: ' + suite); process.exit(1); }
 console.log('[run-eval] suite=' + suite + ' provider=' + args.provider + ' sessions=' + candidates.length);
 
-const { loadHandlers, buildFlows, invokeHandler, withEnv } = await import('./lib/harness.mjs');
 const handlers = await loadHandlers(ROOT);
 const transcript = [];
 let hasFailure = false;
 
 for (const f of candidates) {
-  let patched = Object.assign({}, f, { _derived: true });
+  let patched = f;
   try {
     patched = JSON.parse(JSON.stringify(f));
   } catch {}
   const flows = buildFlows(normalizeFixture(patched));
   const node = { id: f.id || '(unnamed)', suite: f.suite || 'basic', endpoints: {}, status: 'OK' };
   for (const [name, flow] of Object.entries(flows)) {
-    const savedFetch = globalThis.fetch;
-    globalThis.fetch = makeStubFetch();
+    const expected = (patched.expect && Number.isFinite(Number(patched.expect[name]))) ? Number(patched.expect[name]) : 200;
+    const stub = installFetchStub({ provider: 'stub', ...(flow.stubOptions || {}) });
     try {
       const result = await withEnv(flow.env, () => invokeHandler(handlers[name], { method: 'POST', body: flow.body, headers: flow.headers }));
-      const ok = result.statusCode === 200 || (!result.statusCode && !result.threw);
-      node.endpoints[name] = { status: result.statusCode, thrown: !!(result.threw && result.threw.message) };
-      if (!ok) { node.status = 'FAIL'; hasFailure = true; console.error('FAIL ' + (f.id || '?') + ' ' + name + ' status=' + result.statusCode); }
-      else console.log('OK   ' + (f.id || '?') + ' ' + name);
+      const ok = !result.threw && result.status === expected;
+      node.endpoints[name] = {
+        status: result.status,
+        expected,
+        ok,
+        providerCalls: stub.providerCalls.length,
+        thrown: !!(result.threw && result.threw.message)
+      };
+      if (!ok) {
+        node.status = 'FAIL';
+        hasFailure = true;
+        console.error('FAIL ' + (f.id || '?') + ' ' + name + ' status=' + result.status + ' expected=' + expected + (result.threw ? ' threw=' + result.threw.message : ''));
+      } else {
+        console.log('OK   ' + (f.id || '?') + ' ' + name + ' status=' + result.status);
+      }
     } catch (e) {
       node.endpoints[name] = { error: e.message };
       node.status = 'FAIL';
       hasFailure = true;
       console.error('EXC  ' + (f.id || '?') + ' ' + name + ' : ' + e.message);
     } finally {
-      globalThis.fetch = savedFetch;
+      stub.restore();
     }
   }
   transcript.push(node);

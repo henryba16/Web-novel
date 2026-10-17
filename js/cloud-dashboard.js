@@ -15,10 +15,26 @@
  * gate client-side — no AI call under 1 finished run):
  *   finishedCount, hasMinimumData, MIN_DATA_TEXT,
  *   summarizeClass, summarizeStudent
+ * Phase 03 pilot lever (B4a): TEACHER_PILOT_ENABLED gates every teacher AI
+ * block (single client-side switch; default OFF until the pilot gate clears).
+ *   TEACHER_PILOT_ENABLED, PILOT_LABEL_TEXT
  */
 'use strict';
 (function () {
 	var LOW_BAND = 45;
+
+	/* Phase 03 B4a — teacher pilot rollback lever (single client-side switch).
+	 * false (default): the dashboard renders WITHOUT the teacher AI blocks —
+	 *   the class summary section is hidden and the per-student AI block is
+	 *   not created; no console errors, no AI calls.
+	 * true: both AI blocks return, labeled experimental (PILOT_LABEL_TEXT).
+	 * Enable only after the Phase 03 terms-review artifact exists (A1 gate).
+	 * There is no server-side env var for this lever. */
+	var TEACHER_PILOT_ENABLED = false;
+
+	/* Phase 03 B3 — experimental label for the teacher AI blocks (plain
+	 * Vietnamese; must stay visible in normal and print views). */
+	var PILOT_LABEL_TEXT = 'Bản thử nghiệm do AI tạo từ dữ liệu trong game — chỉ để tham khảo, không dùng để đánh giá, xếp loại hay kỷ luật học sinh.';
 
 	function token() {
 		return window.CloudClient.accessToken();
@@ -385,6 +401,8 @@
 		LOW_BAND: LOW_BAND,
 		MIN_FINISHED: MIN_FINISHED,
 		MIN_DATA_TEXT: MIN_DATA_TEXT,
+		TEACHER_PILOT_ENABLED: TEACHER_PILOT_ENABLED,
+		PILOT_LABEL_TEXT: PILOT_LABEL_TEXT,
 		statTag: statTag,
 		shortId: shortId,
 		displayNameFor: displayNameFor,

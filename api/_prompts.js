@@ -12,14 +12,16 @@ function clamp(s, n) {
 }
 export const VERSION_ANALYZE = "analyze-ending-2026-10-16.1";
 export const VERSION_CHAT = "chat-ending-2026-10-16.1";
-export const VERSION_STUDENT = "summarize-student-2026-10-16.1";
-export const VERSION_CLASS = "summarize-class-2026-10-16.1";
+export const VERSION_STUDENT = "summarize-student-2026-10-17.2";
+export const VERSION_CLASS = "summarize-class-2026-10-17.2";
 
 export const CHANGE_NOTES = [
   { version: VERSION_ANALYZE, date: '2026-10-16', note: 'Initial extraction of prompt body from api/analyze-ending.js into a versioned builder (byte-parity preserved).' },
   { version: VERSION_CHAT, date: '2026-10-16', note: 'Initial extraction of prompt body from api/chat-ending.js into a versioned builder (byte-parity preserved).' },
-  { version: VERSION_STUDENT, date: '2026-10-16', note: 'Initial extraction of prompt body from api/summarize-student.js into a versioned builder (byte-parity preserved).' },
-  { version: VERSION_CLASS, date: '2026-10-16', note: 'Initial extraction of prompt body from api/summarize-class.js into a versioned builder (byte-parity preserved).' },
+  { version: 'summarize-student-2026-10-16.1', date: '2026-10-16', note: 'Initial extraction of prompt body from api/summarize-student.js into a versioned builder (byte-parity preserved).' },
+  { version: 'summarize-class-2026-10-16.1', date: '2026-10-16', note: 'Initial extraction of prompt body from api/summarize-class.js into a versioned builder (byte-parity preserved).' },
+  { version: VERSION_STUDENT, date: '2026-10-17', note: 'Phase 03 B1/B2: structured teacher report schema (QUAN SÁT TỪ DỮ LIỆU / ĐIỂM CẦN LƯU Ý / GIỚI HẠN / GỢI Ý TRÒ CHUYỆN) + experimental framing (THỬ NGHIỆM; không dùng để đánh giá, xếp loại, kỷ luật hay chẩn đoán) + explicit no-diagnosis / no-standalone-discipline lines. Input block + response envelope unchanged.' },
+  { version: VERSION_CLASS, date: '2026-10-17', note: 'Phase 03 B1/B2: same structured schema + experimental framing for class summaries. Input block + response envelope unchanged.' },
 ];
 
 export function buildAnalyzePrompt({ safePlayerName, ending, empathy, awareness, safe, routeText }) {
@@ -92,8 +94,11 @@ Bạn là AI ghi chú cho giáo viên SchoolShield,
 một visual novel giáo dục về sự cô lập xã hội,
 định kiến, bạo lực học đường và vai trò của người chứng kiến.
 
+Đây là ghi chú THỬ NGHIỆM do AI tạo; chỉ dùng để tham khảo,
+không dùng để đánh giá, xếp loại, kỷ luật hay chẩn đoán học sinh.
+
 Hãy mô tả QUÁ TRÌNH CHƠI của một học sinh từ số liệu dưới đây.
-Chỉ mô tả lựa chọn trong game, không suy đoán ngoài game.
+Chỉ mô tả lựa chọn trong game, không suy đoán ngoài game, không chẩn đoán.
 
 Lớp:
 ${className}
@@ -111,15 +116,22 @@ LỰA CHỌN TRONG LƯỢT MỚI NHẤT:
 ${latestChoices || '(chưa có)'}
 
 Hãy viết một ghi chú bằng tiếng Việt,
-khoảng 100-200 từ.
+khoảng 150-250 từ, theo đúng 4 mục sau:
 
-Tập trung vào:
+1. QUAN SÁT TỪ DỮ LIỆU:
+   Những gì thấy được từ lựa chọn, điểm số và kết thúc trong game
+   (chỉ nêu dữ kiện có trong phần số liệu ở trên).
+2. ĐIỂM CẦN LƯU Ý:
+   Điều giáo viên có thể quan tâm khi trò chuyện với em
+   (chỉ mô tả hiện tượng quan sát được trong game;
+   không gán nhãn tính cách, không chẩn đoán, không kết luận về con người thật).
+3. GIỚI HẠN:
+   Vì sao dữ liệu này chưa đủ để kết luận về học sinh
+   (chỉ từ vài lượt chơi trong một trò chơi).
+4. GỢI Ý TRÒ CHUYỆN:
+   1-2 câu hỏi gợi mở để giáo viên trò chuyện thêm với em.
 
-1. Em thường chú ý đến điều gì trong các lựa chọn?
-2. Em có xu hướng ưu tiên đồng cảm,
-   nhận diện vấn đề hay an toàn?
-3. Một vài lựa chọn đáng chú ý.
-4. Một điều giáo viên có thể trò chuyện thêm cùng em.
+Giọng văn trung lập, tôn trọng học sinh.
 
 ${GUARDRAIL_BLOCK}`;
 }
@@ -130,8 +142,11 @@ Bạn là AI tóm tắt cho giáo viên SchoolShield,
 một visual novel giáo dục về sự cô lập xã hội,
 định kiến, bạo lực học đường và vai trò của người chứng kiến.
 
+Đây là tóm tắt THỬ NGHIỆM do AI tạo; chỉ dùng để tham khảo,
+không dùng để đánh giá, xếp loại, kỷ luật hay chẩn đoán học sinh hay cả lớp.
+
 Hãy tóm tắt XU HƯỚNG CHUNG của cả lớp từ số liệu dưới đây.
-Chỉ mô tả lựa chọn trong game, không suy đoán ngoài game.
+Chỉ mô tả lựa chọn trong game, không suy đoán ngoài game, không chẩn đoán.
 
 Lớp:
 ${className}
@@ -150,14 +165,22 @@ LỰA CHỌN THEO CẢNH:
 ${splitLines || '(chưa có)'}
 
 Hãy viết một tóm tắt bằng tiếng Việt,
-khoảng 200-300 từ.
+khoảng 200-300 từ, theo đúng 4 mục sau:
 
-Tập trung vào:
+1. QUAN SÁT TỪ DỮ LIỆU:
+   Xu hướng lựa chọn nổi bật và xu hướng điểm số của cả lớp
+   (chỉ nêu dữ kiện có trong phần số liệu ở trên).
+2. ĐIỂM CẦN LƯU Ý:
+   Điều giáo viên có thể quan tâm khi trò chuyện với cả lớp
+   (chỉ mô tả hiện tượng quan sát được trong game;
+   không gán nhãn tính cách, không chẩn đoán, không kết luận về con người thật).
+3. GIỚI HẠN:
+   Vì sao dữ liệu tổng hợp này chưa đủ để kết luận về cả lớp
+   (chỉ từ dữ liệu trò chơi, không phải đánh giá học sinh).
+4. GỢI Ý TRÒ CHUYỆN:
+   1-2 gợi ý trò chuyện hoặc hoạt động để giáo viên trao đổi thêm với lớp.
 
-1. Xu hướng lựa chọn nổi bật của cả lớp.
-2. Xu hướng điểm số (nhận diện, đồng cảm, an toàn).
-3. Phân bố kết đã đạt.
-4. Một vài điểm giáo viên có thể trò chuyện thêm cùng lớp.
+Giọng văn trung lập, tôn trọng học sinh.
 
 ${GUARDRAIL_BLOCK}`;
 }
