@@ -164,13 +164,14 @@ ${GUARDRAIL_BLOCK}`;
 
 // --- Phase 02 (fast demo) v2 builders + change notes + citation ID list ---
 export const VERSION_ANALYZE_V2 = "analyze-ending-grounded-2026-10-17.1";
-export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-17.1";
+export const VERSION_CHAT_V2 = "chat-ending-grounded-2026-10-17.2";
 
 const CHANGE_NOTES_V2 = [
   { version: 'analyze-ending-grounded-2026-10-16.1', date: '2026-10-16', note: 'Grounded reflection response from curated KB + citable source IDs; insufficient-evidence refusal; no behavior change from base prompt except input contract.' },
   { version: 'chat-ending-grounded-2026-10-16.1', date: '2026-10-16', note: 'Grounded follow-up chat from provided source metadata only.' },
   { version: VERSION_ANALYZE_V2, date: '2026-10-17', note: 'Fix: source blocks now include full content/scope/limitations/source line so the model has citable evidence text (was IDs+topics+title only, causing blanket insufficient_evidence).' },
-  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Fix: same source-content inclusion as analyze v2; chat can now ground on snippet text.' },
+  { version: 'chat-ending-grounded-2026-10-17.1', date: '2026-10-17', note: 'Fix: same source-content inclusion as analyze v2; chat can now ground on snippet text.' },
+  { version: VERSION_CHAT_V2, date: '2026-10-17', note: 'Fix: embed the pseudonymized neutral player label in the grounded chat prompt (Người chơi: Học sinh). Restores learner-label parity with analyze v2 and satisfies the A4 payload-probe positive control for chat.' },
 ];
 
 export function buildAnalyzePromptGrounded({ safePlayerName, ending, empathy, awareness, safe, routeText, sources }) {
@@ -196,6 +197,7 @@ export function buildChatPromptGrounded({ safePlayerName, endingData, safeQuesti
 NGUỒN ĐỦ ĐIỀU KIỆN:
 ${src}
 
+Người chơi: ${safePlayerName}
 Câu hỏi: ${safeQuestion}
 Ending: ${endingData?.ending?.name || 'Không rõ'}
 
