@@ -4,16 +4,67 @@ import { buildChatPrompt, VERSION_CHAT, buildChatPromptGrounded, VERSION_CHAT_V2
 import { retrieveKnowledge, KB_VERSION } from './_kb.js';
 import { GUARDRAIL_BLOCK } from './_guardrails.js';
 
+// 17-10-26 display guard (second sighting): free models sometimes answer with
+// meta-commentary about needing a "specific question" instead of the required
+// output contract. Never displayable, even inside valid JSON — treated as a
+// contract failure by the textOk gate below.
+const META_COMMENTARY_RE = /câu hỏi cụ thể|no specific question/i;
+
+// 17-10-26 contract recovery: `openrouter/free` routing sometimes returns reasoning
+// prose followed by the contract object ("The user wants me to ..." then {...}). The
+// naive JSON.parse(raw) then threw, so every such call degraded to insufficient_evidence
+// even though a valid object was present. Recover the first balanced {...} object
+// (string-aware) instead. Pure prose with no object still yields null, so the existing
+// guard path (safe copy displayed + raw kept only in limitationNote) is unchanged.
+function __parseModelJson(text) {
+  const s = String(text == null ? '' : text).trim();
+  if (!s) return null;
+  let direct = null;
+  try { direct = JSON.parse(s); } catch (e) { direct = null; }
+  if (direct && typeof direct === 'object' && !Array.isArray(direct)) return direct;
+  const start = s.indexOf('{');
+  if (start === -1) return null;
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  for (let i = start; i < s.length; i++) {
+    const c = s[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === '\\') esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') { inStr = true; continue; }
+    if (c === '{') depth++;
+    else if (c === '}') {
+      depth--;
+      if (depth === 0) {
+        try {
+          const candidate = JSON.parse(s.slice(start, i + 1));
+          return (candidate && typeof candidate === 'object' && !Array.isArray(candidate)) ? candidate : null;
+        } catch (e) { return null; }
+      }
+    }
+  }
+  return null;
+}
+
 function __ew(txt) { return (txt || '').toString().split(/[\s,.;:!?]+/).map(w => w.trim().toLowerCase()).filter(w => w.length >= 3); }
 function __tags(ed, q, hist) {
   const s = new Set();
-  for (const w of __ew(ed?.ending?.name)) s.add(w);
-  for (const w of __ew(ed?.ending?.description)) s.add(w);
-  for (const w of __ew(q)) s.add(w);
-  if (Array.isArray(ed?.stats)) for (const st of ed.stats) if (typeof st?.key === 'string') s.add(st.key.toLowerCase());
-  if (Array.isArray(hist)) for (const t of (hist || []).slice(-3)) if (typeof t?.content === 'string') __ew(t.content).forEach(w => s.add(w));
+  // Deterministic retrieval tag set (INTERNAL only: tags merely select reviewed KB
+  // records — they are never sent to the provider; only matched snippet text enters
+  // the prompt). The endpoint anchor and the player QUESTION come first so the cap
+  // can never drop them, and per-field budgets stop a long ending text from pushing
+  // the question/history out of the tag set.
   s.add('chat-ending');
-  return Array.from(s).slice(0, 12);
+  for (const w of __ew(q).slice(0, 12)) s.add(w);
+  if (Array.isArray(ed?.stats)) for (const st of ed.stats) if (typeof st?.key === 'string') s.add(st.key.toLowerCase());
+  for (const w of __ew(ed?.ending?.name).slice(0, 4)) s.add(w);
+  for (const w of __ew(ed?.ending?.description).slice(0, 6)) s.add(w);
+  if (Array.isArray(hist)) for (const t of (hist || []).slice(-3)) if (typeof t?.content === 'string') for (const w of __ew(t.content).slice(0, 6)) s.add(w);
+  return Array.from(s).slice(0, 32);
 }
 
 export default async function handler(req, res) {
@@ -55,13 +106,19 @@ export default async function handler(req, res) {
         const transcriptText = safeHistory
             .map((turn) =>
                 turn.role === 'user'
-                    ? 'Ngưi chơi hỏi: ' + turn.content
+                    ? 'Người chơi hỏi: ' + turn.content
                     : 'AI đã trả lời: ' + turn.content)
             .join('\n');
 
-        const empathy = endingData?.stats?.find(s => s.key === 'empathy')?.value ?? 0;
-        const awareness = endingData?.stats?.find(s => s.key === 'awareness')?.value ?? 0;
-        const safe = endingData?.stats?.find(s => s.key === 'safe')?.value ?? 0;
+        // B7: stats values coerced to finite numbers (defense-in-depth; the v2 chat prompt does not assemble them).
+        const __statValue = (key) => {
+            const raw = (Array.isArray(endingData?.stats) ? endingData.stats : []).find(s => s.key === key)?.value;
+            const n = Number(raw);
+            return Number.isFinite(n) ? n : 0;
+        };
+        const empathy = __statValue('empathy');
+        const awareness = __statValue('awareness');
+        const safe = __statValue('safe');
 
         // Phase 02: tag-based deterministic retrieval (no embeddings), reviewed-only.
         const __providedTags = __tags(endingData || {}, safeQuestion, safeHistory);
@@ -78,10 +135,14 @@ export default async function handler(req, res) {
         let model = undefined;
 
         if (__hasSources) {
+            // B7: clamp the client-controlled ending name before assembly (analyze v2 parity: <=160 chars).
+            const __safeEndingName = typeof endingData?.ending?.name === 'string'
+                ? endingData.ending.name.slice(0, 160)
+                : (endingData?.ending?.name != null ? String(endingData.ending.name).slice(0, 160) : undefined);
             const prompt = buildChatPromptGrounded({
                 safePlayerName,
                 safeQuestion,
-                endingData: endingData || {},
+                endingData: { ending: { name: __safeEndingName } },
                 transcriptText: transcriptText || '',
                 sources: __retrieved.snippets
             });
@@ -101,19 +162,23 @@ export default async function handler(req, res) {
             } else {
                 const data = result.data;
                 const raw = String(data?.choices?.[0]?.message?.content || '').trim();
-                let parsed = null;
-                try { parsed = JSON.parse(raw); } catch { parsed = null; }
+                const parsed = __parseModelJson(raw);
                 const prov = Array.isArray(__retrieved.citationIds) ? __retrieved.citationIds : [];
                 if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-                    reply = typeof parsed.text === 'string' ? parsed.text : raw;
+                    // Contract guard (17-10-26): only a non-empty string text field is displayable;
+                    // raw / non-text model output is never shown (kept in limitationNote only).
+                    const textOk = typeof parsed.text === 'string' && parsed.text.trim().length > 0 && !META_COMMENTARY_RE.test(parsed.text);
+                    reply = textOk ? parsed.text : '';
                     const invalid = (Array.isArray(parsed.citations) ? parsed.citations : []).some(c => !prov.includes(String(c)));
                     citations = Array.isArray(parsed.citations) ? parsed.citations.filter(c => prov.includes(String(c))) : [];
-                    status = (invalid || parsed.status !== 'grounded') ? 'insufficient_evidence' : 'grounded';
+                    status = (!textOk || invalid || parsed.status !== 'grounded') ? 'insufficient_evidence' : 'grounded';
                     if (status === 'insufficient_evidence') citations = [];
-                    limitationNote = typeof parsed.limitationNote === 'string' ? parsed.limitationNote.slice(0, 300) : null;
+                    const suppressed = (!textOk && typeof parsed.text === 'string' && parsed.text.trim()) ? parsed.text.trim().slice(0, 300) : null;
+                    limitationNote = typeof parsed.limitationNote === 'string' ? parsed.limitationNote.slice(0, 300) : suppressed;
                 } else {
                     status = 'insufficient_evidence';
-                    reply = raw || '';
+                    // Contract failure (non-JSON model output): never display raw text; keep it in limitationNote only.
+                    reply = '';
                     citations = [];
                     limitationNote = raw ? raw.slice(0, 300) : null;
                 }
@@ -121,14 +186,25 @@ export default async function handler(req, res) {
             }
         } else {
             status = 'insufficient_evidence';
-            reply = 'Chưa đủ nguồn đã xem xét để trả lời có căn cứ. Gợi ý trung tính: bạn cancellation một câu nhẹ nhàng về hoàn cảnh của câu hỏi này.';
+            reply = 'Chưa đủ nguồn đã xem xét để trả lời có căn cứ. Gợi ý trung tính: bạn có thể hỏi một câu nhẹ nhàng hơn về hoàn cảnh này.';
             citations = [];
             limitationNote = 'eligible=' + __retrieved.eligibleCount + '; min=' + __retrieved.minEvidence;
             console.log('CHAT GROUNDING INSUFFICIENT', JSON.stringify({ tagCount: __providedTags.length, eligible: __retrieved.eligibleCount, min: __retrieved.minEvidence }));
         }
 
         if (status === 'insufficient_evidence' && !reply) {
-            reply = 'Chưa đủ nguồn để trả lời có căn cứ. Một neutral reflection prompt: Which part of this reflection felt most relevant to your choices?';
+            reply = 'Chưa đủ nguồn để trả lời có căn cứ. Một câu hỏi gợi mở trung lập: phần nào của nhận xét này bạn thấy liên quan nhất đến các lựa chọn của mình?';
+        }
+
+        if (status === 'insufficient_evidence') {
+            // B4: Endpoint refusal record (parity with analyze-ending; supplemented schema: no_supported_snippet | insufficient_support)
+            console.log(JSON.stringify({
+                event: 'refusal_limitation',
+                reason: __hasSources ? 'insufficient_support' : 'no_supported_snippet',
+                ts: Date.now(),
+                endpoint: 'chat-ending',
+                request_id: (req.headers['x-request-id'] || req.headers['request-id'] || 'unknown')
+            }));
         }
 
         console.log('RESPONSE STATUS chat:', status, 'citations:', citations.length, 'model:', model, 'KB_VERSION:', KB_VERSION);

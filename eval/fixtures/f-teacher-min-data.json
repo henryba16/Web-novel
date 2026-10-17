@@ -1,0 +1,47 @@
+{
+  "id": "f-teacher-min-data",
+  "suite": "teacher",
+  "suiteTag": "teacher",
+  "suites": ["teacher", "full"],
+  "scenario": "Teacher min-data gate: a class/student whose only run is unfinished must be refused (HTTP 400) by both teacher endpoints — no AI summary without at least one finished run; player flows in the same fixture stay 200.",
+  "playerName": "Synthetic learner min-data",
+  "choices": ["Ask a friend"],
+  "stats": [
+    { "key": "empathy", "value": 50 },
+    { "key": "awareness", "value": 50 },
+    { "key": "safe", "value": 50 }
+  ],
+  "route": [
+    { "chapter": 1, "scene": "Classroom", "context": "A stub scene for the min-data fixture", "choice": "Ask a friend" }
+  ],
+  "ending": {
+    "name": "Ket stub min-data",
+    "description": "synthetic min-data ending descriptor"
+  },
+  "question": "Lượt chơi này cho thấy điều gì?",
+  "history": [],
+  "teacher": {
+    "studentId": "stub-student-min",
+    "classId": "stub-class-min",
+    "classRow": { "id": "stub-class-min", "name": "Lớp dữ liệu tối thiểu", "code": "MIN0001", "teacher_id": "stub-teacher-0001" },
+    "memberRows": [
+      { "student_id": "stub-student-min", "status": "active" }
+    ],
+    "runRows": [
+      {
+        "id": "stub-run-min",
+        "student_id": "stub-student-min",
+        "class_id": "stub-class-min",
+        "status": "in_progress",
+        "empathy": 20,
+        "awareness": 20,
+        "safe": 20,
+        "ending_name": null,
+        "updated_at": "2026-10-01T08:00:00.000Z",
+        "finished_at": null,
+        "choices": []
+      }
+    ]
+  },
+  "expect": { "summarize-student": 400, "summarize-class": 400 }
+}

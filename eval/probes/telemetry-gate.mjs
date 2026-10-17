@@ -9,6 +9,11 @@
 //   - max_tokens matches the handler-passed value
 //   - records are secret-safe (no learner identifiers, class codes, or keys)
 //
+// Endpoint event records (B4 `refusal_limitation`: event/ts/endpoint/request_id)
+// also appear in this scenario via analyze-ending's insufficient-evidence path
+// on the stub text; they are excluded from the C1 schema checks and flagged in
+// the output — their schema is owned by scripts/check-ai-refusal-record.mjs.
+//
 // Usage: node eval/probes/telemetry-gate.mjs
 // Exit 1 on any violation.
 
@@ -58,20 +63,28 @@ try {
 		violations.push('handler did not complete: status=' + result.status + ' threw=' + (result.threw && result.threw.message));
 	}
 
-	// Parse JSON telemetry records (one JSON object per line).
+	// Parse JSON telemetry records (one JSON object per line). Endpoint event
+	// records (e.g. the B4 `refusal_limitation` line) share the ts/request_id
+	// keys but are NOT C1 telemetry — they carry an `event` tag and are
+	// excluded from the schema gate below (their dedicated check is
+	// scripts/check-ai-refusal-record.mjs). Secret-safety still applies to them.
 	const records = [];
+	const eventRecords = [];
 	for (const line of capture.lines) {
 		const trimmed = String(line).trim();
 		if (!trimmed.startsWith('{')) continue;
 		try {
 			const obj = JSON.parse(trimmed);
-			if (obj && typeof obj === 'object' && 'ts' in obj && 'request_id' in obj) records.push(obj);
+			if (!obj || typeof obj !== 'object') continue;
+			if ('event' in obj) { eventRecords.push(obj); continue; }
+			if ('ts' in obj && 'request_id' in obj) records.push(obj);
 		} catch (e) {
 			// not a telemetry line
 		}
 	}
 
 	evidence.records = records.length;
+	evidence.eventRecords = eventRecords.length;
 	evidence.providerCalls = stub.providerCalls.length;
 	const attemptRecords = records.filter((r) => r.candidate_model !== null);
 	const terminalRecords = records.filter((r) => r.candidate_model === null);
@@ -115,7 +128,7 @@ try {
 		'KTHU1234',
 		STUB_API_KEY
 	];
-	const serializedTelemetry = JSON.stringify(records);
+	const serializedTelemetry = JSON.stringify(records) + JSON.stringify(eventRecords);
 	for (const v of bannedValues) {
 		if (v && serializedTelemetry.includes(v)) violations.push('secret-safety violation: telemetry contains ' + v);
 	}
@@ -126,7 +139,7 @@ try {
 		for (const v of violations) console.error('  - ' + v);
 		console.error('captured lines: ' + capture.lines.length + ', parsed records: ' + records.length);
 	} else {
-		console.log('TELEMETRY GATE OK: ' + records.length + ' record(s) (' + attemptRecords.length + ' attempt + ' + terminalRecords.length + ' terminal), secret-safe.');
+		console.log('TELEMETRY GATE OK: ' + records.length + ' record(s) (' + attemptRecords.length + ' attempt + ' + terminalRecords.length + ' terminal), secret-safe' + (eventRecords.length ? '; ' + eventRecords.length + ' endpoint event record(s) excluded from schema check' : '') + '.');
 	}
 } finally {
 	stub.restore();

@@ -36,9 +36,16 @@ const DEFAULT_PRIMARY = 'google/gemma-4-26b-a4b-it:free';
 // Last entry is always the Free Models Router: it picks a random
 // available free model, so the chain degrades gracefully even when
 // every named model is rate-limited or retired.
+//
+// Updated 2026-10-17 (owner directive): qwen/qwen3.8-27b:free is retired from
+// the catalog (404) and was replaced by nvidia/nemotron-3-nano-omni-30b-a3b-
+// reasoning:free. Live evidence (10 analyze calls on the henry preview): the
+// three named models returned the output contract 4/4 times, while random
+// router picks (content-safety / prose models) returned it 0/4 — so the named
+// models are tried first and the router is only the last resort.
 const DEFAULT_FALLBACKS = [
 	'google/gemma-4-31b-it:free',
-	'qwen/qwen3.8-27b:free',
+	'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
 	'openrouter/free'
 ];
 
@@ -68,7 +75,16 @@ function modelList() {
 
 	// Client loop may exceed 3 models; each individual request's native
 	// `models` array is sliced to 3 at send time (OpenRouter max).
-	return [primary, ...fallbacks].slice(0, MAX_ATTEMPTS);
+	const chain = [primary, ...fallbacks].slice(0, MAX_ATTEMPTS);
+
+	// Owner directive (17-10-26): FREE MODELS ONLY, for now. Cost control —
+	// never let a paid model id (or an env override pointing at one) reach the
+	// provider. Keep `:free` ids and the free router; drop anything else. If
+	// filtering would empty the chain, fall back to the default free chain.
+	const freeOnly = chain.filter(
+		(m) => m.endsWith(':free') || m === 'openrouter/free'
+	);
+	return freeOnly.length > 0 ? freeOnly : [DEFAULT_PRIMARY, ...DEFAULT_FALLBACKS];
 }
 
 // Statuses worth trying the NEXT model for.

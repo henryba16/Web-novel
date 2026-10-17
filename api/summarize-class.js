@@ -247,11 +247,54 @@ export default async function handler(req, res) {
             return id && !finishedIds[id];
         }).length;
 
+        /* "Who to keep an eye on" for the class summary: per-student latest
+         * finished run flagged for high empathy ("too empathy" — may signal the
+         * student experienced something that made them more empathetic/withdrawn)
+         * or a metric under 45. Labels use short student-id suffixes since the
+         * class summary never receives student names. */
+        var latestByStudent = {};
+        finished.forEach(function (r) {
+            if (!r || !r.student_id) {
+                return;
+            }
+            var sid = r.student_id;
+            var prev = latestByStudent[sid];
+            if (!prev || String(r.updated_at || '') > String(prev.updated_at || '')) {
+                latestByStudent[sid] = r;
+            }
+        });
+        function shortIdSrv(id) {
+            var raw = String(id === null || id === undefined ? '' : id).replace(/[^0-9a-z]/gi, '');
+            if (!raw) {
+                return '----';
+            }
+            return raw.slice(-4).toUpperCase();
+        }
+        var atRisk = [];
+        Object.keys(latestByStudent).forEach(function (sid) {
+            var r = latestByStudent[sid];
+            var reasons = [];
+            var emp = Number(r.empathy);
+            if (isFinite(emp) && emp >= 90) {
+                reasons.push('đồng cảm rất cao (' + Math.round(emp) + '/100) — cần quan sát thêm');
+            }
+            ['awareness', 'empathy', 'safe'].forEach(function (k) {
+                var v = Number(r[k]);
+                if (isFinite(v) && v < 45) {
+                    reasons.push(k + ' thấp (' + Math.round(v) + '/100)');
+                }
+            });
+            if (reasons.length) {
+                atRisk.push('- Học sinh ' + shortIdSrv(sid) + ': ' + reasons.join('; ') + '.');
+            }
+        });
+        var atRiskLines = atRisk.length ? atRisk.join('\n') : '(không có học sinh nào vượt ngưỡng cần theo dõi từ dữ liệu này)';
+
         // Guardrail SYNC (ai-request-contract §4): the shared guardrail block
         // lives in api/_guardrails.js and is imported by exactly 3 handlers —
         // chat-ending, summarize-student, this file. analyze-ending.js is a
         // named pinned-hash exception (intentional divergence, NOTE 26-09-26).
-        const prompt = buildClassPrompt({ className, finished, notFinishedCount, means, endingLines, splitLines });
+        const prompt = buildClassPrompt({ className, finished, notFinishedCount, means, endingLines, splitLines, atRiskLines: atRiskLines });
 
         const result = await callOpenRouter({
             messages: [

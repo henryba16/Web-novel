@@ -21,8 +21,36 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const PINNED_GUARDRAIL_SHA256 = '7cc057618e173f6a8325bb4563e5ab91985c8acdc2d156ae1543204aa32fd11e';
-const PINNED_ANALYZE_PROMPT_SHA256 = '72cd253b09d8b31e1a700ce11591a1cfd42ab9e6908ba53969af0ae90fcb6c96';
+// Re-pinned 2026-10-17 (owner directive): the shared GUARDRAIL_BLOCK was
+// de-clinicalized — 'Không chẩn đoán tâm lý.' and 'Không gán nhãn tính cách.'
+// removed, because the player-facing AI must not use mental-health terms. The
+// teacher AI keeps its own clinical guardrails in buildStudentPrompt /
+// buildClassPrompt. Evidence: api/_guardrails.js + check-ai-prompt-integrity B8.
+const PINNED_GUARDRAIL_SHA256 = 'fb1d9005c402bca26833d6c47919c8bba83cd6d7b2419dece39f6d95f1577324';
+// Re-pinned 2026-10-17 (Phase 02 KB expansion): analyze retrieval tags are now
+// derived from the real ending/stats/route vocabulary instead of a fixed placeholder
+// list, so the assembled grounding snippets (and therefore this sha) changed by
+// design. Evidence: phase-02-kb-expansion_NOTE_17-10-26.md (prompt dump + 21/21
+// KB probe). Any further change here must be deliberate and recorded the same way.
+//
+// Re-pinned 2026-10-17 (owner directive): the player-facing analyze prompt was
+// de-clinicalized — no psychologist/diagnosis/personality-label wording; the AI is a
+// companion that helps the student reflect on their game choices. The assembled
+// prompt changed by design. Evidence: api/_prompts.js VERSION_ANALYZE_V2
+// (analyze-ending-grounded-2026-10-17.4) + check-ai-prompt-integrity B8 (the
+// NGUYEN TẮC AN TOÀN header and the Latin-only rule are still present).
+// Re-pinned 2026-10-17 (owner directive): the player-facing prompts were
+// restructured as a proper system instruction (VAI TRÒ / NHIỆM VỤ / NGUYÊN TẮC AN
+// TOÀN / DỮ LIỆU / ĐỊNH DẠNG ĐẦU RA). The assembled prompt changed by design.
+// Evidence: api/_prompts.js VERSION_ANALYZE_V2 (analyze-ending-grounded-2026-10-17.5)
+// + check-ai-prompt-integrity B8 (header + Latin-only rule still present).
+// Re-pinned 2026-10-17 (owner research sources): KB expanded from 12 to 17 reviewed
+// entries (5 new: kb_empathy_from_experience, kb_upstander_how_to,
+// kb_connection_and_belonging, kb_why_people_bully_or_freeze, kb_empathy_is_learned).
+// KB_VERSION bumped to kb-v2-2026-10-17, changing the assembled grounding snippets
+// and therefore this sha. Sources: Staub & Vollhardt 2008, Greenberg et al. 2018,
+// Sultan & Khan 2025, Rakoczy 2022, Bauer 2006, Hamstra 2022, Lereya 2015, CDC, StopBullying.gov.
+const PINNED_ANALYZE_PROMPT_SHA256 = '91a59ae23be851b0d6b76adbcc23989d93cbbcb46bb72683b84d641830d064bb';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');

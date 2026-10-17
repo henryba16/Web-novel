@@ -35,10 +35,12 @@ Phiên bản hiện tại là một visual novel tương tác có:
 - Bối cảnh học đường và các nhân vật bạn cùng lớp.
 - Các nhánh lựa chọn ảnh hưởng trực tiếp tới trạng thái game.
 - Ba chỉ số mô phỏng: đồng cảm, nhận thức và hành vi an toàn.
-- Lưu dữ liệu bằng IndexedDB.
+- Màn hình kết thúc (`ending.html`) tích hợp **AI Phản tư & Trò chuyện đồng hành**: Giúp học sinh tự nhìn lại hành trình, suy ngẫm về các quyết định và giải tỏa cảm xúc với vai trò người bạn lắng nghe, an ủi; tuyệt đối không phán xét, không chẩn đoán tâm lý.
+- **Bảng điều khiển giáo viên (Teacher Dashboard - `dashboard.html`)**: Giúp giáo viên quản lý lớp học, theo dõi tiến độ, xem phân bố lựa chọn và kết thúc, nhận diện những học sinh cần được quan sát và trò chuyện thêm (chưa hoàn thành, điểm thấp, hoặc học sinh có **điểm đồng cảm rất cao** — dựa trên cơ sở nghiên cứu về "altruism born of suffering"). Tích hợp tính năng **Tạo tóm tắt AI** cung cấp góc nhìn tổng hợp và gợi ý chủ đề thảo luận SEL cho lớp.
+- Lưu dữ liệu bằng IndexedDB và Supabase (chế độ lớp học).
 - Hỗ trợ chạy trên web, Electron và Electrobun.
 
-Research Dashboard là hướng phát triển để cung cấp góc nhìn định lượng cho giáo viên và nhà trường; không nên diễn giải dữ liệu này như hồ sơ sức khỏe tinh thần cá nhân.
+Research Dashboard và các tính năng AI được thiết kế như công cụ sư phạm hỗ trợ giáo viên và nhà trường; không nên diễn giải dữ liệu này như hồ sơ sức khỏe tinh thần hay chẩn đoán cá nhân.
 
 ### Cách diễn giải các chỉ số
 
@@ -105,6 +107,59 @@ Diễn giải chi tiết nằm trong báo cáo dự án; dưới đây là các 
 - [Huang et al. (2026), game số trong giáo dục y tế công cộng](https://pmc.ncbi.nlm.nih.gov/articles/PMC13108840) — tạp chí khoa học (mở, miễn phí, rất mới): 40 thử nghiệm ngẫu nhiên, 8.764 người, 19 nước — game số cải thiện kiến thức và thái độ hơn giáo dục truyền thống; chơi nhiều buổi hiệu quả hơn một buổi.
 - [Scoping review: Digital Empathy Games trong đào tạo y tế (2025)](https://onlinelibrary.wiley.com/doi/10.1111/eje.70077) — tạp chí khoa học: game số có tiềm năng phát triển đồng cảm nhưng vẫn cần thêm nghiên cứu — câu an toàn khi thuyết trình.
 - [Tong et al. (2020), game VR "AS IF" cho đồng cảm với bệnh nhân đau mãn tính](https://games.jmir.org/2020/3/e17354) — tạp chí khoa học: sau trải nghiệm, ý muốn giúp đỡ tăng rõ rệt, dù điểm đồng cảm tổng chưa đạt ý nghĩa — ví dụ tốt rằng game tác động từng thành phần empathy chứ không phải toàn bộ.
+
+## Hệ thống AI và Nguyên tắc An toàn
+
+SchoolShield tích hợp các tính năng AI hỗ trợ học sinh tự phản tư và giúp giáo viên nắm bắt xu hướng lớp học, với sự phân tách rõ rệt về vai trò và hệ thống kiểm soát an toàn nghiêm ngặt:
+
+### 1. Kiến trúc AI hai tầng độc lập
+
+- **AI Học sinh (`ending.html` - `/api/analyze-ending`, `/api/chat-ending`)**:
+  - Đóng vai trò **người bạn đồng hành** ấm áp, lắng nghe và an ủi, giúp học sinh nhìn lại các quyết định đã qua.
+  - Tuyệt đối không phán xét, không dán nhãn ("tốt/xấu") và không đưa ra chẩn đoán hay thuật ngữ y khoa/tâm lý học đường.
+  - Vận hành linh hoạt: Khi tìm thấy bằng chứng đối chiếu phù hợp từ Cơ sở tri thức (KB), AI trích dẫn cơ sở khoa học để củng cố phản tư; khi không có nguồn trùng khớp, AI tự động chuyển sang luồng an ủi - gợi mở tự nhiên, đảm bảo người chơi luôn nhận được phản hồi thấu cảm.
+- **AI Giáo viên (`dashboard.html` - `/api/summarize-class`, `/api/summarize-student`)**:
+  - Đóng vai trò **trợ lý phân tích sư phạm**, hỗ trợ giáo viên tổng hợp tình hình lớp học sau các đợt thực hành SEL.
+  - Cung cấp tính năng **Tạo tóm tắt AI** với 4 mục chuẩn hóa bắt buộc: 1. Quan sát từ dữ liệu, 2. Điểm cần lưu ý, 3. Học sinh nên theo dõi, 4. Giới hạn (Disclaimer), cùng khả năng linh hoạt bổ sung thêm các mục mở rộng (như Gợi ý câu hỏi trò chuyện).
+  - Nhận diện các dấu hiệu cần lưu ý: học sinh chưa chơi, học sinh có điểm thành phần thấp, và đặc biệt là nhóm có **điểm đồng cảm rất cao** (theo nghiên cứu, đây có thể là học sinh từng chịu tổn thương nên nhạy cảm hơn, cần được quan sát và nâng đỡ thay vì bỏ qua).
+
+### 2. Cơ sở tri thức (Knowledge Base)
+
+- Thư viện 17 mục tri thức đã qua thẩm duyệt (`api/_kb.js`), trích xuất từ các nghiên cứu quốc tế (Staub & Vollhardt, Greenberg, Bauer, CDC, StopBullying.gov, Harvard, UNICEF, UNESCO, APA...).
+- Cơ chế truy xuất tất định (deterministic tag-based retrieval) dựa trên bối cảnh kết thúc và chỉ số, không cần cơ sở dữ liệu vector phức tạp, đảm bảo tốc độ phản hồi nhanh và kiểm soát nguồn trích dẫn minh bạch.
+
+### 3. Nguyên tắc an toàn và Quyền riêng tư (Guardrails)
+
+- **Không chẩn đoán**: Lựa chọn trong game là giả lập tình huống, không dùng để kết luận tính cách hay sức khỏe tâm thần ngoài đời.
+- **Trích dẫn độc lập**: Nguồn trích dẫn hiển thị riêng biệt trong phần danh mục (`#ai-citations`), tuyệt đối không chèn mã kỹ thuật hay tên ID nguồn vào lời thoại gây xao nhãng.
+- **Bảo mật danh tính (Pseudonymization)**: Tên học sinh không bao giờ được gửi thô tới nhà cung cấp mô hình AI; thay vào đó hệ thống luôn sử dụng nhãn trung tính.
+- **Hạ tầng mô hình mở/miễn phí**: Chạy hoàn toàn trên chuỗi mô hình mở miễn phí (free-tier models) qua OpenRouter với cơ chế tự động chuyển đổi dự phòng (failover) và bộ phục hồi định dạng JSON thông minh.
+
+### 4. Tóm tắt cấu trúc Prompt của hệ thống AI
+
+Hệ thống prompt được thiết kế theo cấu trúc phân tầng rõ ràng, đảm bảo tính nhất quán và an toàn:
+
+- **Khối bảo vệ an toàn dùng chung (`GUARDRAIL_BLOCK`)**:
+  - Được tích hợp trực tiếp vào các prompt phía giáo viên và trò chuyện.
+  - Quy định bất biến: Không chẩn đoán tâm lý/bệnh học, không gán nhãn đạo đức ("tốt/xấu"), không suy diễn nhân cách đời thực từ lựa chọn game, giữ thái độ tôn trọng và chỉ sử dụng chữ cái Latin (tiếng Việt có dấu).
+- **Prompt Phản tư kết thúc cho học sinh (`analyze-ending`)**:
+  - *Vai trò (Role)*: Người bạn đồng hành ấm áp, lắng nghe, khích lệ suy ngẫm.
+  - *Dữ liệu (Input)*: Tên trung tính, kết thúc đạt được, 3 chỉ số game (`empathy`, `awareness`, `safe`), các bước quyết định và tri thức liên quan từ KB.
+  - *Đầu ra (Output)*: Lời động viên, an ủi tự nhiên cùng câu hỏi tự nhìn nhận; tự động chuyển sang luồng an ủi thuần túy nếu không có tài liệu KB trùng khớp.
+- **Prompt Trò chuyện nối tiếp cho học sinh (`chat-ending`)**:
+  - *Vai trò*: Bạn đồng hành giải đáp thắc mắc tiếp theo của học sinh sau khi xem kết thúc.
+  - *Dữ liệu*: Lịch sử hội thoại 10 lượt gần nhất, câu hỏi mới của học sinh, bối cảnh kết thúc và nguồn trích dẫn từ KB.
+- **Prompt Tóm tắt lớp học cho giáo viên (`summarize-class`)**:
+  - *Vai trò*: Trợ lý sư phạm phân tích xu hướng chung của tập thể lớp.
+  - *Dữ liệu*: Số lượt hoàn thành, trung bình 3 chỉ số, phân bố các ending, phân tích lựa chọn theo cảnh và danh sách học sinh cần chú ý (chỉ số thấp hoặc điểm đồng cảm ≥ 90).
+  - *Cấu trúc bắt buộc (4 mục cố định)*:
+    1. **QUAN SÁT TỪ DỮ LIỆU**: Thống kê số liệu khách quan từ lượt chơi.
+    2. **ĐIỂM CẦN LƯU Ý**: Hiện tượng cần quan tâm khi tương tác với lớp.
+    3. **HỌC SINH NÊN THEO DÕI**: Liệt kê mã định danh học sinh và lý do ngắn gọn (chưa chơi, điểm thấp, đồng cảm rất cao).
+    4. **GIỚI HẠN (DISCLAIMER)**: Nhắc nhở dữ liệu chỉ mang tính tham khảo từ trò chơi, không phải công cụ đánh giá hay chẩn đoán.
+    *(Mô hình có thể bổ sung các mục mở rộng như 5. GỢI Ý TRÒ CHUYỆN).*
+- **Prompt Ghi chú học sinh cá nhân (`summarize-student`)**:
+  - *Vai trò*: Hỗ trợ giáo viên xem nhanh hành trình của 1 học sinh cụ thể trước khi trao đổi riêng, gồm 4 phần: Quan sát, Điểm cần lưu ý, Giới hạn (Disclaimer) và Gợi ý trò chuyện.
 
 ## Yêu cầu hệ thống
 
@@ -222,11 +277,15 @@ bun run build:electrobun
 ## Cấu trúc chính của project
 
 ```text
+api/                     Các serverless API cho AI (analyze-ending, chat-ending, summarize-class, summarize-student, KB, guardrails)
 assets/                  Tài nguyên hình ảnh, âm thanh, font, video và UI
+dashboard.html           Bảng điều khiển dành cho giáo viên (Teacher Dashboard)
+ending.html              Màn hình kết thúc trò chơi với AI phản tư và trò chuyện
 engine/core/             Engine Monogatari chính
 engine/debug/            Công cụ debug trong môi trường phát triển
-engine/electron/          Cấu hình Electron
+engine/electron/         Cấu hình Electron
 engine/electrobun/       Cấu hình Electrobun
+js/cloud-dashboard.js    Logic giao diện bảng điều khiển giáo viên và tính toán chỉ số
 js/script.js             Kịch bản, nhân vật, cảnh và nhánh lựa chọn
 js/storage.js            Dữ liệu lưu mặc định cho người chơi và trạng thái game
 js/options.js            Thiết lập Monogatari, asset path và cấu hình game
@@ -241,12 +300,15 @@ service-worker.js        Service worker cho web app
 
 ## Nơi chỉnh sửa chính
 
-Nếu bạn muốn sửa nội dung hoặc nhánh truyện, phần chính cần xem là:
+Nếu bạn muốn sửa nội dung, giao diện hoặc hệ thống AI, các phần chính cần xem là:
 
 - [js/script.js](js/script.js): thoại, nhân vật, cảnh, lựa chọn và nhánh quyết định
 - [js/storage.js](js/storage.js): trạng thái ban đầu của người chơi và các chỉ số
 - [js/options.js](js/options.js): tên game, phiên bản, thiết lập lưu, asset path và cấu hình chung
 - [index.html](index.html): entry point chính của trò chơi trên web và desktop
+- [ending.html](ending.html): giao diện kết thúc và AI phản tư/trò chuyện đồng hành cho học sinh
+- [dashboard.html](dashboard.html) & [js/cloud-dashboard.js](js/cloud-dashboard.js): bảng điều khiển giáo viên, tính cờ cảnh báo (flags) và tóm tắt lớp học
+- [api/](api/): các hàm xử lý AI phía server, cơ sở tri thức [api/_kb.js](api/_kb.js) và bộ lọc an toàn [api/_guardrails.js](api/_guardrails.js)
 
 Các chỉ số quan trọng hiện có trong game:
 

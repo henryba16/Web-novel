@@ -19,5 +19,6 @@
     "classId": "stub-class-edge-3",
     "classRow": { "name": "Edge Case Class 3", "code": "EDGE-3" },
     "headers": {}
-  }
+  },
+  "expect": { "chat-ending": 400 }
 }
