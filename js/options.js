@@ -46,7 +46,7 @@ monogatari.settings({
 	'ShowMainScreen': true,
 
 	// Turn image preloading on/off, Default: true
-	'Preload': true,
+	'Preload': false,
 
 	// Time interval between autosaves (In Minutes). Default: 0 (Off)
 	'AutoSave': 1,
