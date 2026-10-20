@@ -551,7 +551,7 @@ monogatari.script ({
 				},
 				'2': {
 					'Text': 'Không',
-					'Do': 'end',
+					'Do': 'end', /// Tiếp tục choice 02.
 				},
 			},
 		}
@@ -746,7 +746,7 @@ monogatari.script ({
 				},
 				'2': {
 					'Text': 'Không',
-					'Do': 'end',
+					'Do': 'end', /// Tiếp tục choice 03.
 				},
 			},
 		}
@@ -888,7 +888,7 @@ monogatari.script ({
 				},
 				'2': {
 					'Text': 'Không',
-					'Do': 'end',
+					'Do': 'end', /// Tiếp tục choice 03.
 				},
 			},
 		}
@@ -917,7 +917,7 @@ monogatari.script ({
 		'tl ...',
 		'tl Chúng... Từng là tất cả những kỷ niệm của tớ khi ở những trường cũ.',
 		'pl Trường cũ? Chúng như thế nào vậy?',
-		'"Khóe mắt Linh bỗng không kìm được mà nhẹ rơi những nhọt lệ."',
+		'"Khóe mắt Linh bỗng không kìm được mà nhẹ rơi những giọt lệ."',
 		'tl Chúng-C-chúng kinh khủng v-và xấu xí... Tớ s-sợ lắm...',
 		'ma Hả, ai đã làm gì khiến cậu ra nông nỗi này vậy?',
 		'tl C-các bạn ấy đã đánh tớ. Mấy bạn đó muốn tớ c-chết đi...',
@@ -980,10 +980,10 @@ monogatari.script ({
 			'Choice': {
 				'Dialog': '"Ở trên mạng, một nội dung có thể được chia sẻ nhanh hơn rất nhiều"',
 				'1': {
-					'Text': 'Chia sẻ cho bạn mình',
+					'Text': 'Chia sẻ cho bạn mình.',
 					'onChosen':async function(){
 						addawareness(-3);
-						addempathy(4);
+						addempathy(-4);
 						addsafe(-5);
 
 						monogatari.storage().route.push({
@@ -996,7 +996,7 @@ monogatari.script ({
 					'Do': 'jump share',
 				},
 				'2': {
-					'Text': 'Bình luận về bức ảnh',
+					'Text': 'Bình luận về bức ảnh.',
 					'onChosen':async function(){
 						addawareness(-5);
 						addempathy(-7);
@@ -1012,7 +1012,7 @@ monogatari.script ({
 					'Do': 'jump comment',
 				},
 				'3': {
-					'Text': 'Hỏi Linh thử',
+					'Text': 'Hỏi thăm Linh.',
 					'onChosen':async function(){
 						addawareness(8);
 						addempathy(5);
@@ -1028,7 +1028,7 @@ monogatari.script ({
 					'Do': 'jump asklinh3',
 				},
 				'4': {
-					'Text': 'Méc cô.',
+					'Text': 'Báo cáo với cô Thảo.',
 					'onChosen':async function(){
 						addawareness(8);
 						addsafe(10);
@@ -1054,7 +1054,7 @@ monogatari.script ({
 			'Choice': {
 				'Dialog': 'Màn hình điện thoại của bạn hiện lên những tin nhắn từ nhóm bạn thân của bạn.',
 				'1': {
-					'Text': 'Nghe lời Mai Anh',
+					'Text': 'Nghe lời Mai Anh.',
 					'onChosen':async function(){
 						addempathy(-4);
 						addawareness(-3);
@@ -1070,7 +1070,7 @@ monogatari.script ({
 					'Do': 'jump delete',
 				},
 				'2': {
-					'Text': 'Nghe lời bạn thân',
+					'Text': 'Tự làm theo ý bản thân.',
 					'Condition':async function(){
 						return monogatari.storage().choice[3];
 					},
@@ -1118,7 +1118,7 @@ monogatari.script ({
 				},
 				'2': {
 					'Text': 'Không',
-					'Do': 'end',
+					'Do': 'end', /// Tổng kết chương.
 				},
 			},
 		}
@@ -1202,7 +1202,7 @@ monogatari.script ({
 					'Do': 'jump self',
 				},
 				'4': {
-					'Text': 'Tiếp tục quan sát.',
+					'Text': 'Không làm gì cả.',
 					'onChosen':async function(){
 						addawareness(-3);
 						addempathy(-5);
@@ -1275,7 +1275,7 @@ monogatari.script ({
 	],
 	'scene4':[
 		'show scene black with fadeIn',
-		'centered Sáng hôm sau, tại 7:10.',
+		'centered Sáng hôm sau lúc 7:10 sáng.',
 		'centered {{player.name}} bước vào lớp với tâm trạng thư thỏa.',
 		'centered Ánh nắng buổi sáng chiếu qua cửa sổ.',
 		'centered Cậu nhìn về phía chỗ ngồi hôm qua Linh từng ngồi một mình.',
